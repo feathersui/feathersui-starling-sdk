@@ -105,6 +105,9 @@ public abstract class StandardDefs
 
     public static final String PACKAGE___AS3___VEC = "__AS3__.vec";
 
+    // starling.*
+    public static final String PACKAGE_STARLING_EVENTS = "starling.events";
+
     // flash.*
     public static final String PACKAGE_FLASH_ACCESSIBILITY = "flash.accessibility";
     public static final String PACKAGE_FLASH_DATA = "flash.data";
@@ -255,6 +258,8 @@ public abstract class StandardDefs
     public final String CLASS_EFFECT = NameFormatter.toColon(getEffectsPackage(), "Effect");
     public final String CLASS_EVENT = NameFormatter.toColon(PACKAGE_FLASH_EVENTS, "Event");
     public final String CLASS_EVENTDISPATCHER = NameFormatter.toColon(PACKAGE_FLASH_EVENTS, "EventDispatcher");
+    public final String CLASS_STARLING_EVENT = NameFormatter.toColon(PACKAGE_STARLING_EVENTS, "Event");
+    public final String CLASS_STARLING_EVENTDISPATCHER = NameFormatter.toColon(PACKAGE_STARLING_EVENTS, "EventDispatcher");
     public final String CLASS_FLEXEVENT = NameFormatter.toColon(getEventsPackage(), "FlexEvent");
     public final String CLASS_FLEXSPRITE = NameFormatter.toColon(getCorePackage(), "FlexSprite");
     public final String CLASS_SPARK_RADIOBUTTONGROUP = NameFormatter.toColon(PACKAGE_SPARK_COMPONENTS, "RadioButtonGroup");
