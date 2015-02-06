@@ -106,7 +106,13 @@ public abstract class StandardDefs
     public static final String PACKAGE___AS3___VEC = "__AS3__.vec";
 
     // starling.*
+    public static final String PACKAGE_STARLING_ANIMATION = "starling.animation";
+    public static final String PACKAGE_STARLING_DISPLAY = "starling.display";
     public static final String PACKAGE_STARLING_EVENTS = "starling.events";
+    public static final String PACKAGE_STARLING_FILTERS = "starling.filters";
+    public static final String PACKAGE_STARLING_TEXT = "starling.text";
+    public static final String PACKAGE_STARLING_TEXTURES = "starling.textures";
+    public static final String PACKAGE_STARLING_UTILS = "starling.utils";
 
     // flash.*
     public static final String PACKAGE_FLASH_ACCESSIBILITY = "flash.accessibility";
@@ -434,11 +440,17 @@ public abstract class StandardDefs
     public static final Set<String> implicitImports = new HashSet<String>();
     static
     {
+        implicitImports.add(NameFormatter.toDotStar(PACKAGE_STARLING_ANIMATION));
+        implicitImports.add(NameFormatter.toDotStar(PACKAGE_STARLING_DISPLAY));
+        implicitImports.add(NameFormatter.toDotStar(PACKAGE_STARLING_EVENTS));
+        implicitImports.add(NameFormatter.toDotStar(PACKAGE_STARLING_FILTERS));
+        implicitImports.add(NameFormatter.toDotStar(PACKAGE_STARLING_TEXT));
+        implicitImports.add(NameFormatter.toDotStar(PACKAGE_STARLING_TEXTURES));
+        implicitImports.add(NameFormatter.toDotStar(PACKAGE_STARLING_UTILS));
+        
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_ACCESSIBILITY));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_DEBUGGER));
-        implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_DISPLAY));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_ERRORS));
-        implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_EVENTS));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_EXTERNAL));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_FILTERS));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_GEOM));
