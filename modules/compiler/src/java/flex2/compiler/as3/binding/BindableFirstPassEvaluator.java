@@ -19,12 +19,14 @@
 
 package flex2.compiler.as3.binding;
 
+import flex2.compiler.as3.genext.GenerativeExtension;
 import flex2.compiler.util.CompilerMessage;
 import flex2.compiler.as3.genext.GenerativeFirstPassEvaluator;
 import flex2.compiler.as3.reflect.NodeMagic;
 import flex2.compiler.as3.reflect.TypeTable;
 import flex2.compiler.mxml.lang.StandardDefs;
 import flex2.compiler.mxml.lang.TextParser;
+import flex2.compiler.util.MultiName;
 import flex2.compiler.util.NameFormatter;
 import flex2.compiler.util.QName;
 import macromedia.asc.parser.*;
@@ -247,10 +249,6 @@ public class BindableFirstPassEvaluator extends GenerativeFirstPassEvaluator
 				{
 					bindableInfo.setClassName(NodeMagic.getUnqualifiedClassName(node));
 					classMap.put(NodeMagic.getClassName(node), bindableInfo);
-
-					NodeMagic.addImport(context, node, NameFormatter.toDot(standardDefs.CLASS_EVENT));
-					NodeMagic.addImport(context, node, NameFormatter.toDot(standardDefs.CLASS_EVENTDISPATCHER));
-					NodeMagic.addImport(context, node, NameFormatter.toDot(standardDefs.INTERFACE_IEVENTDISPATCHER));
 					NodeMagic.addImport(context, node, NameFormatter.toDot(standardDefs.CLASS_BINDINGMANAGER));
 				}
             }
@@ -403,6 +401,11 @@ public class BindableFirstPassEvaluator extends GenerativeFirstPassEvaluator
 			//	Creating bindableInfo unconditionally on [Bindable] classes ensures that they
 			//	acquire bindability infrastructure, even if they lack properties.
 			bindableInfo = new BindableInfo(context, typeTable.getSymbolTable());
+            
+            //we need the base class info to be defined so that we can check if
+            //the IEventDispatcher interface is implemented to determine which
+            //template is used to generate code for [Bindable] properties.
+            typeTable.getSymbolTable().getTypeAnalyzer().analyzeClass(context, new MultiName(NameFormatter.toColon(NodeMagic.getClassName(currentClassNode))));
 		}
 		else
 		{
@@ -469,10 +472,20 @@ public class BindableFirstPassEvaluator extends GenerativeFirstPassEvaluator
 			bInfo = new BindableInfo(context, typeTable.getSymbolTable());
 			bInfo.setClassName(NodeMagic.getUnqualifiedClassName(classNode));
 			classMap.put(NodeMagic.getClassName(classNode), bInfo);
-
-			NodeMagic.addImport(context, classNode, NameFormatter.toDot(standardDefs.CLASS_EVENT));
-			NodeMagic.addImport(context, classNode, NameFormatter.toDot(standardDefs.CLASS_EVENTDISPATCHER));
-			NodeMagic.addImport(context, classNode, NameFormatter.toDot(standardDefs.INTERFACE_IEVENTDISPATCHER));
+            
+            ClassInfo classInfo = bInfo.getClassInfo();
+            if(classInfo.implementsInterface(StandardDefs.PACKAGE_FLASH_EVENTS,
+                    GenerativeExtension.IEVENT_DISPATCHER))
+            {
+                NodeMagic.addImport(context, classNode, NameFormatter.toDot(standardDefs.CLASS_EVENT));
+                NodeMagic.addImport(context, classNode, NameFormatter.toDot(standardDefs.CLASS_EVENTDISPATCHER));
+                NodeMagic.addImport(context, classNode, NameFormatter.toDot(standardDefs.INTERFACE_IEVENTDISPATCHER));
+            }
+            else
+            {
+                NodeMagic.addImport(context, classNode, NameFormatter.toDot(standardDefs.CLASS_STARLING_EVENT));
+                NodeMagic.addImport(context, classNode, NameFormatter.toDot(standardDefs.CLASS_STARLING_EVENTDISPATCHER));
+            }
 			NodeMagic.addImport(context, classNode, NameFormatter.toDot(standardDefs.CLASS_BINDINGMANAGER));
 		}
 		

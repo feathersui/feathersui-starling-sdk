@@ -74,6 +74,7 @@ public abstract class StandardDefs
     public abstract String getUtilsPackage();
 
     public abstract String getBindablePropertyTemplate();
+    public abstract String getBindablePropertyStarlingTemplate();
     public abstract String getClassDefTemplate();
     public abstract String getClassDefLibTemplate();
     public abstract String getEmbedClassTemplate();
@@ -937,6 +938,7 @@ public abstract class StandardDefs
     public static class StandardDefs2006 extends StandardDefs
     {
         private static final String BINDABLE_PROPERTY_TEMPLATE = "BindableProperty.vm";
+        private static final String BINDABLE_PROPERTY_STARLING_TEMPLATE = "BindablePropertyStarling.vm";
         private static final String CLASSDEF_TEMPLATE = "ClassDef.vm";
         private static final String CLASSDEF_LIB_TEMPLATE = "ClassDefLib.vm";
         private static final String EMBED_CLASS_TEMPLATE = "EmbedClass.vm";
@@ -1053,6 +1055,11 @@ public abstract class StandardDefs
         public String getBindablePropertyTemplate()
         {
             return BINDABLE_PROPERTY_TEMPLATE;
+        }
+
+        public String getBindablePropertyStarlingTemplate()
+        {
+            return BINDABLE_PROPERTY_STARLING_TEMPLATE;
         }
 
         public String getClassDefTemplate()

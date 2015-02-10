@@ -153,6 +153,7 @@
             <arg value="flex2/compiler/css/StyleLibrary.vm"/>
             <arg value="flex2/compiler/as3/EmbedClass.vm"/>
             <arg value="flex2/compiler/as3/binding/BindableProperty.vm"/>
+            <arg value="flex2/compiler/as3/binding/BindablePropertyStarling.vm"/>
             <arg value="flex2/compiler/as3/binding/WatcherSetupUtil.vm"/>
             <arg value="flex2/compiler/as3/managed/ManagedProperty.vm"/>
             <arg value="flex2/compiler/media/SkinClass.vm"/>

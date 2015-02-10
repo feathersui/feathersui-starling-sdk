@@ -20,6 +20,7 @@
 package flex2.compiler.as3.binding;
 
 import flex2.compiler.CompilationUnit;
+import flex2.compiler.CompilerException;
 import flex2.compiler.as3.AbstractSyntaxTreeUtil;
 import flex2.compiler.as3.MetaDataEvaluator;
 import flex2.compiler.as3.genext.GenerativeClassInfo.AccessorInfo;
@@ -215,25 +216,13 @@ public class BindableSecondPassEvaluator extends GenerativeSecondPassEvaluator
 			if (bindableInfo != null)
 			{
 				ClassInfo classInfo = bindableInfo.getClassInfo();
-				if (!classInfo.implementsInterface(StandardDefs.PACKAGE_FLASH_EVENTS,
-												   GenerativeExtension.IEVENT_DISPATCHER))
-				{
-					bindableInfo.setNeedsToImplementIEventDispatcher(true);
-
-					MultiName multiName = new MultiName(StandardDefs.PACKAGE_FLASH_EVENTS,
-														GenerativeExtension.IEVENT_DISPATCHER);
-					InterfaceInfo interfaceInfo = typeAnalyzer.analyzeInterface(context, multiName, classInfo);
-
-                    // interfaceInfo will be null if IEventDispatcher was not resolved.
-                    // This most likely means that playerglobal.swc was not in the
-                    // external-library-path and other errors will be reported, so punt.
-					if ((interfaceInfo == null) || checkForExistingMethods(context, node, classInfo, interfaceInfo))
-					{
-						return null;
-					}
-
-					classInfo.addInterfaceMultiName(StandardDefs.PACKAGE_FLASH_EVENTS,
-													GenerativeExtension.IEVENT_DISPATCHER);
+				if (!classInfo.extendsClass(standardDefs.CLASS_STARLING_EVENTDISPATCHER) &&
+                    !classInfo.implementsInterface(standardDefs.PACKAGE_FLASH_EVENTS, GenerativeExtension.IEVENT_DISPATCHER))
+                {
+                    //until we figure out how to automatically force a class to
+                    //extend EventDispatcher, we need to use a compiler error
+                    //instead.
+                    context.localizedError2(node.pos(), new BindableClassDoesNotExtendEventDispatcher(classInfo.getClassName()));
 				}
 
 				if (bindableInfo.getRequiresStaticEventDispatcher() &&
@@ -1239,7 +1228,13 @@ public class BindableSecondPassEvaluator extends GenerativeSecondPassEvaluator
 	 */
 	protected String getTemplateName()
 	{
-		return standardDefs.getBindablePropertyTemplate();
+        ClassInfo classInfo = bindableInfo.getClassInfo();
+        if(classInfo.implementsInterface(StandardDefs.PACKAGE_FLASH_EVENTS,
+                GenerativeExtension.IEVENT_DISPATCHER))
+        {
+            return standardDefs.getBindablePropertyTemplate();
+        }
+        return standardDefs.getBindablePropertyStarlingTemplate();
 	}
 
 	protected String getTemplatePath()
@@ -1276,4 +1271,26 @@ public class BindableSecondPassEvaluator extends GenerativeSecondPassEvaluator
 			this.getter = getter;
 		}
 	}
+
+    public static class BindableClassDoesNotExtendEventDispatcher extends CompilerMessage.CompilerError
+    {
+        public BindableClassDoesNotExtendEventDispatcher(String className)
+        {
+            super(new BindableClassDoesNotExtendEventDispatcherException(className));
+        }
+        
+        private static class BindableClassDoesNotExtendEventDispatcherException extends CompilerException
+        {
+            public BindableClassDoesNotExtendEventDispatcherException(String className)
+            {
+                //TODO: this should be localized
+                super("Class " +  className + " must extend the required base class starling.events.EventDispatcher.");
+            }
+            
+            public String toString()
+            {
+                return this.getMessage();
+            }
+        }
+    }
 }
