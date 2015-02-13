@@ -107,8 +107,8 @@ class BindableProperty
 			}
 #else
 			var eventDispatcher:starling.events.EventDispatcher = starling.events.EventDispatcher(${owner});
-			## The cast to EventDispatcher is necessary, because ASC isn't picking up on the
-			## fact that we've morphed "this" into an EventDispatcher subclass.
+## The cast to EventDispatcher is necessary, because ASC isn't picking up on the
+## fact that we've morphed "this" into an EventDispatcher subclass.
 			if (eventDispatcher.hasEventListener("propertyChange"))
 			{
 				eventDispatcher.dispatchEventWith("propertyChange", false, eventData);
