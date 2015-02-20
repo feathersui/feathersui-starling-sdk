@@ -47,7 +47,7 @@
 		<echo message="Compiling frameworks/libs/authoringsupport.swc"/>
 		<!-- Load the <compc> task. We can't do this at the <project> level -->
 		<!-- because targets that run before flexTasks.jar gets built would fail. -->
-		<taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/lib/flexTasks.jar"/>
+		<taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar;${FLEX_HOME}/lib/flexTasks.jar"/>
 		<!--
 			This project has no MXML tags and therefore no manifest.
 			Link in the classes (and their dependencies)
@@ -70,7 +70,7 @@
 	<target name="doc" depends="clean-temp-docs" description="updates authoringsupport.swc with asdoc xml">
 		<!-- Load the <asdoc> task. We can't do this at the <project> level -->
 		<!-- because targets that run before flexTasks.jar gets built would fail. -->
-		<taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/lib/flexTasks.jar"/>
+		<taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar;${FLEX_HOME}/lib/flexTasks.jar"/>
 
 	    <condition property="asdoc.jvm.args" value="-Xmx384m">
 	        <os family="windows"/>

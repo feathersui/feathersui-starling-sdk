@@ -29,7 +29,7 @@
     <property file="${FLEX_HOME}/build.properties"/>
 
     <!-- comes from build.propertes unless bin distro -->
-    <property name="playerglobal.version" value="11.1"/>
+    <property name="playerglobal.version" value="11.5"/>
 
     <property name="frameworks.dir" value="${FLEX_HOME}/frameworks"/>
 
@@ -100,7 +100,7 @@
                         value="libs/player"/>
                     <replacefilter
                         token="$${build.number}"
-                        value="${release.version}.${build.number}"/>
+                        value="${release.version.flex}.${build.number}"/>
                 </replace>
         </sequential>
     </macrodef>	
@@ -135,7 +135,7 @@
 
     <target name="zip-project-files">
         <zip destfile="${basedir}/FlashBuilderProjectFiles.zip">
-            <zipfileset dir="${FLEX_HOME}" prefix="${release.version}">
+            <zipfileset dir="${FLEX_HOME}" prefix="${release.version.flex}">
                 <include name="**/.*"/>
                 <exclude name="mustella/**/.*"/>
                 <exclude name="temp/**/.*"/>

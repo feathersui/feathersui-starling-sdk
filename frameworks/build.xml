@@ -59,26 +59,11 @@
     <property environment="env"/>
     <property file="${FLEX_HOME}/build.properties"/>
  
-    <target name="main" depends="check-compile-env,check-tlf-home,clean,prepare,compile,javascript" 
+    <target name="main" depends="check-compile-env,clean,prepare,compile" 
         description="Clean build of all SWCs"/>
 
     <target name="check-compile-env" description="Check for the required environment variables">
         <ant antfile="${FLEX_HOME}/build.xml" target="check-compile-env" dir="${FLEX_HOME}"/>
-    </target>
-
-    <target name="check-tlf-home" unless="TLF_HOME"
-        description="Check TLF_HOME is a directory.">
-        
-        <echo message="TLF_HOME is ${env.TLF_HOME}"/>
-
-        <available file="${env.TLF_HOME}" 
-            type="dir" 
-            property="TLF_HOME"
-            value="${env.TLF_HOME}"/>
-
-        <fail message="TLF_HOME must be set correctly for a release build" 
-            unless="TLF_HOME"/>
-    	
     </target>
     
     <target name="prepare" depends="local-fonts-snapshot, thirdparty-downloads"/>
@@ -99,40 +84,12 @@
     <target name="thirdparty-downloads" unless="no.thirdparty-downloads" description="Downloads all the required thirdparty code.">
         <ant antfile="${basedir}/downloads.xml" dir="${basedir}"/>
     </target>
-
-    <!-- Note:
-       Removed osmf from build.  For now, just use the downloaded swc.
-       We can move the osmf source from osmf-download to projects/osmf and add back the
-       property files for all the languages if we choose.
-       
-       Should consider updating the OSMF and TLF versions in use.
-    -->
     
     <target name="compile" description="Builds all SWCs but not their resource bundles" depends="flex-config">
         <antcall target="framework"/>
-        <antcall target="mx"/>
-        <antcall target="textLayout"/>
-        <antcall target="rpc"/>
-        <antcall target="charts"/>
-        <antcall target="advancedgrids"/>
-        <antcall target="spark"/>
-        <antcall target="sparkskins"/>
-        <antcall target="spark_dmv"/>
-        <antcall target="airframework"/>
-        <antcall target="airspark"/>        
-        <antcall target="mobilecomponents"/>        
-        <antcall target="mobiletheme"/>     
         <antcall target="core"/>
-        <antcall target="flash_integration"/>
         <antcall target="authoringsupport"/>
-        <antcall target="halo"/>
-        <antcall target="wireframe"/>
-        <antcall target="aeongraphical"/>
-    	<antcall target="apache"/>
-    	<antcall target="experimental"/>
-    	<antcall target="experimental_mobile"/>
-        <antcall target="compile-automation"/>
-        <antcall target="flatspark"/>
+        <antcall target="feathers-mxml"/>
     </target>
 	
     <target name="test" description="Runs the tests for all projects that have FlexUnit tests">
@@ -217,71 +174,17 @@
 		<condition property="playerglobal.swfversion" value="27">
 			<equals arg1="${playerglobal.version}" arg2="16.0" />
 		</condition>
-	</target>	
-
-    <!--
-        automation: tool was formerly qtp and tool_air was formerly qtp_air
-    -->
-    <target name="compile-automation" description="Builds all automation SWCs but not their resource bundles">
-        <antcall target="automation_agent"/>
-        <antcall target="automation_dmv"/>
-        <antcall target="tool"/>
-        <antcall target="automation"/>
-        <antcall target="tool_air"/>
-        <antcall target="automation_spark"/>
-        <antcall target="automation_flashflexkit"/>
-        <antcall target="automation_air"/>
-        <antcall target="automation_airspark"/>
-    </target>
+	</target>
     
     <target name="other.locales" description ="Builds resource SWCs for all locales">
         <ant dir="${basedir}/projects/framework" target="other.locales"/>
-        <ant dir="${basedir}/projects/mx" target="other.locales"/>
-        <ant dir="${basedir}/projects/textLayout" target="other.locales"/>
-        <ant dir="${basedir}/projects/airframework" target="other.locales"/>
-        <ant dir="${basedir}/projects/airspark" target="other.locales"/>
-        <ant dir="${basedir}/projects/rpc" target="other.locales"/>
-        <ant dir="${basedir}/projects/charts" target="other.locales"/>
-        <ant dir="${basedir}/projects/advancedgrids" target="other.locales"/>
-        <ant dir="${basedir}/projects/spark" target="other.locales"/>
-        <ant dir="${basedir}/projects/mobilecomponents" target="other.locales" />
         <ant dir="${basedir}/projects/playerglobal" target="other.locales" />
-        <ant dir="${basedir}/projects/flash-integration" target="other.locales"/>
-        <ant dir="${basedir}/projects/automation" target="other.locales"/>
-        <ant dir="${basedir}/projects/automation_agent" target="other.locales"/>
-        <ant dir="${basedir}/projects/tool" target="other.locales"/>
-    	<ant dir="${basedir}/projects/tool_air" target="other.locales"/>
-    	<ant dir="${basedir}/projects/apache" target="other.locales"/>
-    	<ant dir="${basedir}/projects/experimental" target="other.locales"/>
-    	<ant dir="${basedir}/projects/experimental_mobile" target="other.locales"/>
     </target>
     
     <target name="doc" >
         <ant dir="${basedir}/projects/framework" target="doc" />
-        <ant dir="${basedir}/projects/mx" target="doc" />
-        <ant dir="${basedir}/projects/textLayout" target="doc" />
-        <ant dir="${basedir}/projects/rpc" target="doc" />
-        <ant dir="${basedir}/projects/charts" target="doc" />
-        <ant dir="${basedir}/projects/advancedgrids" target="doc" />
-        <ant dir="${basedir}/projects/spark" target="doc" />
-        <ant dir="${basedir}/projects/spark_dmv" target="doc" />
-        <ant dir="${basedir}/projects/sparkskins" target="doc" />
-        <ant dir="${basedir}/projects/airframework" target="doc" />
-        <ant dir="${basedir}/projects/airspark" target="doc" />
-        <ant dir="${basedir}/projects/mobilecomponents" target="doc" />
-        <ant dir="${basedir}/projects/mobiletheme" target="doc" />
         <ant dir="${basedir}/projects/core" target="doc" />
         <ant dir="${basedir}/projects/authoringsupport" target="doc" />
-        <ant dir="${basedir}/projects/wireframe" target="doc" />
-        <ant dir="${basedir}/projects/flash-integration" target="doc" />
-        <!-- removed until sources donated to Apache -->
-        <!--
-        <ant dir="${basedir}/projects/automation" target="doc" />
-        -->
-        <ant dir="${basedir}/projects/apache" target="doc" />
-    	<ant dir="${basedir}/projects/experimental" target="doc" />
-    	<ant dir="${basedir}/projects/experimental_mobile" target="doc" />
-        <!-- ant dir="${basedir}/projects/flatspark" target="doc" / -->
     </target>
    
     <!--
@@ -294,35 +197,14 @@
         <ant antfile="${basedir}/downloads.xml" target="clean" dir="${basedir}"/>
     </target>
     
-    <target name="clean" depends="check-tlf-home,automation-clean,airsdk-clean" description="Cleans all SWCs and their resource bundles">
+    <target name="clean" depends="airsdk-clean" description="Cleans all SWCs and their resource bundles">
         <delete file="${basedir}/flex-config.xml"/>
         <delete file="${basedir}/air-config.xml"/>
         <delete file="${basedir}/airmobile-config.xml"/>
         <!-- Delete output from SWC projects -->
-        <ant dir="${basedir}/projects/textLayout" target="clean"/>
         <ant dir="${basedir}/projects/framework" target="clean"/>
-        <ant dir="${basedir}/projects/mx" target="clean"/>
-        <ant dir="${basedir}/projects/airframework" target="clean"/>
-        <ant dir="${basedir}/projects/airspark" target="clean"/>
-        <ant dir="${basedir}/projects/mobilecomponents" target="clean"/>
-        <ant dir="${basedir}/projects/mobiletheme" target="clean"/>
         <ant dir="${basedir}/projects/core" target="clean"/>
-        <ant dir="${basedir}/projects/spark" target="clean"/>
-        <ant dir="${basedir}/projects/spark_dmv" target="clean"/>
-        <ant dir="${basedir}/projects/sparkskins" target="clean"/>
-        <ant dir="${basedir}/projects/halo" target="clean"/>
-        <ant dir="${basedir}/projects/wireframe" target="clean"/>
-        <ant dir="${basedir}/projects/flash-integration" target="clean"/>
-        <ant dir="${basedir}/projects/rpc" target="clean"/>
         <ant dir="${basedir}/projects/authoringsupport" target="clean"/>
-        <ant dir="${basedir}/projects/charts" target="clean"/>
-        <ant dir="${basedir}/projects/advancedgrids" target="clean"/>
-    	<ant dir="${basedir}/projects/apache" target="clean"/>
-    	<ant dir="${basedir}/projects/experimental" target="clean"/>
-    	<ant dir="${basedir}/projects/experimental_mobile" target="clean"/>
-        <ant dir="${basedir}/projects/flatspark" target="clean"/>
-        <ant dir="${basedir}/javascript" target="clean"/>
-    	<ant dir="${basedir}/themes/AeonGraphical" target="clean"/>
         <!-- delete the FlashBuilder executable directories -->
         <delete includeemptydirs="true" failonerror="false">
             <fileset dir="${basedir}/projects">
@@ -344,19 +226,6 @@
         <delete file="macFonts.ser"/>
         <delete file="winFonts.ser"/>
     </target>
-    
-    <target name="automation-clean" description="Builds all automation SWCs but not their resource bundles">
-        <ant dir="${basedir}/projects/automation_agent" target="clean"/>
-        <ant dir="${basedir}/projects/automation" target="clean"/>
-        <ant dir="${basedir}/projects/automation_air" target="clean"/>
-        <ant dir="${basedir}/projects/automation_dmv" target="clean"/>
-        <ant dir="${basedir}/projects/automation_flashflexkit" target="clean"/>
-        <ant dir="${basedir}/projects/automation_spark" target="clean"/>
-        <ant dir="${basedir}/projects/automation_airspark" target="clean"/>
-        <ant dir="${basedir}/projects/tool" target="clean"/>
-        <ant dir="${basedir}/projects/tool_air" target="clean"/>
-    </target>
-
 
     <target name="airsdk-clean" description="Delete files copied from the AIR SDK">
         <!-- Delete AIR files and directories from 'prepare' target -->
@@ -389,30 +258,6 @@
         </delete>
     </target>
     
-    <target name="airframework" description="Clean build of airframework.swc">
-        <ant dir="${basedir}/projects/airframework"/>
-    </target>
-
-    <target name="airspark" description="Clean build of airspark.swc">
-        <ant dir="${basedir}/projects/airspark"/>
-    </target>
-
-    <target name="mobilecomponents" description="Clean build of mobilecomponents.swc">
-        <ant dir="${basedir}/projects/mobilecomponents"/>
-    </target>
-
-    <target name="mobiletheme" description="Clean build of mobile.swc">
-        <ant dir="${basedir}/projects/mobiletheme"/>
-    </target>   
-
-    <target name="charts" description="Clean build of charts.swc">
-        <ant dir="${basedir}/projects/charts"/>
-    </target>
-
-    <target name="advancedgrids" description="Clean build of advancedgrids.swc">
-        <ant dir="${basedir}/projects/advancedgrids"/>
-    </target>
-    
     <target name="core" description="Clean build of core.swc">
         <ant dir="${basedir}/projects/core"/>
     </target>
@@ -421,110 +266,11 @@
         <ant dir="${basedir}/projects/framework"/>
     </target>
 
-    <target name="halo" description="Clean build of halo.swc">
-        <ant dir="${basedir}/projects/halo"/>
-    </target>
-
-    <target name="mx" description="Clean build of mx.swc and its resource bundles">
-        <ant dir="${basedir}/projects/mx"/>
-    </target>
-
-    <target name="spark" description="Clean build of spark.swc">
-        <ant dir="${basedir}/projects/spark"/>
-    </target>
-
-     <target name="sparkskins" description="Clean build of sparkskins.swc">
-        <ant dir="${basedir}/projects/sparkskins"/>
-    </target>
-
-    <target name="spark_dmv" description="Clean build of sparkskins.swc">
-        <ant dir="${basedir}/projects/spark_dmv"/>
-    </target>
-
-    <target name="wireframe" description="Clean build of wireframe.swc">
-        <ant dir="${basedir}/projects/wireframe"/>
-    </target>
-
-    <target name="aeongraphical" description="Clean build of aeongraphical.swf">
-        <ant dir="${basedir}/themes/AeonGraphical"/>
-    </target>
-
-    <target name="flash_integration" description="Clean build of FlexComponentBase.swc">
-        <ant dir="${basedir}/projects/flash-integration"/>
-    </target>
-    
-     <target name="osmf" description="Clean build of osmf.swc">
-        <ant dir="${basedir}/projects/osmf"/>
-    </target>
-
-    <target name="rpc" description="Clean build of rpc.swc">
-        <ant dir="${basedir}/projects/rpc"/>
-    </target>
-
-    <target name="textLayout" description="Clean build of textLayout.swc">
-        <ant dir="${basedir}/projects/textLayout"/>
+    <target name="feathers-mxml" description="Clean build of feathers-mxml.swc and its resource bundles">
+        <!--<ant dir="${basedir}/projects/feathers-mxml"/>-->
     </target>
     
     <target name="authoringsupport" description="Clean build of authoringsupport.swc">
         <ant dir="${basedir}/projects/authoringsupport"/>
-    </target>
-
-    <target name="javascript" description="Clean build of javascript examples">
-        <ant dir="${basedir}/javascript"/>
-    </target>
-    
-    <target name="automation" description="Clean build of automation swc">
-        <ant dir="${basedir}/projects/automation"/>
-    </target>
-
-    <target name="automation_air" description="Clean build of automation_air swc">
-        <ant dir="${basedir}/projects/automation_air"/>
-    </target>
-    
-    <target name="automation_dmv" description="Clean build of automation_dmv swc">
-        <ant dir="${basedir}/projects/automation_dmv"/>
-    </target>
-    
-    <target name="automation_flashflexkit" description="Clean build of automation_flashflexkit swc">
-        <ant dir="${basedir}/projects/automation_flashflexkit"/>
-    </target>
-    
-    <target name="automation_spark" description="Clean build of automation_spark swc">
-        <ant dir="${basedir}/projects/automation_spark"/>
-    </target>
-    
-    <target name="automation_airspark" description="Clean build of automation_airspark swc">
-        <ant dir="${basedir}/projects/automation_airspark"/>
-    </target>
-
-    <target name="automation_agent" description="Clean build of automation_agent swc">
-        <ant dir="${basedir}/projects/automation_agent"/>
-    </target>
-
-    <target name="tool" description="Clean build of tool swc">
-        <ant dir="${basedir}/projects/tool"/>
-    </target>
-
-    <target name="tool_air" description="Clean build of tool_air swc">
-        <ant dir="${basedir}/projects/tool_air"/>
-    </target>
-	
-    <target name="apache" description="Clean build of apache.swc">
-        <ant dir="${basedir}/projects/apache"/>
-    </target>
-    <target name="apache-test" description="Tests for 'apache' project">
-        <ant dir="${basedir}/projects/apache" target="test"/>
-    </target>
-	
-    <target name="experimental" description="Clean build of experimental.swc">
-        <ant dir="${basedir}/projects/experimental"/>
-    </target>
-	
-    <target name="experimental_mobile" description="Clean build of experimental_mobile.swc">
-        <ant dir="${basedir}/projects/experimental_mobile"/>
-    </target>
-	
-    <target name="flatspark" description="Clean build of flatspark.swc">
-        <ant dir="${basedir}/projects/flatspark"/>
     </target>
 </project>

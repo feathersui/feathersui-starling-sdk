@@ -43,77 +43,14 @@
     <property name="strict" value="true"/>
     <property name="javac.src" value="1.5"/>
     
-    <property name="kit.prefix" value="apache-flex-sdk-${release.version}"/>
-    <property name="kit-pixelbender.prefix" value="apache-flex-sdk-pixel-bender-1.0.0"/>
+    <property name="kit.prefix" value="feathers-enterprise-sdk-${release.version.feathers}"/>
     <property name="source.kit" value="${kit.prefix}-src"/>
     <property name="binary.kit" value="${kit.prefix}-bin"/>
-    <property name="source-pixelbender.kit" value="${kit-pixelbender.prefix}-src"/>
-    <property name="binary-pixelbender.kit" value="${kit-pixelbender.prefix}-bin"/>
-    
-    <available file="${FLEX_HOME}/../flex-tlf/textLayout" 
-            type="dir" 
-            property="TLF_HOME"
-            value="${FLEX_HOME}/../flex-tlf" />
-
-    <available file="${FLEX_HOME}/../tlf/textLayout" 
-            type="dir" 
-            property="TLF_HOME"
-            value="${FLEX_HOME}/../tlf" />
-	
-    <available file="${env.TLF_HOME}" 
-            type="dir" 
-            property="TLF_HOME"
-            value="${env.TLF_HOME}"/>
-
-    <available file="${FLEX_HOME}/frameworks/projects/textLayout/src"
-            type="dir"
-            property="TLF_HOME"
-            value="${FLEX_HOME}/frameworks/projects" />
-
-    <available file="${FLEX_HOME}/../flex-blazeds/modules/remoting"
-            type="dir"
-            property="BLAZEDS_HOME"
-            value="${FLEX_HOME}/../flex-blazeds" />
-
-    <available file="${FLEX_HOME}/../blazeds/modules/remoting"
-            type="dir"
-            property="BLAZEDS_HOME"
-            value="${FLEX_HOME}/../blazeds" />
-
-    <available file="${env.BLAZEDS_HOME}"
-            type="dir"
-            property="BLAZEDS_HOME"
-            value="${env.BLAZEDS_HOME}"/>
-
-    <available file="${FLEX_HOME}/modules/flex-messaging-common/common/src"
-            type="dir"
-            property="BLAZEDS_HOME"
-            value="${FLEX_HOME}/modules/flex-messaging-common/common/src" />
 
     <tstamp>
         <format property="build.number.date" pattern="yyyyMMdd" />
     </tstamp>
-    <property name="build.version" value="${release.version}.${build.number.date}" />
-
-    <!--
-        Optional jars but should be in place for a real release build.
-        
-        For <grep> put antelopetasks*.jar in this path.
-        See version-update.
-
-        For <rat> apache-rat-0.8.jar and apache-rat-tasks-0.8.jar should be in classpath.
-        See rat-check.
-    -->
-    <path id="anttask.classpath">
-        <fileset dir="${env.ANT_HOME}/lib">
-           <include name="**/antelopetasks*.jar"/>
-           <include name="**/apache-rat*.jar"/>
-        </fileset>
-        <fileset dir="${user.home}">
-           <include name=".ant/lib/**/antelopetasks*.jar"/>
-           <include name=".ant/lib/**/apache-rat*.jar"/>
-        </fileset>
-    </path>
+    <property name="build.version" value="${release.version.flex}.${build.number.date}" />
     
     <!--
         Notes: If you're running the main target, then there is no need to call clean first.
@@ -134,19 +71,15 @@
         This does not build the docs.  Use doc-packages or asdoc-packages.
     -->    
     <target name="release" 
-        depends="check-compile-env,check-runtime-env,check-adobe-extension-manager-env,source-release,binary-release,rat-check"
+        depends="check-compile-env,check-runtime-env,source-release,binary-release"
         description="Creates source and binary kits for Apache Flex."/>
-        
-    <target name="release-pixelbender"
-        depends="check-compile-env,check-runtime-env,source-package-pixelbender,binary-package-pixelbender"
-        description="Creates source and binary kits for Apache Flex's Pixel Bender package."/>
         
     <target name="source-release"
         depends="super-clean,create-description,create-config,source-package" 
         description="Packages the source release kit which is the official Apache release."/>
         
     <target name="binary-release" 
-        depends="setup-binary-release,main,frameworks-rsls,sample-themes,checkintests,doc,other.locales,binary-package,additional-packages" 
+        depends="setup-binary-release,main,doc,other.locales,binary-package,additional-packages" 
         description="Builds and packages the binary kit which is provided as a convenience."/>    
 
     <target name="source-release-noclean" 
@@ -154,7 +87,7 @@
         description="Packages the source release kit which is the official Apache release."/>
         
     <target name="binary-release-noclean" 
-        depends="main,frameworks-rsls,sample-themes,checkintests,doc,other.locales,binary-package,additional-packages" 
+        depends="main,doc,other.locales,binary-package,additional-packages" 
         description="Builds and packages the binary kit which is provided as a convenience."/>    
 
     <target name="doc-packages" 
@@ -183,7 +116,7 @@
     <target name="prebuild" depends="check-compile-env,thirdparty-downloads,create-description" 
         description="Stuff that needs to be done before any builds." />
 
-    <target name="check-compile-env" depends="check-playerglobal-home,check-air-home,check-tlf-home,check-blazeds-home"
+    <target name="check-compile-env" depends="check-playerglobal-home,check-air-home"
         description="Check for the required environment variables for compilation.">
             <echo>OS: ${os.name} / ${os.version} / ${os.arch}</echo>
             <echo>VM: ${java.vm.name} / ${java.vm.version}</echo>
@@ -233,49 +166,6 @@
         <fail message="The environment variable AIR_HOME must be set to the AIR SDK Kit directory" 
             unless="AIR_HOME.set"/>
     </target>
-    
-    <target name="check-tlf-home" unless="TLF_HOME"
-        description="Check TLF_HOME is a directory.">
-        
-        <echo message="TLF_HOME is ${env.TLF_HOME}"/>
-
-        <available file="${env.TLF_HOME}" 
-            type="dir" 
-            property="TLF_HOME"
-            value="${env.TLF_HOME}"/>
-
-        <fail message="TLF_HOME must be set correctly for a release build" 
-            unless="TLF_HOME"/>
-    	
-    </target>
-
-    <target name="check-blazeds-home" unless="BLAZEDS_HOME"
-        description="Check BLAZEDS_HOME is a directory.">
-        
-        <echo message="BLAZEDS_HOME is ${env.BLAZEDS_HOME}"/>
-        
-        <available file="${env.BLAZEDS_HOME}"
-            type="dir"
-            property="BLAZEDS_HOME"
-            value="${env.BLAZEDS_HOME}"/>
-        
-        <fail message="BLAZEDS_HOME must be set correctly for a release build"
-            unless="BLAZEDS_HOME"/>
-        
-    </target>
-
-    <target name="check-adobe-extension-manager-env" unless="ADOBE_EXTENSION_MANAGER.set"
-        description="Check ADOBE_EXTENSION_MANAGER is a directory.">
-        
-        <echo message="ADOBE_EXTENSION_MANAGER is ${env.ADOBE_EXTENSION_MANAGER}"/>
-
-        <available file="${env.ADOBE_EXTENSION_MANAGER}" 
-            type="file" 
-            property="ADOBE_EXTENSION_MANAGER.set"/>
-
-        <fail message="ADOBE_EXTENSION_MANAGER must be set correctly for a release build" 
-            unless="ADOBE_EXTENSION_MANAGER.set"/>
-    </target>
 
     <target name="create-description" description="Generate flex-sdk-description.xml">
         <echo message="build.number is ${build.number.date}"/>
@@ -300,7 +190,9 @@
 --&gt;
 &lt;flex-sdk-description&gt;
 &lt;name&gt;${release} FP${playerglobal.version} AIR${air.version} ${locale}&lt;/name&gt;
-&lt;version&gt;${release.version}&lt;/version&gt;
+&lt;!-- for compatibility with Flash Builder, the version element needs to show
+the version of Apache Flex that this SDK was forked from --&gt;
+&lt;version&gt;${release.version.flex}&lt;/version&gt;
 &lt;build&gt;${build.number.date}&lt;/build&gt;
 &lt;/flex-sdk-description&gt;
         </echo>
@@ -336,7 +228,7 @@
         <delete dir="${basedir}/lib"/>
     </target>
 
-    <target name="clean" depends="modules-clean,frameworks-clean,frameworks-clean,frameworks-rsls-clean,package-clean,checkintests-clean" 
+    <target name="clean" depends="modules-clean,frameworks-clean,frameworks-clean,package-clean" 
         description="Full clean excluding thirdparty downloads">
         
         <delete file="${basedir}/flex-sdk-description.xml" failonerror="false"/>
@@ -358,7 +250,6 @@
         <delete dir="${basedir}/tempDoc" failonerror="false" includeEmptyDirs="true"/>
         <ant dir="${basedir}/asdoc" target="clean" />
         <ant dir="${basedir}/ide/flashbuilder" target="clean" />
-        <ant dir="${basedir}/mustella" target="clean"/>
     </target>
 
     <target name="modules-clean">
@@ -369,34 +260,9 @@
         <ant dir="${basedir}/frameworks" target="clean"/>
     </target>
 
-	<target name="frameworks-rsls-clean">
-       	<delete dir="${basedir}/frameworks/rsls" includeEmptyDirs="true" quiet="true"/>
-	</target>
-
     <target name="package-clean">
         <delete dir="${basedir}/out" failonerror="false" includeEmptyDirs="true"/>
         <antcall target="clean-temp"/>
-    </target>
-
-    <target name="checkintests-clean" depends="clean-dependencychecker">
-        <delete file="${basedir}/frameworks/tests/AIRExamples/AIRDemo.swf" failonerror="false"/>
-        <delete dir="${basedir}/frameworks/tests/airMobileBasicTests/bin-debug" failonerror="false"/>
-        <delete file="${basedir}/frameworks/tests/checkinapp/checkinapp.swf" failonerror="false"/>
-        <delete file="${basedir}/frameworks/tests/componentSmoke/componentSmoke2.swf" failonerror="false"/>
-        <delete file="${basedir}/frameworks/tests/spark/sparkTest.swf" failonerror="false"/>
-        <delete file="${basedir}/frameworks/tests/fxgCompile/fxgCompileTest.swf" failonerror="false"/>
-        <delete file="${basedir}/frameworks/tests/graphics/GraphicTags_checkin.swf" failonerror="false"/>
-        <delete file="${basedir}/frameworks/tests/basicTests/BasicTests.swf" failonerror="false"/>
-        <delete file="${basedir}/frameworks/tests/basicTests/basicLoader.swf" failonerror="false"/>
-        <delete file="${basedir}/frameworks/tests/basicTests/spark/views/HelloWorld.swf" failonerror="false"/>
-        <delete file="${basedir}/frameworks/tests/basicTests/spark/views/StyleManagerModuleTest.swf" failonerror="false"/>
-        <delete file="${basedir}/mustella/MustellaResultsParser.class" failonerror="false"/>
-        <!-- not currently in Apache Flex -->
-        <!--
-        <ant dir="${basedir}/frameworks/tests/layout" target="clean"/>
-        <ant dir="${basedir}/frameworks/tests/states" target="clean"/>
-        -->
-        <ant dir="${basedir}/mustella" target="cleanmustellaswc"/>
     </target>
 
     <target name="player-clean">
@@ -436,84 +302,8 @@
         </ant>
     </target>
 
-    <target name="spark-compile" description="Recompile spark.swc">
-        <ant dir="${basedir}/frameworks/projects/spark" target="compile"/>
-    </target>
-
-    <target name="airframework-compile" description="Recompile airframework.swc">
-        <ant dir="${basedir}/frameworks/projects/airframework" target="compile"/>
-    </target>
-
-    <target name="airspark-compile" description="Recompile airspark.swc">
-        <ant dir="${basedir}/frameworks/projects/airspark" target="compile"/>
-    </target>
-
-     <!-- Build framework RSLs -->
-
-    <macrodef name="create-rsl">
-        <attribute name="rsl-dir"/>
-        <attribute name="swc-dir"/>
-        <attribute name="swc-name"/>
-        <attribute name="build-number"/>
-
-        <sequential>
-            <unzip src="@{swc-dir}/@{swc-name}.swc"
-                   dest="@{rsl-dir}" >
-                <patternset>
-                    <include name="library.swf" />
-                </patternset>
-            </unzip>
-            <!-- optimize out metadata but keep debug info for the unsigned RSL -->
-            <java jar="${basedir}/lib/optimizer.jar" fork="true" failonerror="true">
-                <jvmarg line="-ea -DAS3 -DAVMPLUS -Dflexlib=${basedir}/frameworks -Xms32m -Xmx384m -Dsun.io.useCanonCaches=false"/>
-                <arg line="'@{rsl-dir}/library.swf' --output '@{rsl-dir}/@{swc-name}_@{build-number}.swf' --keep-as3-metadata='Bindable,Managed,ChangeEvent,NonCommittingChangeEvent,Transient,SkinPart' --debug='true' "/>	
-            </java>
-            <delete file="@{rsl-dir}/library.swf"/>
-            <java jar="${basedir}/lib/digest.jar" fork="true" failonerror="true">
-                <jvmarg line="-ea -DAS3 -DAVMPLUS -Xms32m -Xmx384m -Dsun.io.useCanonCaches=false"/>
-                <arg line="--digest.rsl-file '@{rsl-dir}/@{swc-name}_@{build-number}.swf' --digest.swc-path  '@{swc-dir}/@{swc-name}.swc' --digest.signed=false"/>
-            </java>
-        </sequential>
-    </macrodef>
-
-	<target name="frameworks-rsls" description="Build signed framework RSLs">
-        <echo message="build.number is ${build.number.date}"/>
-		<!-- textLayout RSL -->
-		<create-rsl rsl-dir="${basedir}/frameworks/rsls" swc-dir="${basedir}/frameworks/libs" swc-name="textLayout" build-number="${release.version}.${build.number.date}"/>
-		<!-- framework RSL -->
-		<create-rsl rsl-dir="${basedir}/frameworks/rsls" swc-dir="${basedir}/frameworks/libs" swc-name="framework" build-number="${release.version}.${build.number.date}"/>
-		<!-- mx RSL -->
-		<create-rsl rsl-dir="${basedir}/frameworks/rsls" swc-dir="${basedir}/frameworks/libs/mx" swc-name="mx" build-number="${release.version}.${build.number.date}"/>
-		<!-- rpc RSL -->
-		<create-rsl rsl-dir="${basedir}/frameworks/rsls" swc-dir="${basedir}/frameworks/libs" swc-name="rpc" build-number="${release.version}.${build.number.date}"/>
-		<!-- Spark -->
-		<create-rsl rsl-dir="${basedir}/frameworks/rsls" swc-dir="${basedir}/frameworks/libs" swc-name="spark" build-number="${release.version}.${build.number.date}"/>
-    	<!-- sparkskins RSL -->
-		<create-rsl rsl-dir="${basedir}/frameworks/rsls" swc-dir="${basedir}/frameworks/libs" swc-name="sparkskins" build-number="${release.version}.${build.number.date}"/>
-		<!-- charts RSL -->
-		<create-rsl rsl-dir="${basedir}/frameworks/rsls" swc-dir="${basedir}/frameworks/libs" swc-name="charts" build-number="${release.version}.${build.number.date}"/>
-		<!-- advancedgrids RSL -->
-		<create-rsl rsl-dir="${basedir}/frameworks/rsls" swc-dir="${basedir}/frameworks/libs" swc-name="advancedgrids" build-number="${release.version}.${build.number.date}"/>
-		<!-- spark_dmv RSL -->
-		<create-rsl rsl-dir="${basedir}/frameworks/rsls" swc-dir="${basedir}/frameworks/libs" swc-name="spark_dmv" build-number="${release.version}.${build.number.date}"/>		
-		<!-- apache RSL -->
-		<create-rsl rsl-dir="${basedir}/frameworks/rsls" swc-dir="${basedir}/frameworks/libs" swc-name="apache" build-number="${release.version}.${build.number.date}"/>		
-		<!-- experimental RSL -->
-		<create-rsl rsl-dir="${basedir}/frameworks/rsls" swc-dir="${basedir}/frameworks/libs" swc-name="experimental" build-number="${release.version}.${build.number.date}"/>		
-		<!-- mobile experimental RSL -->
-		<create-rsl rsl-dir="${basedir}/frameworks/rsls" swc-dir="${basedir}/frameworks/libs" swc-name="experimental_mobile" build-number="${release.version}.${build.number.date}"/>		
-	</target>
-
     <target name="other.locales" description="Build resource SWCs for additional locales">
         <ant dir="${basedir}/frameworks" target="other.locales"/>
-    </target>
-    
-    <target name="sample-themes" description="Build the sample themes">
-        <ant dir="${basedir}/samples/themes/arcade" target="main" />
-        <ant dir="${basedir}/samples/themes/cobalt" target="main" />
-        <ant dir="${basedir}/samples/themes/graphite" target="main" />
-        <!-- zen theme is missing some assets -->
-        <!--<ant dir="${basedir}/samples/themes/zen" target="main" /> -->
     </target>
 
     <target name="javadocs"
@@ -558,10 +348,6 @@
     <target name="source-package" depends="stage-source,source-package-zip,source-package-tgz"
         description="Package source files required to build in zip and tar-gzip file">
     </target>
-
-    <target name="source-package-pixelbender" depends="stage-source-pixelbender,source-package-zip-pixelbender,source-package-tgz-pixelbender"
-        description="Package Pixel Bender source files required to build in zip and tar-gzip file">
-    </target>
     
     <!--
         Packages the source distribution with ZIP.
@@ -570,19 +356,12 @@
         <mkdir dir="${basedir}/out"/>
         <zip destfile="${basedir}/out/${source.kit}.zip" basedir="${basedir}/temp"/>
     </target>
-    <target name="source-package-zip-pixelbender" unless="no.zip">
-        <mkdir dir="${basedir}/out"/>
-        <zip destfile="${basedir}/out/${source-pixelbender.kit}.zip" basedir="${basedir}/temp"/>
-    </target>
 
     <!-- 
         Packages the source distribution with TAR-GZIP.
     -->
     <target name="source-package-tgz" unless="no.zip">
         <tar-gzip name="${source.kit}" />
-    </target>
-    <target name="source-package-tgz-pixelbender" unless="no.zip">
-        <tar-gzip name="${source-pixelbender.kit}" />
     </target>
 
     <target name="stage-source"
@@ -620,14 +399,8 @@
         <!-- frameworks -->
         <antcall target="stage-frameworks"/>
 
-        <!-- tlf -->
-        <antcall target="stage-tlf"/>
-
         <!-- modules -->
         <antcall target="stage-modules"/>
-        
-        <!-- blazeds -->
-        <antcall target="stage-blazeds"/>
         
         <!-- asdoc -->
         <copy todir="${basedir}/temp/asdoc" includeEmptyDirs="false">
@@ -644,10 +417,6 @@
             	<include name="*.bat"/>
             </fileset>
         </copy>
-
-        <!-- mustella (only enough to run checkintests) -->
-        <!-- modules -->
-        <antcall target="stage-mustella"/>
         
         <!-- samples -->
         <copy todir="${basedir}/temp/samples">
@@ -718,21 +487,9 @@
                 <exclude name="projects/*/.settings/**"/>
             </fileset>
         </copy>
-
-        <!-- frameworks/javascript -->
-        <copy todir="${basedir}/temp/frameworks/javascript" includeEmptyDirs="false">
-            <fileset dir="${basedir}/frameworks/javascript">
-                <include name="**/**" />
-                <exclude name="FABridge/**/swfobject.js"/>
-                <exclude name="FABridge/readme.txt"/>
-            </fileset>
-        </copy>
         
         <!-- frameworks/tests -->
         <antcall target="stage-frameworks-tests"/>
-
-        <!-- Update all Version.as files in the kit frameworks directory with build.number -->
-        <antcall target="version-update"/>
     </target>
     
     <target name="stage-frameworks-tests" unless="no.tests">
@@ -740,33 +497,6 @@
         <copy todir="${basedir}/temp/frameworks" includeEmptyDirs="false">
             <fileset dir="${basedir}/frameworks">
                 <include name="test*/**"/>
-            </fileset>
-        </copy>
-    </target>
-    
-    <!-- tlf -->
-    <target name="stage-tlf">
-        <copy todir="${basedir}/temp/frameworks/projects/textLayout" includeEmptyDirs="false">
-            <fileset dir="${TLF_HOME}/textLayout">
-                <include name="src/**"/>
-                <include name="manifest.xml"/>
-            </fileset>
-        </copy>
-    </target>
-    
-    <!-- blazeds -->
-    <target name="stage-blazeds">
-        <copy todir="${basedir}/temp/modules/flex-messaging-common/common" includeEmptyDirs="false">
-            <fileset dir="${BLAZEDS_HOME}/modules/common">
-                <include name="**/**"/>
-                <exclude name="target/**"/>
-                <exclude name="classes/**"/>
-            </fileset>
-        </copy>
-        <copy todir="${basedir}/temp/modules/flex-messaging-common" includeEmptyDirs="false">
-            <fileset dir="${BLAZEDS_HOME}">
-                <include name="LICENSE"/>
-                <include name="NOTICE"/>
             </fileset>
         </copy>
     </target>
@@ -823,75 +553,6 @@
                 <exclude name="*/test*/**"/>
             </fileset>
         </copy>  
-    </target>
-    
-    <!-- mustella (only enough to run checkintests) -->
-    <target name="stage-mustella" unless="no.tests">
-        <copy todir="${basedir}/temp/mustella">
-            <fileset dir="${basedir}/mustella">
-                <include name="as3/**"/>
-                <exclude name="as3/src/mustella/ContinueAfterRuntimeException/**"/>
-                <exclude name="as3/src/mustella/ExcludeList.txt"/>
-                <exclude name="as3/src/mustella/IncludeList.txt"/>
-                <exclude name="as3/**/*.air"/>
-                <exclude name="as3/**/*.swf"/>
-                <include name="build.xml"/>
-                <include name="local.properties"/>
-                <include name="MustellaResultsParser.java"/>
-            </fileset>
-        </copy>
-    </target>
-    
-    <target name="stage-source-pixelbender"
-        description="Package Pixel Bender source files required to build in zip file">
-        
-        <antcall target="clean-temp"/>
-        
-        <copy todir="${basedir}/temp" includeEmptyDirs="false">
-            <fileset dir="${basedir}">
-                <include name="pixelbender.xml"/>
-				<include name="env-template.properties"/>
-            </fileset>
-        </copy>
-        <copy todir="${basedir}/temp" includeEmptyDirs="false">
-            <fileset dir="${basedir}">
-                <include name="**/*.pbk"/>
-                <include name="frameworks/projects/framework/build.xml" />
-                <include name="frameworks/projects/spark/build.xml" />
-                <exclude name="**/mustella/**"/>
-            </fileset>
-        </copy>
-        <copy file="${basedir}/README.pb" tofile="${basedir}/temp/README" />
-        <copy file="${basedir}/LICENSE.pb" tofile="${basedir}/temp/LICENSE" />
-        <copy file="${basedir}/NOTICE.pb" tofile="${basedir}/temp/NOTICE" />
-        <echo file="${basedir}/temp/RELEASE_NOTES">
-Licensed to the Apache Software Foundation (ASF) under one or more
-contributor license agreements.  See the NOTICE file distributed with
-this work for additional information regarding copyright ownership.
-The ASF licenses this file to You under the Apache License, Version 2.0
-(the "License"); you may not use this file except in compliance with
-the License.  You may obtain a copy of the License at
-
-http://www.apache.org/licenses/LICENSE-2.0
-
-Unless required by applicable law or agreed to in writing, software
-distributed under the License is distributed on an "AS IS" BASIS,
-WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-See the License for the specific language governing permissions and
-limitations under the License.
-
-Apache Flex Pixel Bender Package 1.0.0
-=====================================
-
-This package contains Adobe Pixel Bender shaders used by the Apache
-Flex SDK.
-
-See the README for instructions on compiling the shaders on Windows and
-Mac.  There is no compiler for Linux.
-
-There are no known issues.
-</echo>
-
     </target>
 
     <target name="binary-package"
@@ -960,7 +621,7 @@ There are no known issues.
         <!-- locales -->
         <antcall target="stage-locales"/>
 
-        <!-- generated files in frameworks excepts libs and rsls -->
+        <!-- generated files in frameworks excepts libs -->
         <copy todir="${basedir}/temp/frameworks">
             <fileset dir="${basedir}/frameworks">
                 <include name="projects/*/bundles.properties"/>
@@ -969,7 +630,6 @@ There are no known issues.
                 <include name="**/*.swc"/>
                 <include name="**/*.swf"/>
                 <exclude name="libs/**"/>
-                <exclude name="rsls/**"/>
                 <exclude name="tests/**"/>
             </fileset>
         </copy>
@@ -977,49 +637,16 @@ There are no known issues.
         <!-- frameworks/libs -->
         <copy todir="${basedir}/temp/frameworks/libs">
             <fileset dir="${basedir}/frameworks/libs">
-                <include name="air/airframework.swc"/>
-                <include name="air/airspark.swc"/>
-                <include name="mobile/mobilecomponents.swc"/>
-                <include name="apache.swc"/>
                 <include name="authoringsupport.swc"/>
                 <include name="core.swc"/>
-            	<include name="experimental.swc"/>
-            	<include name="experimental_mobile.swc"/>
-                <include name="flatspark.swc"/>
-                <include name="spark.swc"/>
                 <include name="framework.swc"/>
-                <include name="mx/mx.swc"/>
-                <include name="flash-integration.swc"/>
-                <include name="rpc.swc"/>
-                <include name="sparkskins.swc"/>
-                <include name="authoringsupport.swc"/>
-                <include name="charts.swc"/>
-                <include name="advancedgrids.swc"/>
-                <include name="spark_dmv.swc"/>
-            	<include name="textLayout.swc"/>
-                <exclude name="osmf.swc"/>
-            </fileset>
-        </copy>
-
-        <!-- frameworks/libs/automation -->
-        <copy todir="${basedir}/temp/frameworks/libs/automation">
-            <fileset dir="${basedir}/frameworks/libs/automation">
-                <include name="automation.swc"/>
-                <include name="automation_agent.swc"/>
-                <include name="automation_air.swc"/>
-                <include name="automation_airspark.swc"/>
-                <include name="automation_dmv.swc"/>
-                <include name="automation_flashflexkit.swc"/>
-                <include name="automation_spark.swc"/>
-                <include name="tool.swc"/>
-                <include name="tool_air.swc"/>
+                <include name="feathers-mxml.swc"/>
             </fileset>
         </copy>
 
         <!-- frameworks/rsls -->
-        <copy todir="${basedir}/temp/frameworks/rsls">
-            <fileset dir="${basedir}/frameworks/rsls"/>
-        </copy>
+        <!-- this folder is required by Flash Builder, even if it's not used -->
+        <mkdir dir="${basedir}/temp/frameworks/rsls"/>
         
         <!-- the jar files -->
         <antcall target="stage-lib"/>
@@ -1133,12 +760,6 @@ There are no known issues.
         <mkdir dir="${basedir}/out"/>
         <zip destfile="${basedir}/out/${binary.kit}.zip" basedir="${basedir}/temp"/>
     </target>
-    <target name="binary-package-zip-pixelbender" unless="no.zip"
-        description="Zips up the Pixel Bender files in the temp directory into the binary zipfile.">
-        
-        <mkdir dir="${basedir}/out"/>
-        <zip destfile="${basedir}/out/${binary-pixelbender.kit}.zip" basedir="${basedir}/temp"/>
-    </target>
     
     <!-- 
         Packages the binary distribution with TAR-GZIP.         
@@ -1147,31 +768,6 @@ There are no known issues.
         description="Tar-Gzip up the files in the temp directory into the binary tgz file.">
         
         <tar-gzip name="${binary.kit}" />
-    </target>
-    <target name="binary-package-tgz-pixelbender" unless="no.zip"
-        description="Tar-Gzip up the files in the temp directory into the binary tgz file.">
-        
-        <tar-gzip name="${binary-pixelbender.kit}" />
-    </target>
-
-    <target name="binary-package-pixelbender" depends="build-pixelbender"
-        description="Package Pixel Bender binary files in zip and tar-gzip file.">
-        
-        <antcall target="stage-source-pixelbender"/>
-        
-        <copy todir="${basedir}/temp">
-            <fileset dir="${basedir}">
-                <include name="**/*.pbj"/>
-                <exclude name="**/mustella/**"/>
-            </fileset>
-        </copy>
-        
-        <antcall target="binary-package-zip-pixelbender"/>
-        <antcall target="binary-package-tgz-pixelbender"/>
-    </target>
-
-    <target name="build-pixelbender">
-        <ant dir="${basedir}" antfile="pixelbender.xml"/>
     </target>
     
     <macrodef name="fix-config-file">
@@ -1218,45 +814,7 @@ There are no known issues.
                     </tarfileset>
                 </tar>
         </sequential>
-    </macrodef>	
-    
-	<!--
-	    Update all frameworks Version.as files in the kit stagging area with the 
-	    latest version build number info.
-	    
-	    You need to place the antelopetasks*.jar jar file in the anttask.classpath
-	    in order to do this.  If the jar isn't found, the update is skipped.
-	-->
-	<target name="version-update"
-	    description="Update all frameworks/Version.as files">
-
-        <available property="have.greptask"
-            classname="ise.antelope.tasks.Find" 
-            classpathref="anttask.classpath"/>
-        
-        <antcall target="have-greptask"/>
-        <antcall target="no-greptask"/>
-    </target>
-
-    <target name="have-greptask" if="have.greptask">
-		<taskdef name="grep" classname="ise.antelope.tasks.Find" classpathref="anttask.classpath"/>                 
-        
-        <echo message="Updating all frameworks/projects/**/Version.as files with version ${release.version}.${build.number.date}"/>
-		
-        <!-- Update all Version.as files in the kit frameworks directory-->
-        <replaceregexp>
-            <regexp pattern='"[0-9]\.[0-9]+\.[0-9]+\.[0-9]+";'/>
-            <substitution expression='"${release.version}.${build.number.date}";'/>
-            <fileset dir="${FLEX_HOME}/temp/frameworks/projects">
-                <include name="**/Version.as"/>
-            </fileset>
-        </replaceregexp>		
-    </target>
-
-    <target name="no-greptask" unless="have.greptask">
-        <echo message="Version files not updated."/>
-        <echo message="antelopetasks*.jar not found in anttask.classpath"/>
-    </target>   
+    </macrodef>	   
 
     <target name="stage-locales"
         description="Stage all the locale swc's built">
@@ -1469,34 +1027,6 @@ There are no known issues.
         <ant dir="${basedir}/frameworks" target="doc" />
     </target>
 
-    <!--
-        Tests: The current checkintests that must be run before every checkin
-    -->
-
-    <target name="oldcheckintests" depends="dependencychecker-framework,checkintests-mustella" description="Run these tests before every checkin"/>
-    
-    <!-- FixMe: add dependency checker and mobile tests -->
-    <target name="checkintests" depends="basictests-mustella" description="Run these tests before every checkin" />
-    <!--<target name="checkintests" depends="dependencychecker-framework,basictests-mustella,checkintests-mobile" description="Run these tests before every checkin"/-->
-    
-    <target name="checkintests-mobile" depends="airmobile-basictests-mustella" description="Run these tests before every checkin to mobile SDK code"/>
-
-    <!--
-        Tests: Mustella checkintests
-    -->
-
-    <target name="checkintests-mustella" depends="mustella-setup,componentsmoke-mustella,checkinapp-mustella,sparkTest-mustella,states-mustella,layout-mustella,graphics-mustella,fxgCompileTest-mustella"/>
-    <target name="basictests-mustella" depends="mustella-setup,basictests"/>
-    <target name="airmobile-basictests-mustella" depends="mustella-setup,airmobile-basictests"/>
-
-    <target name="mustella-setup" depends="runtime-setup" description="compile mustella java file">
-        <ant dir="${basedir}/mustella" target="makemustellaswc">
-            <property name="use_mustella_framework_dir" value="false"/>
-        </ant>
-        <property name="moreCompilerArgs" value=""/>
-        <!-- compile the results parser -->
-        <javac srcdir="mustella" includes="MustellaResultsParser.java"/>
-    </target>
 
     <!-- To run the checkintests as well as any mustella tests need AIR for the adl and
          a flash player content debugger.
@@ -1536,204 +1066,6 @@ There are no known issues.
         <!-- load the <mxmlc> task; we can't do this at the <project> level -->
         <!-- because targets that run before flexTasks.jar gets built would fail -->
         <taskdef resource="flexTasks.tasks" classpath="${basedir}/lib/flexTasks.jar"/>
-    </target>
-
-    <target name="basictests" depends="load-task" description="run basic tests using mustella">
-
-        <!-- compile the basic tests -->
-        <mxmlc fork="true"
-               file="${basedir}/frameworks/tests/basicTests/BasicTests.mxml">
-            <jvmarg line="${mxmlc.jvm.args}"/>
-            <library-path dir="${basedir}" append="true">
-                <include name="mustella/mustella.swc"/>
-            </library-path>
-        </mxmlc>
-
-        <!-- compile supporting swfs for basic tests -->
-        <mxmlc fork="true"
-               file="${basedir}/frameworks/tests/basicTests/basicLoader.as">
-            <jvmarg line="${mxmlc.jvm.args}"/>
-        </mxmlc>
-        <mxmlc fork="true"
-               file="${basedir}/frameworks/tests/basicTests/spark/views/StyleManagerModuleTest.mxml">
-            <jvmarg line="${mxmlc.jvm.args}"/>
-        </mxmlc>
-        <mxmlc fork="true"
-               file="${basedir}/frameworks/tests/basicTests/spark/views/HelloWorld.mxml"
-                     static-rsls="false"
-                     remove-unused-rsls="true" >
-            <jvmarg line="${mxmlc.jvm.args}"/>
-        </mxmlc>
-
-        <!-- run the component smoke  -->
-        <echo message="launching player and swf"/>
-        <exec executable="${flash.player}" dir="${basedir}/frameworks" failonerror="true">
-            <arg value="${basedir}/frameworks/tests/basicTests/BasicTests.swf"/>
-        </exec>
-        <!-- halt if there was an error -->
-        <antcall target="mustellaresultsparser"/>
-    </target>
-
-    <target name="airmobile-basictests" depends="load-task" description="run basic tests using mustella">
-
-        <!-- compile the basic tests -->
-        <mxmlc fork="true"
-            file="${basedir}/frameworks/tests/airMobileBasicTests/src/airMobileBasicTests.mxml"
-            output="${basedir}/frameworks/tests/airMobileBasicTests/bin-debug/airMobileBasicTests.swf">
-            <jvmarg line="${mxmlc.jvm.args}"/>
-            <load-config filename="${basedir}/frameworks/airmobile-config.xml"/>
-            <library-path dir="${basedir}" append="true">
-                <include name="mustella/mustella.swc"/>
-            </library-path>
-        </mxmlc>
-        <copy file="${basedir}/frameworks/tests/airMobileBasicTests/src/airMobileBasicTests-app.xml" tofile="${basedir}/frameworks/tests/airMobileBasicTests/bin-debug/airMobileBasicTests-app.xml"/>
-        
-        <!-- run the component smoke  -->
-        <echo message="launching ADL and swf"/>
-        <exec executable="${adl}" dir="${basedir}/frameworks" failonerror="true">
-            <arg value="-profile" />
-            <arg value="mobileDevice" />
-            <arg value="-screensize" />
-            <arg value="SamsungGalaxyTab" />
-            <arg value="${basedir}/frameworks/tests/airMobileBasicTests/bin-debug/airMobileBasicTests-app.xml"/>
-        </exec>
-        
-        <!-- halt if there was an error -->
-        <antcall target="mustellaresultsparser"/>
-    </target>
-
-    <target name="componentsmoke-mustella" depends="load-task" description="run component smoke using mustella">
-
-        <!-- compile the component smoke  -->
-        <mxmlc fork="true"
-               file="${basedir}/frameworks/tests/componentSmoke/componentSmoke2.mxml">
-            <jvmarg line="${mxmlc.jvm.args}"/>
-            <includes symbol="componentSmoke_testScript"/>
-            <includes symbol="ExitWhenDone"/>
-                        <includes symbol="SendFormattedResultsToLog"/>
-            <library-path dir="${basedir}" append="true">
-                <include name="mustella/mustella.swc"/>
-            </library-path>
-            <theme dir="${basedir}/frameworks/themes">
-                <include name="Halo/halo.swc" />
-            </theme>
-        </mxmlc>
-        <!-- run the component smoke  -->
-        <echo message="launching player and swf"/>
-        <exec executable="${flash.player}" dir="${basedir}/frameworks" failonerror="true">
-            <arg value="${basedir}/frameworks/tests/componentSmoke/componentSmoke2.swf"/>
-        </exec>
-        <!-- halt if there was an error -->
-        <antcall target="mustellaresultsparser"/>
-    </target>
-
-    <target name="checkinapp-mustella" depends="load-task" description="run checkinapp using mustella">
-        <echo message="compiling checkinapp"/>
-        <!-- compile the checkinapp  -->
-        <mxmlc fork="true"
-               file="${basedir}/frameworks/tests/checkinapp/checkinapp.mxml">
-            <arg line="-debug"/>
-            <jvmarg line="${mxmlc.jvm.args}"/>
-            <includes symbol="checkinapp_testScript"/>
-            <includes symbol="ExitWhenDone"/>
-                        <includes symbol="SendFormattedResultsToLog"/>
-            <library-path dir="${basedir}" append="true">
-                <include name="mustella/mustella.swc"/>
-            </library-path>
-            <theme dir="${basedir}/frameworks/themes">
-                <include name="Halo/halo.swc" />
-            </theme>
-        </mxmlc>
-        <!-- run the component smoke  -->
-        <echo message="launching player and swf"/>
-        <exec executable="${flash.player}" dir="${basedir}/frameworks">
-            <arg value="${basedir}/frameworks/tests/checkinapp/checkinapp.swf"/>
-        </exec>
-        <!-- halt if there was an error -->
-        <antcall target="mustellaresultsparser"/>
-    </target>
-
-    <target name="graphics-mustella" depends="load-task" description="run graphics checkinapp using mustella">
-        <echo message="compiling checkinapp"/>
-        <!-- compile the checkinapp  -->
-        <mxmlc fork="true"
-               file="${basedir}/frameworks/tests/graphics/GraphicTags_checkin.mxml">
-            <jvmarg line="${mxmlc.jvm.args}"/>
-            <includes symbol="GraphicTags_checkintests"/>
-            <includes symbol="ExitWhenDone"/>
-                        <includes symbol="SendFormattedResultsToLog"/>
-            <library-path dir="${basedir}" append="true">
-                <include name="mustella/mustella.swc"/>
-            </library-path>
-        </mxmlc>
-        <!-- run the component smoke  -->
-        <echo message="launching player and swf"/>
-        <exec executable="${flash.player}" dir="${basedir}/frameworks">
-            <arg value="${basedir}/frameworks/tests/graphics/GraphicTags_checkin.swf"/>
-        </exec>
-        <!-- halt if there was an error -->
-        <antcall target="mustellaresultsparser"/>
-    </target>
-
-    <target name="sparkTest-mustella" depends="load-task" description="run spark test using mustella">
-        <echo message="compiling sparkTest"/>
-        <!-- compile the sparkTest  -->
-        <mxmlc fork="true"
-               file="${basedir}/frameworks/tests/spark/sparkTest.mxml">
-            <jvmarg line="${mxmlc.jvm.args}"/>
-            <includes symbol="sparkTest_testScript"/>
-            <includes symbol="ExitWhenDone"/>
-                        <includes symbol="SendFormattedResultsToLog"/>
-            <library-path dir="${basedir}" append="true">
-                <include name="mustella/mustella.swc"/>
-            </library-path>
-        </mxmlc>
-        <!-- run the component smoke  -->
-        <echo message="launching player and swf"/>
-        <exec executable="${flash.player}" dir="${basedir}/frameworks">
-            <arg value="${basedir}/frameworks/tests/spark/sparkTest.swf"/>
-        </exec>
-        <!-- halt if there was an error -->
-        <antcall target="mustellaresultsparser"/>
-    </target>
-
-    <target name="fxgCompileTest-mustella" depends="load-task" description="run spark test using mustella">
-        <echo message="compiling fxgCompileTest"/>
-        <!-- compile the sparkTest  -->
-        <mxmlc fork="true"
-               file="${basedir}/frameworks/tests/fxgCompile/fxgCompileTest.mxml">
-            <jvmarg line="${mxmlc.jvm.args}"/>
-            <includes symbol="fxgCompileTest_testScript"/>
-            <includes symbol="ExitWhenDone"/>
-                        <includes symbol="SendFormattedResultsToLog"/>
-            <library-path dir="${basedir}" append="true">
-                <include name="mustella/mustella.swc"/>
-            </library-path>
-        </mxmlc>
-        <!-- run the component smoke  -->
-        <echo message="launching player and swf"/>
-        <exec executable="${flash.player}" dir="${basedir}/frameworks">
-            <arg value="${basedir}/frameworks/tests/fxgCompile/fxgCompileTest.swf"/>
-        </exec>
-        <!-- halt if there was an error -->
-        <antcall target="mustellaresultsparser"/>
-    </target>
-
-    <target name="states-mustella" description="run states test using mustella">
-        <ant antfile="${basedir}/frameworks/tests/states/build.xml" dir="${basedir}/frameworks/tests/states"/>
-    </target>
-
-    <target name="layout-mustella" description="run layout test using mustella">
-        <ant antfile="${basedir}/frameworks/tests/layout/build.xml" dir="${basedir}/frameworks/tests/layout"/>
-    </target>
-
-    <target name="mustellaresultsparser">
-        <java classname="mustella.MustellaResultsParser" failonerror="true">
-            <sysproperty key="APPDATA" value="${env.APPDATA}"/>
-            <classpath>
-                <pathelement location="${basedir}"/>
-            </classpath>
-        </java>
     </target>
 
     <!--
@@ -1813,121 +1145,6 @@ There are no known issues.
         	<arg value="frameworkSwcExceptionsList.txt"/>
         </java>
     </target>
-   
-	<!--
-	    Run the Apache Rat audit tool against the source in the source kit.
-	    The report is written to rat.report.
-	    
-	    To check a subset of files run with -Drat.dir=<dir>.
-	    
-	    You need to place apache-rat-tasks-0.8.jar and apache-rat-0.8.jar in the 
-	    anttask.classpath in order to do this.  If the jar isn't found, the report
-	    will not be generated.
-	--> 
-    <target name="rat-check" depends="rat-taskdef" if="have.rattasks"
-        description="Report on licenses in source kit.">
-    
-        <property name="rat.dir" value="${basedir}/temp"/>
-        <antcall target="rat-unzip" />
-        
-        <property name="rat.report" value="${basedir}/rat.report"/>
-        <echo message="Checking files at ${rat.dir}, report is ${rat.report}"/>
-             
-        <rat:report xmlns:rat="antlib:org.apache.rat.anttasks" reportFile="${rat.report}">
-            <fileset dir="${rat.dir}">
-                <!--          Start of binary files           -->
-                <!-- exclude Flash Professional file used for integration with Flash Professional -->
-                <exclude name="frameworks/projects/flash-integration/FLA/ContentHolder.fla"/>
-                <!-- exclude font embedded in asdoc example -->
-                <exclude name="frameworks/projects/framework/asdoc/en_US/mx/effects/examples/assets/OpenSans-Regular.ttf"/>
-                <!-- exclude media (png, gif, jpg, mp3, flv) -->
-                <exclude name="**/*.png"/>
-                <exclude name="**/*.gif"/>
-                <exclude name="**/*.jpg"/>
-                <exclude name="**/*.mp3"/>
-                <exclude name="**/*.flv"/>
-                <!-- exclude batik icon -->
-                <exclude name="modules/thirdparty/batik/sources/*.icns"/>
-                <!--          End of binary files           -->
-                <!-- exclude batik manifests -->
-                <exclude name="modules/thirdparty/batik/sources/*.mf"/>
-                <!-- exclude text files -->
-                <exclude name="CONTRIBUTING"/>
-                <exclude name="CONTRIBUTORS"/>
-                <exclude name="LICENSE.bin"/>
-                <exclude name="NOTICE.bin"/>
-                <exclude name="NOTICE.asc"/>
-                <exclude name="NOTICE.base"/>
-                <exclude name="modules/thirdparty/batik/lib/**/LICENSE*.txt"/>
-                <exclude name="modules/thirdparty/batik/lib/**/README*.txt"/>
-                <exclude name="frameworks/projects/flatspark/src/flatspark/assets/fonts/**/OFL.txt"/>
-                <!-- exclude w3c sources -->
-                <exclude name="modules/thirdparty/batik/resources/org/apache/flex/forks/batik/dom/svg/resources/*.mod"/>
-                <exclude name="modules/thirdparty/batik/resources/org/apache/flex/forks/batik/dom/svg/resources/*.dtd"/>
-                <exclude name="modules/thirdparty/batik/sources/org/w3c/css/sac/LexicalUnit.java"/>
-                <exclude name="modules/thirdparty/batik/sources/org/w3c/flex/forks/css/sac/*.java"/>
-                <exclude name="modules/thirdparty/batik/sources/org/w3c/flex/forks/css/sac/helpers/ParserFactory.java"/>
-                <!-- exclude config files -->
-                <exclude name="modules/thirdparty/batik/svn-revision"/>
-                <exclude name="modules/thirdparty/xerces-patch/src/java/META-INF/services/javax.xml.parsers.SAXParserFactory"/>
-                <exclude name="modules/thirdparty/xerces-patch/src/java/META-INF/services/org.apache.xerces.xni.parser.XMLParserConfiguration"/>
-                <exclude name="modules/thirdparty/xerces-patch/src/java/org/apache/xerces/jaxp/javax.xml.parsers.SAXParserFactory"/>
-            </fileset>
-        </rat:report>
-    </target>
-
-    <target name="rat-unzip" unless="no.zip">
-        <antcall target="clean-temp" />
-        <unzip src="${basedir}/out/${source.kit}.zip" dest="${rat.dir}"/>
-    </target>
-    
-    <target name="rat-taskdef" description="Rat taskdef"> 
-        <available property="have.rattasks" 
-            resource="org/apache/rat/anttasks/antlib.xml" 
-            classpathref="anttask.classpath"/>
-
-        <antcall target="have-rattasks"/>
-        <antcall target="no-rattasks"/>
-    </target>
-
-    <target name="have-rattasks" if="have.rattasks">
-        <typedef resource="org/apache/rat/anttasks/antlib.xml"
-                 uri="antlib:org.apache.rat.anttasks"
-                 classpathref="anttask.classpath"/>                 
-    </target>
-    
-    <target name="no-rattasks" unless="have.rattasks">
-        <echo message="Rat report not generated."/>
-        <echo message="rat jars (apache-rat-*.jar, apache-rat-tasks-*.jar)"/>
-        <echo message="not found in anttask.classpath"/>
-    </target>
-    
-    <target name="rat-check-mustella" depends="rat-taskdef" if="have.rattasks"
-        description="Report on licenses in mustella directory.">
-    
-        <ant dir="${basedir}/mustella" target="clean"/>
-        
-        <property name="rat.mustella.dir" value="${basedir}/mustella"/>
-        <property name="rat.mustella.report" value="rat.mustella.report"/>
-                
-        <echo message="Checking files at ${rat.mustella.dir}, report is ${basedir}/${rat.mustella.report}"/>
-             
-        <rat:report xmlns:rat="antlib:org.apache.rat.anttasks" 
-            reportFile="${basedir}/${rat.mustella.report}">
-            <fileset dir="${rat.mustella.dir}">
-                <!--          Start of binary files           -->
-                <!-- exclude media (png, gif, jpg, mp3, flv) -->
-                <exclude name="assets/**"/>
-                <exclude name="tests/**/*.png"/>
-                <exclude name="tests/**/*.gif"/>
-                <exclude name="tests/**/*.jpg"/>
-                <exclude name="tests/**/*.mp3"/>
-                <exclude name="tests/**/*.flv"/>
-                <!--          End of binary files           -->
-                <exclude name="tests/**/*.compile"/>
-            </fileset>
-        </rat:report>
-    </target>
 	
 	<target name="create-md5" >
 		<echo message="Generating MD5 hashes for release artifacts"/>
@@ -1985,71 +1202,6 @@ There are no known issues.
             <arg value="${basedir}/out/${kit.prefix}-asdocs.zip" />
         </exec>
 	</target>
-	
-	<target name="create-md5-pixelbender" >
-		<echo message="Generating MD5 hashes for release artifacts"/>
-		<checksum algorithm="md5" file="${basedir}/out/${binary-pixelbender.kit}.tar.gz" forceOverwrite="yes"/>
-		<checksum algorithm="md5" file="${basedir}/out/${binary-pixelbender.kit}.zip" forceOverwrite="yes"/>
-		<checksum algorithm="md5" file="${basedir}/out/${source-pixelbender.kit}.tar.gz" forceOverwrite="yes"/>
-		<checksum algorithm="md5" file="${basedir}/out/${source-pixelbender.kit}.zip" forceOverwrite="yes"/>
-	</target>
-    
-	<target name="archive-pbj">
-		<echo message="Creating an archive of the compiled Pixel Bender files" />
-        <echo message="The compiled Pixel Bender files are taken from '${env.PIXELBENDER_COMPILED_HOME}'" />
-        
-        <tar destfile="${basedir}/out/pb.tar">
-          <tarfileset dir="${env.PIXELBENDER_COMPILED_HOME}">
-              <include name="frameworks/projects/spark/asdoc/en_US/spark/effects/examples/assets/twist.pbj"/>
-              <include name="frameworks/projects/spark/src/spark/effects/CrossFade.pbj"/>
-              <include name="frameworks/projects/spark/src/spark/effects/WipeDown.pbj"/>
-              <include name="frameworks/projects/spark/src/spark/effects/WipeUp.pbj"/>
-              <include name="frameworks/projects/spark/src/spark/effects/WipeLeft.pbj"/>
-              <include name="frameworks/projects/spark/src/spark/effects/WipeRight.pbj"/>
-              <include name="frameworks/projects/framework/src/mx/graphics/shaderClasses/Color.pbj"/>
-              <include name="frameworks/projects/framework/src/mx/graphics/shaderClasses/ColorBurn.pbj"/>
-              <include name="frameworks/projects/framework/src/mx/graphics/shaderClasses/ColorDodge.pbj"/>
-              <include name="frameworks/projects/framework/src/mx/graphics/shaderClasses/Exclusion.pbj"/>
-              <include name="frameworks/projects/framework/src/mx/graphics/shaderClasses/Hue.pbj"/>
-              <include name="frameworks/projects/framework/src/mx/graphics/shaderClasses/Luminosity.pbj"/>
-              <include name="frameworks/projects/framework/src/mx/graphics/shaderClasses/LuminosityMaskFilter.pbj"/>
-              <include name="frameworks/projects/framework/src/mx/graphics/shaderClasses/Saturation.pbj"/>
-              <include name="frameworks/projects/framework/src/mx/graphics/shaderClasses/SoftLight.pbj"/>
-          </tarfileset>
-        </tar>
-        <gzip destfile="${basedir}/out/pb.tar.gz" src="${basedir}/out/pb.tar"/>
-	    <delete file="${basedir}/out/pb.tar" failonerror="false" />
-	</target>
-
-    <!--
-     Run the Apache Rat audit tool against a directory without filters.
-     The report is written to rat.report.
-     
-     Specify the folder to scan with -Drat.dir=<dir>.
-     
-     You need to place apache-rat-tasks-0.8.jar and apache-rat-0.8.jar in the
-     anttask.classpath in order to do this.  If the jar isn't found, the report
-     will not be generated.
-     -->
-    <target name="rat-dir" depends="rat-taskdef" if="have.rattasks"
-        description="Report on licenses in a folder">
-        
-        <fail message="rat.dir not specified">
-            <condition>
-                <not>
-                    <isset property="rat.dir"/>
-                </not>
-            </condition>
-        </fail>
-        
-        <property name="rat.report" value="${basedir}/rat.report"/>
-        <echo message="Checking files at ${rat.dir}, report is ${rat.report}"/>
-        
-        <rat:report xmlns:rat="antlib:org.apache.rat.anttasks" reportFile="${rat.report}">
-            <fileset dir="${rat.dir}">
-            </fileset>
-        </rat:report>
-    </target>
 	
 	<!-- displays the md5 of a file specified via -Dfile=<file -->
 	<target name="md5" >
