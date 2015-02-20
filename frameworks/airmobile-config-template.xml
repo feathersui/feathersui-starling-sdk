@@ -81,7 +81,6 @@
       <!-- List of SWC files or directories that contain SWC files. -->
       <library-path>
          <path-element>libs</path-element>
-         <path-element>libs/mobile</path-element>
          <path-element>{airHome}/frameworks/libs/air/servicemonitor.swc</path-element>
          <path-element>locale/{locale}</path-element>
       </library-path>
