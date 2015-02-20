@@ -21,10 +21,10 @@
 
 <flex-config>
     <!-- Specifies the minimum player version that will run the compiled SWF. -->
-    <target-player>11.1</target-player>
+    <target-player>11.5</target-player>
 
     <!-- Specifies the version of the compiled SWF -->
-    <swf-version>14</swf-version>
+    <swf-version>18</swf-version>
     
    <compiler>
 
@@ -78,8 +78,6 @@
       <!-- List of SWC files or directories that contain SWC files. -->
       <library-path>
          <path-element>libs</path-element>
-         <path-element>libs/mx</path-element>
-         <path-element>libs/air</path-element>
          <path-element>libs/air</path-element>
          <path-element>locale/{locale}</path-element>
       </library-path>
