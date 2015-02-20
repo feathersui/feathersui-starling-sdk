@@ -1,0 +1,96 @@
+<?xml version="1.0"?>
+<!--
+
+  Licensed to the Apache Software Foundation (ASF) under one or more
+  contributor license agreements.  See the NOTICE file distributed with
+  this work for additional information regarding copyright ownership.
+  The ASF licenses this file to You under the Apache License, Version 2.0
+  (the "License"); you may not use this file except in compliance with
+  the License.  You may obtain a copy of the License at
+
+	  http://www.apache.org/licenses/LICENSE-2.0
+
+  Unless required by applicable law or agreed to in writing, software
+  distributed under the License is distributed on an "AS IS" BASIS,
+  WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+  See the License for the specific language governing permissions and
+  limitations under the License.
+
+-->
+<project name="feathers-mxml" default="main" basedir=".">
+	<property name="FLEX_HOME" location="${basedir}/../../.."/>
+
+	<property file="${FLEX_HOME}/env.properties"/>
+	<property environment="env"/>
+	<property file="${FLEX_HOME}/build.properties"/>
+
+	<target name="main" depends="clean,compile" description="Clean build of feathers-mxml.swc"/>
+
+	<target name="clean">
+		<delete failonerror="false">
+			<fileset file="${basedir}/bundles.properties"/>
+			<fileset dir="${FLEX_HOME}/frameworks/libs">
+				<include name="feathers-mxml.swc"/>
+				<include name="feathers-mxml.swc.incr"/>
+			</fileset>
+		</delete>
+	</target>
+
+	<target name="compile" description="Compiles feathers-mxml.swc">
+		<echo message="Compiling frameworks/libs/feathers-mxml.swc"/>
+		<!-- Load the <compc> task. We can't do this at the <project> level -->
+		<!-- because targets that run before flexTasks.jar gets built would fail. -->
+		<taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar;${FLEX_HOME}/lib/flexTasks.jar"/>
+		
+		<compc fork="true"
+			   output="${FLEX_HOME}/frameworks/libs/feathers-mxml.swc">
+			<jvmarg line="${compc.jvm.args}"/>
+			<load-config filename="compile-config.xml" />
+			<arg value="+playerglobal.version=${playerglobal.version}" />
+			<arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
+		</compc>
+	</target>
+
+	<target name="doc" depends="clean-temp-docs" description="updates feathers-mxml.swc with asdoc xml">
+		<!-- Load the <asdoc> task. We can't do this at the <project> level -->
+		<!-- because targets that run before flexTasks.jar gets built would fail. -->
+		<taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar;${FLEX_HOME}/lib/flexTasks.jar"/>
+
+		<condition property="asdoc.jvm.args" value="-Xmx384m">
+			<os family="windows"/>
+		</condition>
+
+		<condition property="asdoc.jvm.args" value="-Xmx512m">
+			<os family="mac"/>
+		</condition>
+
+		<condition property="asdoc.jvm.args" value="-Xmx512m">
+			<os family="unix"/>
+		</condition>
+
+
+		<!-- Call asdoc to generate dita xml files -->
+		<asdoc output="${FLEX_HOME}/tempDoc" lenient="true" failonerror="true" keep-xml="true" skip-xsl="true" fork="true">
+			<compiler.source-path path-element="${basedir}/source"/>
+			<doc-sources path-element="${basedir}/source"/>
+			<external-library-path dir="${env.PLAYERGLOBAL_HOME}">
+				<include name="${playerglobal.version}/playerglobal.swc"/>
+			</external-library-path>
+			<jvmarg line="${asdoc.jvm.args}"/>
+		</asdoc>
+
+		<!-- updates feathers-mxml.swc with asdoc xml -->
+		<zip destfile="${FLEX_HOME}/frameworks/libs/feathers-mxml.swc" update="true">
+			<zipfileset dir="${FLEX_HOME}/tempDoc/tempdita" prefix="docs">
+				<include name="*.*"/>
+				<exclude name="ASDoc_Config.xml"/>
+				<exclude name="overviews.xml"/>
+			</zipfileset>
+		</zip>
+	</target>
+
+	<target name="clean-temp-docs">
+		<delete dir="${FLEX_HOME}/tempDoc" failonerror="false" includeEmptyDirs="true"/>
+	</target>
+
+</project>
