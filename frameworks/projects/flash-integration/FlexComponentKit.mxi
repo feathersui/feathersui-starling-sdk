@@ -1,47 +1,0 @@
-<macromedia-extension name="Flex Component Kit" version="2.0.0" type="flashcomponent" requires-restart="true">
-  <author name="The Apache Software Foundation" />
-  <description><![CDATA[Flex Component Kit for Flash Professional]]></description>
-  <products>
-    <product name="Flash" version="10" primary="true" required="true" />
-  </products>
-  <license-agreement><![CDATA[
-	    Licensed to the Apache Software Foundation (ASF) under one or more
-	<br>    contributor license agreements.  See the NOTICE file distributed with
-	<br>    this work for additional information regarding copyright ownership.
-	<br>    The ASF licenses this file to You under the Apache License, Version 2.0
-	<br>    (the "License"); you may not use this file except in compliance with
-	<br>    the License.  You may obtain a copy of the License at
-	<br>
-	<br>          http://www.apache.org/licenses/LICENSE-2.0
-	<br>
-	<br>        Unless required by applicable law or agreed to in writing, software
-	<br>    distributed under the License is distributed on an "AS IS" BASIS,
-	<br>    WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-	<br>    See the License for the specific language governing permissions and
-	<br>    limitations under the License.
-	<br>
-
-]]></license-agreement>
-  <ui-access><![CDATA[
-
-Create components for Flex using Flash Profession. You can included timeline animations, interactivity, frame labels to define states, timeline-based transitions, custom events, and much more. 
-
-]]></ui-access>
-  <files>
-	<!-- SWC file -->
-    <file source="libs/flash-integration.swc" destination="$Flash/Components/Flex/" />
-
-	<!-- AS files -->
-    <file source="src/mx/flash/UIMovieClip.as" destination="$Flash/Component Source/ActionScript 3.0/Flex/mx/flash/" />
-    <file source="src/mx/flash/ContainerMovieClip.as" destination="$Flash/Component Source/ActionScript 3.0/Flex/mx/flash/" />
-    <file source="src/mx/flash/FlexContentHolder.as" destination="$Flash/Component Source/ActionScript 3.0/Flex/mx/flash/" />
-
-	<!-- FLA files -->
-    <file source="FLA/ContentHolder.fla" destination="$Flash/Libraries/" />
-
-	<!-- jsfl files -->
-	<file source="JSFL/MakeFlexComponent.jsfl" destination="$Flash/Javascript/" />
-    <file source="JSFL/Convert Symbol to Flex Component.jsfl" destination="$Flash/Commands/" />
-    <file source="JSFL/Convert Symbol to Flex Container.jsfl" destination="$Flash/Commands/" />
-  </files>
-</macromedia-extension>
