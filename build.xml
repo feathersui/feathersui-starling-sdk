@@ -640,6 +640,8 @@ the version of Apache Flex that this SDK was forked from --&gt;
                 <include name="authoringsupport.swc"/>
                 <include name="core.swc"/>
                 <include name="framework.swc"/>
+                <include name="starling.swc"/>
+                <include name="feathers.swc"/>
                 <include name="feathers-mxml.swc"/>
             </fileset>
         </copy>

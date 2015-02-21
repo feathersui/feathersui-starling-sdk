@@ -23,27 +23,19 @@
 		
 		<external-library-path>
 			<path-element>${env.PLAYERGLOBAL_HOME}/${playerglobal.version}/playerglobal.swc</path-element>
-			<path-element>../../libs/feathers.swc</path-element>
-			<path-element>../../libs/starling.swc</path-element>
 		</external-library-path>
 		
 		<locale/>
 						
 		<source-path>
-			<path-element>source</path-element>
+			<path-element>Starling-Framework/starling/src</path-element>
 		</source-path>
 		
 		<warn-no-constructor>false</warn-no-constructor>
 	</compiler>
 	
 	<include-sources>
-		<path-element>source</path-element>
+		<path-element>Starling-Framework/starling/src</path-element>
 	</include-sources>
 	
-	<include-file>
-		<name>manifest.xml</name>
-		<path>manifest.xml</path>
-	</include-file>
-	
-	<resource-bundle-list>bundles.properties</resource-bundle-list>    
 </flex-config>

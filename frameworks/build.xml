@@ -89,6 +89,8 @@
         <antcall target="framework"/>
         <antcall target="core"/>
         <antcall target="authoringsupport"/>
+        <antcall target="starling"/>
+        <antcall target="feathers"/>
         <antcall target="feathers-mxml"/>
     </target>
 	
@@ -185,6 +187,8 @@
         <ant dir="${basedir}/projects/framework" target="doc" />
         <ant dir="${basedir}/projects/core" target="doc" />
         <ant dir="${basedir}/projects/authoringsupport" target="doc" />
+        <ant dir="${basedir}/projects/starling" target="doc" />
+        <ant dir="${basedir}/projects/feathers" target="doc" />
         <ant dir="${basedir}/projects/feathers-mxml" target="doc" />
     </target>
    
@@ -206,6 +210,8 @@
         <ant dir="${basedir}/projects/framework" target="clean"/>
         <ant dir="${basedir}/projects/core" target="clean"/>
         <ant dir="${basedir}/projects/authoringsupport" target="clean"/>
+        <ant dir="${basedir}/projects/starling" target="clean"/>
+        <ant dir="${basedir}/projects/feathers" target="clean"/>
         <ant dir="${basedir}/projects/feathers-mxml" target="clean"/>
         <!-- delete the FlashBuilder executable directories -->
         <delete includeemptydirs="true" failonerror="false">
@@ -270,6 +276,14 @@
     
     <target name="authoringsupport" description="Clean build of authoringsupport.swc">
         <ant dir="${basedir}/projects/authoringsupport"/>
+    </target>
+
+    <target name="starling" description="Clean build of starling.swc">
+        <ant dir="${basedir}/projects/starling"/>
+    </target>
+
+    <target name="feathers" description="Clean build of feathers.swc">
+        <ant dir="${basedir}/projects/feathers"/>
     </target>
 
     <target name="feathers-mxml" description="Clean build of feathers-mxml.swc">

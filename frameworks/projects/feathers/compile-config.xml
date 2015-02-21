@@ -23,21 +23,31 @@
 		
 		<external-library-path>
 			<path-element>${env.PLAYERGLOBAL_HOME}/${playerglobal.version}/playerglobal.swc</path-element>
-			<path-element>../../libs/feathers.swc</path-element>
 			<path-element>../../libs/starling.swc</path-element>
 		</external-library-path>
+        
+        <keep-as3-metadata>
+            <name>Bindable</name>
+        </keep-as3-metadata>
 		
 		<locale/>
+
+        <namespaces>
+            <namespace>
+                <uri>library://ns.feathersui.com/mxml</uri>
+                <manifest>manifest.xml</manifest>
+            </namespace>
+        </namespaces>
 						
 		<source-path>
-			<path-element>source</path-element>
+			<path-element>feathers/source</path-element>
 		</source-path>
 		
 		<warn-no-constructor>false</warn-no-constructor>
 	</compiler>
 	
 	<include-sources>
-		<path-element>source</path-element>
+		<path-element>feathers/source</path-element>
 	</include-sources>
 	
 	<include-file>

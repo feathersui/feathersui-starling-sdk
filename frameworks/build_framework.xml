@@ -121,13 +121,40 @@
         </compc>
     </target>
 
+    <target name="starling" description="Builds starling.swc">
+        <compc static-link-runtime-shared-libraries="true" fork="true" 
+            output="${basedir}/libs/starling.swc"
+            include-sources="${starling.dir}/Starling-Framework/starling/src"
+            locale="${locale}" accessible="true">
+            <source-path path-element="${starling.dir}/Starling-Framework/starling/src"/>
+            <external-library-path dir="${playerglobal.dir}" includes="playerglobal.swc"/>
+            <jvmarg line="${compc.jvm.args}"/>
+        </compc>
+    </target>
+
+    <target name="feathers" description="Builds feathers.swc">
+        <compc static-link-runtime-shared-libraries="true" fork="true" 
+            output="${basedir}/libs/feathers.swc"
+            include-sources="${feathers.dir}/feathers/source"
+            locale="${locale}" accessible="true"
+            resource-bundle-list="${feathers.dir}/bundles.properties">
+            <source-path path-element="${feathers.dir}/feathers/source"/>
+            <external-library-path dir="${playerglobal.dir}" includes="playerglobal.swc"/>
+            <external-library-path dir="${basedir}/libs">
+                <include name="starling.swc"/>
+            </external-library-path>
+            <keep-as3-metadata name="Bindable"/>
+            <jvmarg line="${compc.jvm.args}"/>
+        </compc>
+    </target>
+
     <target name="feathers-mxml" description="Builds feathers-mxml.swc">
         <compc static-link-runtime-shared-libraries="true" fork="true" 
             output="${basedir}/libs/feathers-mxml.swc"
-            include-sources="sources"
+            include-sources="${feathers-mxml.dir}/source"
             locale="${locale}" accessible="true"
             resource-bundle-list="${feathers-mxml.dir}/bundles.properties">
-            <source-path path-element="${feathers-mxml.dir}/sources"/>
+            <source-path path-element="${feathers-mxml.dir}/source"/>
             <external-library-path dir="${playerglobal.dir}" includes="playerglobal.swc"/>
             <external-library-path dir="${basedir}/libs">
                 <include name="framework.swc"/>
