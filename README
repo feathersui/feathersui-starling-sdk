@@ -4,7 +4,7 @@ Feathers Enterprise SDK
 The Feathers Enterprise SDK is a fork of the Apache Flex SDK that adds
 first-class support for Starling and Feathers to the MXML compiler.
 
-Warning: This is a pre-release version of the Feathers Enterprise SDK. It will
-contain bugs or unfinished features. It is even close to being useful for
-production apps at this time. It is considered extremely *unstable*. Use at your
-own risk.
+Warning: This is a pre-release version of the Feathers Enterprise SDK. It
+contains bugs and unfinished features. It is not even remotely close to being
+useful for production apps at this time. It is considered extremely *unstable*.
+Use at your own risk.
