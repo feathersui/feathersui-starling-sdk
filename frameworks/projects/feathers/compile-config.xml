@@ -25,19 +25,19 @@
 			<path-element>${env.PLAYERGLOBAL_HOME}/${playerglobal.version}/playerglobal.swc</path-element>
 			<path-element>../../libs/starling.swc</path-element>
 		</external-library-path>
-        
-        <keep-as3-metadata>
-            <name>Bindable</name>
-        </keep-as3-metadata>
+		
+		<keep-as3-metadata>
+			<name>Bindable</name>
+		</keep-as3-metadata>
 		
 		<locale/>
 
-        <namespaces>
-            <namespace>
-                <uri>library://ns.feathersui.com/mxml</uri>
-                <manifest>manifest.xml</manifest>
-            </namespace>
-        </namespaces>
+		<namespaces>
+			<namespace>
+				<uri>library://ns.feathersui.com/mxml</uri>
+				<manifest>manifest.xml</manifest>
+			</namespace>
+		</namespaces>
 						
 		<source-path>
 			<path-element>feathers/source</path-element>
@@ -50,10 +50,9 @@
 		<path-element>feathers/source</path-element>
 	</include-sources>
 	
-	<include-file>
-		<name>manifest.xml</name>
-		<path>manifest.xml</path>
-	</include-file>
+	<include-namespaces>
+		<uri>library://ns.feathersui.com/mxml</uri>
+	</include-namespaces>
 	
 	<resource-bundle-list>bundles.properties</resource-bundle-list>    
 </flex-config>
