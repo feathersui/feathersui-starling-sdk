@@ -103,7 +103,8 @@ public class BuilderConfiguration implements Configuration
 
 	public void addTheme(File[] files)
 	{
-		configuration.addTheme(files);
+		//ignoring because Feathers doesn't use Flex themes
+		//configuration.addTheme(files);
 	}
 
 	public void allowSourcePathOverlap(boolean b)
@@ -361,7 +362,8 @@ public class BuilderConfiguration implements Configuration
 
 	public void setTheme(File[] files)
 	{
-		configuration.setTheme(files);
+		//ignoring because Feathers doesn't use Flex themes
+		//configuration.setTheme(files);
 	}
 
 	public void setToken(String name, String value)
