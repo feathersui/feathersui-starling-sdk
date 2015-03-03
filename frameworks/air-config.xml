@@ -423,10 +423,10 @@
 	
 	<!-- Metadata added to SWFs via the SWF Metadata tag. -->
 	<metadata>
-		<title>Apache Flex Application</title>
-		<description>http://flex.apache.org/</description>
-		<publisher>Apache Software Foundation</publisher>
-		<creator>Apache Software Foundation</creator>
+		<title>Feathers Application</title>
+		<description>http://feathersui.com/</description>
+		<publisher>Feathers</publisher>
+		<creator>Feathers</creator>
 		<language>en_US</language>
 	</metadata>
 
