@@ -144,10 +144,13 @@
 		<es>false</es>
 		
 		<!-- List of CSS or SWC files to apply as a theme. -->
+		<!-- not set -->
+		<!--
 		<theme>
-			<!-- default theme is mobile -->
-			<filename>themes/Mobile/mobile.swc</filename>
+			<filename>string</filename>
+			<filename>string</filename>
 		</theme>
+		-->
 		
 		<!-- Turns on the display of stack traces for uncaught runtime errors. -->
 		<verbose-stacktraces>false</verbose-stacktraces>

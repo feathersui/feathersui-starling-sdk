@@ -151,8 +151,8 @@
 
 		<!-- List of CSS or SWC files to apply as a theme. -->
 		<theme>
-			<!-- The Flex 4 default theme is Spark. -->
-			<filename>themes/Spark/spark.css</filename>
+			<!-- no theme -->
+			<filename></filename>
 		</theme>
 
 		<!-- Turns on the display of stack traces for uncaught runtime errors. -->
