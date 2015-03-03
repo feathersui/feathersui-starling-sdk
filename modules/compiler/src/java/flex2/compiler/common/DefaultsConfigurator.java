@@ -164,7 +164,7 @@ public class DefaultsConfigurator
 	    set( cfgbuf, "compiler.locale", java.util.Locale.getDefault().toString());
 	    set( cfgbuf, "compiler.translation-format", "flex2.compiler.i18n.PropertyTranslationFormat");
 
-	    set( cfgbuf, "default-frame-rate", "24" );
+	    set( cfgbuf, "default-frame-rate", "60" );
 	    set( cfgbuf, "default-background-color", "0xFFFFFF" );
 
 	    LinkedList<String> args = new LinkedList<String>();
