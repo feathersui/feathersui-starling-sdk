@@ -28,6 +28,13 @@
 		</external-library-path>
 		
 		<locale/>
+
+		<namespaces>
+			<namespace>
+				<uri>library://ns.feathersui.com/mxml</uri>
+				<manifest>manifest.xml</manifest>
+			</namespace>
+		</namespaces>
 						
 		<source-path>
 			<path-element>source</path-element>
@@ -40,10 +47,9 @@
 		<path-element>source</path-element>
 	</include-sources>
 	
-	<include-file>
-		<name>manifest.xml</name>
-		<path>manifest.xml</path>
-	</include-file>
+	<include-namespaces>
+		<uri>library://ns.feathersui.com/mxml</uri>
+	</include-namespaces>
 	
 	<resource-bundle-list>bundles.properties</resource-bundle-list>    
 </flex-config>
