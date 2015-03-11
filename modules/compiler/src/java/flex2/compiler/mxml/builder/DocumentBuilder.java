@@ -21,6 +21,7 @@ package flex2.compiler.mxml.builder;
 
 import flash.util.StringJoiner;
 import flex2.compiler.CompilationUnit;
+import flex2.compiler.CompilerException;
 import flex2.compiler.util.CompilerMessage.CompilerError;
 import flex2.compiler.mxml.Attribute;
 import flex2.compiler.mxml.MXMLNamespaces;
@@ -1167,7 +1168,12 @@ public class DocumentBuilder extends ComponentBuilder implements MXMLNamespaces
         Attribute theme = getSpecialAttribute(node, specialAttrTheme);
 		if (theme != null)
 		{
-            log(new ThemeAttributeError());
+            String themeString = (String)theme.getValue();
+            String themeClassName = TextParser.parseClassName(themeString);
+            if (themeClassName == null)
+            {
+                log(node, new InvalidThemeClassName(themeClassName));
+            }
 		}
 
 		Attribute rsl = getSpecialAttribute(node, specialAttrRsl);
@@ -1260,11 +1266,6 @@ public class DocumentBuilder extends ComponentBuilder implements MXMLNamespaces
 
 		unit.auxGenerateInfo = new HashMap<String, Object>();
 
-		String generateInitClass = "_" + document.getClassName() + "_FlexInit";
-        generateInitClass = generateInitClass.replaceAll( "[^A-Za-z0-9]", "_" );
-
-		document.addMetadata( new Script( "[Frame(extraClass=\"" + generateInitClass + "\")]\n" ) );
-
 		// fixme - the lingo of the classes specified are in package:name syntax
 		// in order to be able to find them in unit.topLevelDefs.
 		baseLoaderClass = baseLoaderClass.replace( ':', '.' );
@@ -1331,6 +1332,15 @@ public class DocumentBuilder extends ComponentBuilder implements MXMLNamespaces
 							log(node, new InvalidSplashScreenImageClassName(value));
 					}
 				}
+                else if (localPart.equals("theme"))
+                {
+                    String className = TextParser.parseClassName(value);
+                    if (className == null)
+                    {
+                        log(node, new InvalidThemeClassName(value));
+                    }
+                    document.addMetadata( new Script( "[Frame(extraClass=\"" + className + "\")]\n" ) );
+                }
 			}
 		}
 
@@ -1521,4 +1531,26 @@ public class DocumentBuilder extends ComponentBuilder implements MXMLNamespaces
 		public String className;
 		public InvalidRuntimeDPIProviderClassName(String className) { this.className = className; }
 	}
+
+    public static class InvalidThemeClassName extends CompilerError
+    {
+        public InvalidThemeClassName(String className)
+        {
+            super(new InvalidThemeClassNameException(className));
+        }
+
+        private static class InvalidThemeClassNameException extends CompilerException
+        {
+            public InvalidThemeClassNameException(String className)
+            {
+                //TODO: this should be localized
+                super("Invalid class name '" + className + "' specified for 'theme' attribute.");
+            }
+
+            public String toString()
+            {
+                return this.getMessage();
+            }
+        }
+    }
 }

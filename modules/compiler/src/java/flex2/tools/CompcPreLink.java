@@ -465,7 +465,6 @@ public class CompcPreLink implements flex2.compiler.PreLink
             "    {", lineSep,
             "        super();", lineSep,
             "    }", lineSep, lineSep,
-            PreLink.codegenRSLSecurityWrapper(true, lineSep),
             "}", lineSep, lineSep,
             "}", lineSep,
         };
