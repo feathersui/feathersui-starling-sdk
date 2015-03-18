@@ -1,3 +1,6 @@
+Feathers Enterprise SDK
+Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+
 Apache Flex
 Copyright 2012-2015 The Apache Software Foundation
 
