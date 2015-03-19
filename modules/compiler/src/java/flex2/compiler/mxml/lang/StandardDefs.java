@@ -431,7 +431,6 @@ public abstract class StandardDefs
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_DEBUGGER));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_ERRORS));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_EXTERNAL));
-        implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_FILTERS));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_GEOM));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_MEDIA));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_NET));
