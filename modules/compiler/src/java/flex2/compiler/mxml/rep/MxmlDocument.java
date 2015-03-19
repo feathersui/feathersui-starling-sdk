@@ -704,14 +704,7 @@ public final class MxmlDocument
      */
     public boolean getIsFlexApplication()
     {
-        return getIsMain() && 
-               (getIsContainer() || 
-               (getVersion() >= 4 && getIsSimpleStyleComponent()));
-    }
-
-    public boolean getIsSimpleStyleComponent()
-    {
-        return standardDefs.isSimpleStyleComponent(root.getType());
+        return getIsMain() && getIsContainer();
     }
 
     public final void setLineNumberMap(DualModeLineNumberMap lineNumberMap)
@@ -1113,14 +1106,6 @@ public final class MxmlDocument
     public void registerStateSpecificProperty(Model model, String property, ValueInitializer value, String stateName)
     {   
         statesModel.registerStateSpecificProperty(model, property, value, stateName);
-    }
-    
-    /*
-     * Register a state specific style with our states model.
-     */
-    public void registerStateSpecificStyle(Model model, String property, ValueInitializer value, String stateName)
-    {
-        statesModel.registerStateSpecificStyle(model, property, value, stateName);
     }
     
     /*

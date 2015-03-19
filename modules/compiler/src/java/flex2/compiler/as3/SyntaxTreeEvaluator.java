@@ -234,10 +234,6 @@ public class SyntaxTreeEvaluator extends EvaluatorAdapter
             {
                 processEventMetaData(node);
             }
-            else if (StandardDefs.MD_EFFECT.equals(node.getId()))
-            {
-                processEffectTriggerMetaData(node);
-            }
             else if (StandardDefs.MD_HOSTCOMPONENT.equals(node.getId()))
             {
                 processHostComponentMetaData(cx, node);
@@ -285,7 +281,6 @@ public class SyntaxTreeEvaluator extends EvaluatorAdapter
             metaData.equals(StandardDefs.MD_COLLAPSEWHITESPACE) ||
             metaData.equals(StandardDefs.MD_DEFAULTPROPERTY) ||
             metaData.equals(StandardDefs.MD_DEPRECATED) ||
-            metaData.equals(StandardDefs.MD_EFFECT) ||
             metaData.equals(StandardDefs.MD_EMBED) ||
             metaData.equals(StandardDefs.MD_EVENT) ||
             metaData.equals(StandardDefs.MD_FRAME) ||
@@ -300,7 +295,6 @@ public class SyntaxTreeEvaluator extends EvaluatorAdapter
             metaData.equals(StandardDefs.MD_REQUIRESLICENSE) ||
             metaData.equals(StandardDefs.MD_REMOTECLASS) ||
             metaData.equals(StandardDefs.MD_RESOURCEBUNDLE) ||
-            metaData.equals(StandardDefs.MD_STYLE) ||
             metaData.equals(StandardDefs.MD_SWF) ||
             metaData.equals(StandardDefs.MD_TRANSIENT))
         {
@@ -581,24 +575,6 @@ public class SyntaxTreeEvaluator extends EvaluatorAdapter
         {
             unit.extraClasses.add( NodeMagic.normalizeClassName( node.getValue( "extraClass" ) ) );
         }
-    }
-
-    private void processEffectTriggerMetaData(MetaDataNode node)
-    {
-        String triggerName = node.getValue( "name" );
-        if (triggerName == null)
-        {
-            triggerName = node.getValue(0);
-        }
-
-        String event = node.getValue( "event" );
-
-        if (event == null)
-        {
-            event = "";
-        }
-
-        unit.effectTriggers.put(triggerName, event);
     }
 
     private void processAccessibilityClassMetaData(Context cx, MetaDataNode node) 

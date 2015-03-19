@@ -731,14 +731,6 @@ public class InterfaceCompiler extends flex2.compiler.AbstractSubCompiler implem
         {
             info.addSplitImportNames(StandardDefs.splitImplicitImports);
 
-            // See SDK-16946
-            if (info.getVersion() >= 4)
-            {
-                info.removeSplitImportName(NameFormatter.toDotStar(StandardDefs.PACKAGE_FLASH_FILTERS));
-                info.addSplitImportName(NameFormatter.toDotStar(StandardDefs.PACKAGE_MX_FILTERS),
-                                        StandardDefs.splitPackageMxFilters);
-            }
-
             if (mxmlConfiguration.getCompilingForAIR())
             {
                 info.addSplitImportNames(StandardDefs.splitAirOnlyImplicitImports);
@@ -749,13 +741,6 @@ public class InterfaceCompiler extends flex2.compiler.AbstractSubCompiler implem
         else
         {
             info.addImportNames(StandardDefs.implicitImports, app.beginLine);
-
-            // See SDK-16946
-            if (info.getVersion() >= 4)
-            {
-                info.removeImportName(NameFormatter.toDotStar(StandardDefs.PACKAGE_FLASH_FILTERS));
-                info.addImportName(NameFormatter.toDotStar(StandardDefs.PACKAGE_MX_FILTERS), app.beginLine);
-            }
 
             if (mxmlConfiguration.getCompilingForAIR())
             {
@@ -1999,7 +1984,6 @@ public class InterfaceCompiler extends flex2.compiler.AbstractSubCompiler implem
                 {
                     newTypeRequests.add(NameFormatter.toMultiName(standardDefs.CLASS_SETPROPERTY));
                     newTypeRequests.add(NameFormatter.toMultiName(standardDefs.CLASS_SETEVENTHANDLER));
-                    newTypeRequests.add(NameFormatter.toMultiName(standardDefs.CLASS_SETSTYLE));
                     newTypeRequests.add(NameFormatter.toMultiName(standardDefs.CLASS_ADDITEMS));
                     newTypeRequests.add(NameFormatter.toMultiName(standardDefs.INTERFACE_IOVERRIDE));
                     scanGrandchildren();

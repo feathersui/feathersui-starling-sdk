@@ -60,7 +60,6 @@ public abstract class StandardDefs
     public abstract String getControlsPackage();
     public abstract String getDataPackage();
     public abstract String getDataUtilsPackage();
-    public abstract String getEffectsPackage();
     public abstract String getEventsPackage();
     public abstract String getManagersPackage();
     public abstract String getMessagingConfigPackage();
@@ -70,7 +69,6 @@ public abstract class StandardDefs
     public abstract String getRPCPackage();
     public abstract String getRPCXMLPackage();
     public abstract String getStatesPackage();
-    public abstract String getStylesPackage();
     public abstract String getUtilsPackage();
 
     public abstract String getBindablePropertyTemplate();
@@ -78,13 +76,9 @@ public abstract class StandardDefs
     public abstract String getClassDefTemplate();
     public abstract String getClassDefLibTemplate();
     public abstract String getEmbedClassTemplate();
-    public abstract String getFontFaceRulesTemplate();
     public abstract String getInterfaceDefTemplate();
     public abstract String getManagedPropertyTemplate();
     public abstract String getSkinClassTemplate();
-    public abstract String getStyleDefTemplate();
-    public abstract String getStyleLibraryTemplate();
-    public abstract String getStyleModuleTemplate();
     public abstract String getWatcherSetupUtilTemplate();
 
     //--------------------------------------------------------------------------
@@ -149,9 +143,7 @@ public abstract class StandardDefs
     private static final String PACKAGE_MX_CORE = "mx.core".intern();
     private static final String PACKAGE_MX_DATA = "mx.data";
     private static final String PACKAGE_MX_DATA_UTILS = "mx.data.utils";
-    private static final String PACKAGE_MX_EFFECTS = "mx.effects";
     private static final String PACKAGE_MX_EVENTS = "mx.events";
-    public static final String PACKAGE_MX_FILTERS = "mx.filters";
     private static final String PACKAGE_MX_MANAGERS = "mx.managers";
     private static final String PACKAGE_MX_MESSAGING_CONFIG = "mx.messaging.config";
     private static final String PACKAGE_MX_MODULES = "mx.modules";
@@ -160,7 +152,6 @@ public abstract class StandardDefs
     private static final String PACKAGE_MX_RPC = "mx.rpc";    //    TODO to FramewkDefs? RpcDefs?
     private static final String PACKAGE_MX_RPC_XML = "mx.rpc.xml";    //    TODO to FramewkDefs? RpcDefs?
     private static final String PACKAGE_MX_STATES = "mx.states".intern();
-    private static final String PACKAGE_MX_STYLES = "mx.styles".intern();
     private static final String PACKAGE_MX_UTILS = "mx.utils".intern();
 
     // spark.*
@@ -192,7 +183,6 @@ public abstract class StandardDefs
     public final String INTERFACE_IFLEXMODULE_DOT = NameFormatter.toDot(getCorePackage(), "IFlexModule");
     public final String INTERFACE_IFLEXMODULEFACTORY_DOT = NameFormatter.toDot(getCorePackage(), "IFlexModuleFactory");
     public final String INTERFACE_IBINDINGCLIENT_DOT = NameFormatter.toDot(getBindingPackage(), "IBindingClient");
-    public final String INTERFACE_ISTYLEMANAGER2_DOT = NameFormatter.toDot(getStylesPackage(), "IStyleManager2");
 
     // Interface name with colon
     // flashx.textLayout
@@ -217,9 +207,7 @@ public abstract class StandardDefs
     public final String INTERFACE_IOVERRIDE = NameFormatter.toColon(getStatesPackage(), "IOverride");
     public final String INTERFACE_IPROPERTYCHANGENOTIFIER = NameFormatter.toColon(getCorePackage(), "IPropertyChangeNotifier");
     public final String INTERFACE_IRAWCHILDRENCONTAINER = NameFormatter.toColon(getCorePackage(), "IRawChildrenContainer");
-    public final String INTERFACE_ISIMPLESTYLECLIENT = NameFormatter.toColon(getStylesPackage(), "ISimpleStyleClient");
     public final String INTERFACE_ISTATECLIENT2 = NameFormatter.toColon(getCorePackage(), "IStateClient2");
-    public final String INTERFACE_ISTYLECLIENT = NameFormatter.toColon(getStylesPackage(), "IStyleClient");
     public final String INTERFACE_ISYSTEMMANAGER = NameFormatter.toColon(getManagersPackage(), "ISystemManager");
     public final String INTERFACE_ITRANSIENTDEFERREDINSTANCE = NameFormatter.toColon(getCorePackage(), "ITransientDeferredInstance");
     public final String INTERFACE_IUICOMPONENT = NameFormatter.toColon(getCorePackage(), "IUIComponent");
@@ -239,14 +227,11 @@ public abstract class StandardDefs
 	public final String CLASS_CROSSDOMAINRSLITEM_DOT = NameFormatter.toDot(getCorePackage(), "CrossDomainRSLItem");
     public final String CLASS_EMBEDDEDFONTREGISTRY_DOT = NameFormatter.toDot(getCorePackage(), "EmbeddedFontRegistry");
     public final String CLASS_FLEXVERSION_DOT = NameFormatter.toDot(getCorePackage(), "FlexVersion");
-    public final String CLASS_EFFECTMANAGER_DOT = NameFormatter.toDot(getEffectsPackage(), "EffectManager");
     public final String CLASS_PROPERTYCHANGEEVENT_DOT = NameFormatter.toDot(getEventsPackage(), "PropertyChangeEvent").intern();
     public final String CLASS_REQUEST_DOT = NameFormatter.toDot(getEventsPackage(), "Request").intern();
     public final String CLASS_RESOURCEBUNDLE_DOT = NameFormatter.toDot(getResourcesPackage(), "ResourceBundle");
     public final String CLASS_RESOURCEMANAGER_DOT = NameFormatter.toDot(getResourcesPackage(), "ResourceManager");
     public final String CLASS_REPEATER_DOT = NameFormatter.toDot(getCorePackage(), "Repeater");
-    public final String CLASS_STYLEMANAGER_DOT = NameFormatter.toDot(getStylesPackage(), "StyleManager");
-    public final String CLASS_STYLEMANAGERIMPL_DOT = NameFormatter.toDot(getStylesPackage(), "StyleManagerImpl");
     public final String CLASS_SYSTEMMANAGERCHILDMANAGER_DOT = NameFormatter.toDot(getManagersPackage(), "systemClasses.ChildManager");
     public final String CLASS_TEXTFIELDFACTORY_DOT = NameFormatter.toDot(getCorePackage(), "TextFieldFactory");
     public final String CLASS_SINGLETON_DOT = NameFormatter.toDot(getCorePackage(), "Singleton");
@@ -258,11 +243,9 @@ public abstract class StandardDefs
     public final String CLASS_APPLICATIONDOMAIN = NameFormatter.toColon(PACKAGE_FLASH_SYSTEM, "ApplicationDomain");
     public final String CLASS_BINDINGMANAGER = NameFormatter.toColon(getBindingPackage(), "BindingManager");
     public final String CLASS_CLASSFACTORY = NameFormatter.toColon(getCorePackage(), "ClassFactory");
-    public final String CLASS_CSSSTYLEDECLARATION = NameFormatter.toColon(getStylesPackage(), "CSSStyleDeclaration");
     public final String CLASS_DEFERREDINSTANCEFROMCLASS = NameFormatter.toColon(getCorePackage(), "DeferredInstanceFromClass");
     public final String CLASS_DEFERREDINSTANCEFROMFUNCTION = NameFormatter.toColon(getCorePackage(), "DeferredInstanceFromFunction");
     public final String CLASS_DOWNLOADPROGRESSBAR = NameFormatter.toColon(getPreloadersPackage(), "DownloadProgressBar");
-    public final String CLASS_EFFECT = NameFormatter.toColon(getEffectsPackage(), "Effect");
     public final String CLASS_EVENT = NameFormatter.toColon(PACKAGE_FLASH_EVENTS, "Event");
     public final String CLASS_EVENTDISPATCHER = NameFormatter.toColon(PACKAGE_FLASH_EVENTS, "EventDispatcher");
     public final String CLASS_STARLING_EVENT = NameFormatter.toColon(PACKAGE_STARLING_EVENTS, "Event");
@@ -283,10 +266,7 @@ public abstract class StandardDefs
     public final String CLASS_REPEATER = NameFormatter.toColon(getCorePackage(), "Repeater");
     public final String CLASS_SETEVENTHANDLER = NameFormatter.toColon(getStatesPackage(), "SetEventHandler");
     public final String CLASS_SETPROPERTY = NameFormatter.toColon(getStatesPackage(), "SetProperty");
-    public final String CLASS_SETSTYLE = NameFormatter.toColon(getStatesPackage(), "SetStyle");
     public final String CLASS_STATE = NameFormatter.toColon(getStatesPackage(), "State");
-    public final String CLASS_STYLEEVENT = NameFormatter.toColon(getEventsPackage(), "StyleEvent");
-    public final String CLASS_STYLEMANAGER = NameFormatter.toColon(getStylesPackage(), "StyleManager");
     public final String CLASS_SYSTEMCHILDRENLIST = NameFormatter.toColon(getManagersPackage(), "SystemChildrenList");
     public final String CLASS_SYSTEMMANAGER = NameFormatter.toColon(getManagersPackage(), "SystemManager");
     public final String CLASS_SYSTEMRAWCHILDRENLIST = NameFormatter.toColon(getManagersPackage(), "SystemRawChildrenList");
@@ -356,7 +336,6 @@ public abstract class StandardDefs
     public static final String MD_COLLAPSEWHITESPACE = "CollapseWhiteSpace";
     public static final String MD_DEFAULTPROPERTY = "DefaultProperty";
     public static final String MD_DEPRECATED = "Deprecated";
-    public static final String MD_EFFECT = "Effect";
     public static final String MD_EMBED = "Embed";
     public static final String MD_EVENT = "Event";
     public static final String MD_FRAME = "Frame";
@@ -377,7 +356,6 @@ public abstract class StandardDefs
     public static final String MD_REQUIRESLICENSE = "RequiresLicense";
     public static final String MD_RESOURCEBUNDLE = "ResourceBundle";
     public static final String MD_RICHTEXTCONTENT = "RichTextContent";
-    public static final String MD_STYLE = "Style";
     public static final String MD_SWF = "SWF";
     public static final String MD_TRANSIENT = "Transient";
     public static final String MD_SKINSTATE = "SkinState";
@@ -507,18 +485,6 @@ public abstract class StandardDefs
      */
     public static final String SPARK_TEXT_ATTRIBUTE = "text";
 
-
-    public static final String[] splitPackageMxFilters;
-    static
-    {
-        splitPackageMxFilters = NameFormatter.toDotStar(PACKAGE_MX_FILTERS).split("\\.");
-
-        for (int i = 0; i < splitPackageMxFilters.length; i++)
-        {
-            splitPackageMxFilters[i] = splitPackageMxFilters[i].intern();
-        }
-    }
-
     public static final Map<String, String[]> splitImplicitImports = new HashMap<String, String[]>();
     static
     {
@@ -574,7 +540,6 @@ public abstract class StandardDefs
         if (standardMxmlImports == null)
         {
             standardMxmlImports = new HashSet<String>();
-            standardMxmlImports.add(NameFormatter.toDotStar(getStylesPackage()));
             standardMxmlImports.add(NameFormatter.toDotStar(getBindingPackage()));
 
             standardMxmlImports.add(NameFormatter.toDot(NAMESPACE_MX_INTERNAL));
@@ -838,15 +803,6 @@ public abstract class StandardDefs
 	}
 
     /**
-     * 
-     */
-    public boolean isSimpleStyleComponent(Type type)
-    {
-        assert type != null;
-        return type.isAssignableTo(INTERFACE_ISIMPLESTYLECLIENT);
-    }
-
-    /**
      * Note that we trigger factory coercions only on IFactory type equality, *not* assignability
      */
     public boolean isIFactory(Type type)
@@ -942,13 +898,9 @@ public abstract class StandardDefs
         private static final String CLASSDEF_TEMPLATE = "ClassDef.vm";
         private static final String CLASSDEF_LIB_TEMPLATE = "ClassDefLib.vm";
         private static final String EMBED_CLASS_TEMPLATE = "EmbedClass.vm";
-        private static final String FONTFACERULES_TEMPLATE = "FontFaceRules.vm";
         private static final String INTERFACE_DEF_TEMPLATE = "InterfaceDef.vm"; 
         private static final String MANAGED_PROPERTY_TEMPLATE = "ManagedProperty.vm";
         private static final String SKINCLASS_TEMPLATE = "SkinClass.vm";
-        private static final String STYLEDEF_TEMPLATE = "StyleDef.vm";
-        private static final String STYLE_LIBRARY_TEMPLATE = "StyleLibrary.vm";
-        private static final String STYLE_MODULE_TEMPLATE = "StyleModule.vm";
         private static final String WATCHER_SETUP_UTIL_TEMPLATE = "WatcherSetupUtil.vm";
 
         private StandardDefs2006()
@@ -984,11 +936,6 @@ public abstract class StandardDefs
         public String getDataUtilsPackage()
         {
             return PACKAGE_MX_DATA_UTILS;
-        }
-
-        public String getEffectsPackage()
-        {
-            return PACKAGE_MX_EFFECTS;
         }
 
         public String getEventsPackage()
@@ -1036,11 +983,6 @@ public abstract class StandardDefs
             return StandardDefs.PACKAGE_MX_STATES;
         }
 
-        public String getStylesPackage()
-        {
-            return StandardDefs.PACKAGE_MX_STYLES;
-        }
-
         public String getUtilsPackage()
         {
             return PACKAGE_MX_UTILS;
@@ -1077,11 +1019,6 @@ public abstract class StandardDefs
             return EMBED_CLASS_TEMPLATE;
         }
 
-        public String getFontFaceRulesTemplate()
-        {
-            return FONTFACERULES_TEMPLATE;
-        }
-
         public String getInterfaceDefTemplate()
         {
             return INTERFACE_DEF_TEMPLATE;
@@ -1095,21 +1032,6 @@ public abstract class StandardDefs
         public String getSkinClassTemplate()
         {
             return SKINCLASS_TEMPLATE;
-        }
-
-        public String getStyleDefTemplate()
-        {
-            return STYLEDEF_TEMPLATE;
-        }
-
-        public String getStyleLibraryTemplate()
-        {
-            return STYLE_LIBRARY_TEMPLATE;
-        }
-
-        public String getStyleModuleTemplate()
-        {
-            return STYLE_MODULE_TEMPLATE;
         }
 
         public String getWatcherSetupUtilTemplate()

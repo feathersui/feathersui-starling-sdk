@@ -198,7 +198,7 @@ public class TopLevelGenerator implements DocCommentGenerator
                 xml.append("inherit='").append(inherit_meta).append("' ");
             }
             
-            if (metadataType == StandardDefs.MD_EVENT || metadataType == StandardDefs.MD_STYLE || metadataType == StandardDefs.MD_EFFECT)
+            if (metadataType == StandardDefs.MD_EVENT)
             {
                 // if message meta data is present then emit it. Applicable for Deprecation 
                 String message_meta = meta.getMessage_meta();
@@ -219,16 +219,6 @@ public class TopLevelGenerator implements DocCommentGenerator
                 if (since_meta != null)
                 {
                     xml.append("deprecatedSince='").append(since_meta).append("' ");
-                }                                       
-                
-                if(metadataType == StandardDefs.MD_STYLE)
-                {
-                	// if theme meta data is present then emit it.
-                    String theme_meta = meta.getTheme_meta();
-                    if (theme_meta != null)
-                    {
-                        xml.append("theme='").append(theme_meta).append("' ");
-                    }                	
                 }
             }
             else if(metadataType == StandardDefs.MD_SKINPART)
@@ -277,7 +267,7 @@ public class TopLevelGenerator implements DocCommentGenerator
             xml.append(">");
             
             //These types of metadata can have comments associated with them
-            if (metadataType == StandardDefs.MD_EVENT || metadataType == StandardDefs.MD_STYLE || metadataType == StandardDefs.MD_EFFECT 
+            if (metadataType == StandardDefs.MD_EVENT 
                     || metadataType == StandardDefs.MD_SKINSTATE || metadataType == StandardDefs.MD_SKINPART || metadataType == StandardDefs.MD_ALTERNATIVE
                     || metadataType == StandardDefs.MD_DISCOURAGEDFORPROFILE || metadataType == StandardDefs.MD_EXPERIMENTAL)
             {

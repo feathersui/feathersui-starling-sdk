@@ -735,24 +735,6 @@ public final class StatesModel
      */
     public void registerStateSpecificProperty(Model model, String property, ValueInitializer value, String stateName)
     {
-        generatePropertyOverrides(model, property, value, stateName, false);
-    }
-    
-    /*
-     * Take note of a style which is to be considered transient (state-specific).  Generate the appropriate
-     * override (SetStyle) to represent this state-specific node, and append to the corresponding state's
-     * override list.
-     */
-    public void registerStateSpecificStyle(Model model, String property, ValueInitializer value, String stateName)
-    {
-        generatePropertyOverrides(model, property, value, stateName, true);
-    }
-    
-    /*
-     * Helper method used when registering state specific properties or styles.
-     */
-    private void generatePropertyOverrides(Model model, String property, ValueInitializer value, String stateName, Boolean isStyle)
-    {
         Collection<String> stateNames = expandState(stateName);
         
         String factory = null;
@@ -779,8 +761,7 @@ public final class StatesModel
             State state = stateByName(iter.next());
             if (state != null)
             {
-                SetPropertyOverride override = isStyle ? new SetStyleOverride(model, property, value, factory) :
-                    new SetPropertyOverride(model, property, value, factory);
+                SetPropertyOverride override = new SetPropertyOverride(model, property, value, factory);
                 postProcessBindingInstance(value, override);
                 state.addOverride(override, model != null ? model.getXmlLineNumber() : 0);
             }
@@ -1783,27 +1764,6 @@ public final class StatesModel
         {
             return SETPROPERTY;
         }   
-    }
-    
-    /*
-     * Represents an override responsible for managing state-specific styles.
-     */
-    public class SetStyleOverride extends SetPropertyOverride
-    {        
-        public SetStyleOverride(Model context, String property, ValueInitializer value, String factory)
-        {
-            super(context, property, value, factory);
-        }
-            
-        public String getDeclaredType()
-        {
-            return standardDefs.CLASS_SETSTYLE;
-        }
-        
-        protected String getDeclaredClass()
-        {
-            return SETSTYLE;
-        }  
     }
     
     /*
