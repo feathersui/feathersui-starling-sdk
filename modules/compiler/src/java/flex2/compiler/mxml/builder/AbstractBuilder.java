@@ -631,119 +631,6 @@ public abstract class AbstractBuilder extends AnalyzerAdapter
     /**
      *
      */
-    public boolean processStyleText(Style style, String text, int origin, int line, Model model)
-    {
-        String name = style.getName();
-        Type type = style.getType();
-
-        if (!style.isStateSpecific() && model.hasStyle(name))
-        {
-            log(line, new MultipleStyleInitializerError(name));
-        }
-        
-        if (!checkStyleUsage(style, text, line))
-        {
-            return false;
-        }
-
-        int flags =
-                ((origin == TextOrigin.FROM_CHILD_CDATA) ? TextParser.FlagInCDATA : 0) |
-                (getIsColor(style) ? TextParser.FlagConvertColorNames : 0);
-
-        Object value = textParser.parseValue(text, type, flags, line, name);
-        if (value != null)
-        {
-            if (value instanceof BindingExpression)
-            {
-                BindingExpression bindingExpression = (BindingExpression)value;
-                // two-way data binding expression not allowed here
-                if (bindingExpression.isTwoWayPrimary())
-                {
-                    log(line, new TwoWayBindingNotAllowedInitializer(name, text));
-                    return false;
-                }                
-                bindingExpression.setDestination(model);
-                bindingExpression.setDestinationLValue(name);
-                bindingExpression.setDestinationStyle(name);
-            }
-            else if (value instanceof AtClear)
-            {
-            	if (!style.isStateSpecific())
-            	{
-            		log(line, new AtClearNotAllowed());
-            		return false;
-            	}
-            }
-
-            model.setStyle(style, value, line);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    /*
-     * TODO move this to TypeTable.StyleHelper?
-     */
-    protected boolean getIsColor(Style style)
-    {
-        String format = style.getFormat();
-        return format != null && format.equals(StandardDefs.MDPARAM_STYLE_FORMAT_COLOR);
-    }
-
-    /**
-     *
-     */
-    protected boolean processEffectText(Effect effect, String text, int origin, int line, Model model)
-    {
-        String name = effect.getName();
-
-        if (!effect.isStateSpecific() && model.hasEffect(name))
-        {
-            log(line, new MultipleEffectInitializerError(name));
-        }
-
-        int flags = (origin == TextOrigin.FROM_CHILD_CDATA) ? TextParser.FlagInCDATA : 0;
-        Object value = textParser.parseValue(text, typeTable.stringType, flags, line, name);
-
-        if (value != null)
-        {
-            if (value instanceof BindingExpression)
-            {
-                BindingExpression bindingExpression = (BindingExpression)value;
-                // two-way data binding expression not allowed here
-                if (bindingExpression.isTwoWayPrimary())
-                {
-                    log(line, new TwoWayBindingNotAllowedInitializer(name, text));
-                    return false;
-                }
-                bindingExpression.setDestination(model);
-                bindingExpression.setDestinationStyle(name);
-                bindingExpression.setDestinationLValue(name);
-            }
-            else
-            {
-                if (FrameworkDefs.isBuiltinEffectName(text))
-                {
-                    // for 1.5 compatibility
-                    document.addTypeRef(standardDefs.getEffectsPackage() + "." + text, line);
-                }
-            }
-
-            model.setEffect(effect, value, typeTable.stringType, line);
-            return true;
-        }
-        else
-        {
-            return false;
-        }
-    }
-
-    /**
-     *
-     */
     protected boolean processPropertyNodes(Node parent, Property property, Model model)
     {
         return processPropertyNodes(parent.getChildren(), property, model, parent.beginLine);
@@ -813,86 +700,6 @@ public abstract class AbstractBuilder extends AnalyzerAdapter
             if (rvalue != null)
             {
                 model.setDynamicProperty(typeTable.objectType, name, rvalue, state, parent.beginLine);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
-
-    /**
-     * Note: nodes must not be empty
-     */
-    protected boolean processStyleNodes(Node parent, Style style, Model model)
-    {
-        Collection nodes = parent.getChildren();
-
-        CDATANode cdata = getTextContent(nodes, true);
-        if (cdata != null)
-        {
-            return processStyleText(style, cdata.image, TextOrigin.fromChild(cdata.inCDATA), cdata.beginLine, model);
-        }
-        else
-        {
-            String name = style.getName();
-            if (!style.isStateSpecific() && model.hasStyle(name))
-            {
-                log(parent, new MultipleStyleInitializerError(name));
-            }
-
-            //  TODO replace ""-passing approach with something that results in a better errmsg for enum violation
-            if (!checkStyleUsage(style, "", ((Node)nodes.iterator().next()).beginLine))
-            {
-                return false;
-            }
-
-            //  lvalue type - initializers to IDeferredInstance-typed styles are values to be returned by the generated factory.
-            Type lvalueType = style.getType();
-            if (standardDefs.isIDeferredInstance(lvalueType))
-            {
-                lvalueType = typeTable.objectType;
-            }
-
-            Object rvalue = processRValueNodes(style, nodes, model);
-            if (rvalue != null)
-            {
-                model.setStyle(style, rvalue, parent.beginLine);
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
-    }
-
-    /**
-     * Note: nodes must not be empty
-     */
-    protected boolean processEffectNodes(Node parent, Effect effect, Model model)
-    {
-        Collection nodes = parent.getChildren();
-
-        CDATANode cdata = getTextContent(nodes, true);
-        if (cdata != null)
-        {
-            return processEffectText(effect, cdata.image, TextOrigin.fromChild(cdata.inCDATA), cdata.beginLine, model);
-        }
-        else
-        {
-            String name = effect.getName();
-
-            if (!effect.isStateSpecific() && model.hasEffect(name))
-            {
-                log(parent, new MultipleEffectInitializerError(name));
-            }
-
-            Object rvalue = processRValueNodes(effect, nodes, model);
-            if (rvalue != null)
-            {
-                model.setEffect(effect, rvalue, effect.getType(), parent.beginLine);
                 return true;
             }
             else
@@ -1358,31 +1165,6 @@ public abstract class AbstractBuilder extends AnalyzerAdapter
     }
 
     /**
-     *
-     */
-    protected boolean checkStyleUsage(Style style, String text, int line)
-    {
-        checkImageType(style.getFormat(), text, line);
-
-        if (!TextParser.isBindingExpression(text) && TextParser.getAtFunctionName(text) == null)
-        {
-            if (!checkEnumeration(style.getEnumeration(), text, line))
-            {
-                return false;
-            }
-        }
-
-        //  TODO make sure this never happens
-        if (style.getType() == null)
-        {
-            log(line, new StyleUnreachable(style.getName()));
-            return false;
-        }
-
-        return true;
-    }
-
-    /**
      * Return true if the check is okay.
      * Note: must happen on parsed value, e.g. to avoid failing {bindings}, which passed in 1.5
      */
@@ -1532,36 +1314,6 @@ public abstract class AbstractBuilder extends AnalyzerAdapter
                                   event.getDeprecatedSince(),
                                   event.getDeprecatedMessage(),
                                   event.getDeprecatedReplacement());
-        }
-    }
-    
-    /**
-     * 
-     */
-    protected void checkEffectDeprecation(Effect effect, String path, int line)
-    {
-        if (mxmlConfiguration.showDeprecationWarnings())
-        {
-            checkLogDeprecationWarning(path, line,
-                                  effect.getName(),
-                                  effect.getDeprecatedSince(),
-                                  effect.getDeprecatedMessage(),
-                                  effect.getDeprecatedReplacement());
-        }
-    }
-    
-    /**
-     * 
-     */
-    protected void checkStyleDeprecation(Style style, String path, int line)
-    {
-        if (mxmlConfiguration.showDeprecationWarnings())
-        {
-            checkLogDeprecationWarning(path, line,
-                                  style.getName(),
-                                  style.getDeprecatedSince(),
-                                  style.getDeprecatedMessage(),
-                                  style.getDeprecatedReplacement());
         }
     }
 

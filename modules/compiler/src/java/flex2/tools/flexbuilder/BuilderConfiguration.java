@@ -103,8 +103,8 @@ public class BuilderConfiguration implements Configuration
 
 	public void addTheme(File[] files)
 	{
-		//ignoring because Feathers doesn't use Flex themes
-		//configuration.addTheme(files);
+		// Feathers: we ignore the theme option, but keep it around for
+		// compatibility with existing Flex IDEs that expect it.
 	}
 
 	public void allowSourcePathOverlap(boolean b)
@@ -362,8 +362,8 @@ public class BuilderConfiguration implements Configuration
 
 	public void setTheme(File[] files)
 	{
-		//ignoring because Feathers doesn't use Flex themes
-		//configuration.setTheme(files);
+		// Feathers: we ignore the theme option, but keep it around for
+		// compatibility with existing Flex IDEs that expect it.
 	}
 
 	public void setToken(String name, String value)

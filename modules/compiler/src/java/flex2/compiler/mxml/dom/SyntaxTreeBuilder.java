@@ -46,16 +46,6 @@ public class SyntaxTreeBuilder implements MxmlVisitor
 		comp.addChildren(components);
 	}
 
-	public void parseStyle(Token t, Token text)
-	{
-		StyleNode style = (StyleNode) t;
-
-		if (text != null)
-		{
-			style.addChild(text);
-		}
-	}
-
 	public void parseScript(Token t, Token text)
 	{
 		ScriptNode script = (ScriptNode) t;

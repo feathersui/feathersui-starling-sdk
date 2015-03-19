@@ -391,9 +391,6 @@ public class MxmlScanner extends DefaultHandler implements TokenManager,
 
         switch (kind)
         {
-            case ParserConstants.START_STYLE:
-                node = new StyleNode(uri, localName, numAttributes);
-                break;
             case ParserConstants.START_SCRIPT:
                 node = new ScriptNode(uri, localName, numAttributes);
                 break;

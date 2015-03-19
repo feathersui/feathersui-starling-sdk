@@ -37,7 +37,6 @@ import flex2.compiler.util.ThreadLocalToolkit;
 import flex2.compiler.mxml.reflect.ElementTypeNotFound;
 import flex2.compiler.mxml.reflect.Type;
 import flex2.compiler.mxml.reflect.Property;
-import flex2.compiler.mxml.reflect.Style;
 import flex2.tools.oem.Library;
 import macromedia.asc.parser.*;
 
@@ -506,7 +505,6 @@ public final class StatesModel
         else if (parentProperty != null || parentType.getDefaultProperty() != null)
         {
             Property property = (parentProperty != null) ? parentType.getProperty(parentProperty) : parentType.getDefaultProperty();
-            Style style = (parentProperty != null) ? parentType.getStyle(parentProperty) : null;
             
             if (standardDefs.isItemsComponent(parentType) && (property.getName() == parentType.getDefaultProperty().getName()))
             {
@@ -522,12 +520,7 @@ public final class StatesModel
                 if ((propertyElementType == null) || childType.isAssignableTo(propertyElementType))
                     return true;
             }
-            else if (property != null && isStatefulCompatibleType(property.getType()))
-            {
-                return true;
-            }
-            else if (style != null && isStatefulCompatibleType(style.getType()))
-            {
+            else if (property != null && isStatefulCompatibleType(property.getType())) {
                 return true;
             }
         }
@@ -543,7 +536,6 @@ public final class StatesModel
     {
         Type parentType = destination != null ? destination.getType() : document.getRoot().getType();
         Property property = (parentProperty != null) ? parentType.getProperty(parentProperty) : parentType.getDefaultProperty();
-        Style style = (parentProperty != null) ? parentType.getStyle(parentProperty) : null;
         
         if (parentType != null && property != null && (standardDefs.isItemsComponent(parentType) && 
             (property.getName() == parentType.getDefaultProperty().getName())))
@@ -551,11 +543,6 @@ public final class StatesModel
             return true;
         }
         if (property != null && !isStatefulCompatibleType(property.getType()))
-        {
-            ThreadLocalToolkit.log(new IncompatibleStatefulNode(), document.getSourcePath(), targetModel.getXmlLineNumber());
-            return false;
-        }
-        else if (style != null && !isStatefulCompatibleType(style.getType()))
         {
             ThreadLocalToolkit.log(new IncompatibleStatefulNode(), document.getSourcePath(), targetModel.getXmlLineNumber());
             return false;
@@ -840,13 +827,6 @@ public final class StatesModel
     {
         sharedObjects.put(model.getDefinitionName(), new SharedObject(model.getDefinitionName(), model.isDeclared(), model));
         
-        // Determine if target happens to be a style.
-        boolean isStyle = false;
-        if (parent != null && parentIndex != null)
-        {
-            isStyle = (parent.getType().getStyle(parentIndex) != null) ? true : false;
-        }
-        
         // Determine if adding an array instance so our override can treat it
         // as a whole vs. list of items to add.
         boolean isArray = (model.getType() == document.getTypeTable().arrayType) ? true : false;
@@ -866,7 +846,7 @@ public final class StatesModel
             {
                 AddItemsOverride override =
                     new AddItemsOverride(parent, parentIndex, parentId, model.getDefinitionName(),
-                                         position, relativeNodes, isStyle, isArray, vectorClassName, model);
+                                         position, relativeNodes, false, isArray, vectorClassName, model);
                 state.addOverride(override, model != null ? model.getXmlLineNumber() : 0);
             }
         }
@@ -899,7 +879,6 @@ public final class StatesModel
             bindingExpression.setDestination(model);
             bindingExpression.setDestinationLValue("value");
             bindingExpression.setDestinationProperty("value");
-            bindingExpression.setDestinationStyle(null);
             override.setDeclaration(model.getId());
             
             // Ensure the original binding expression is discarded.
@@ -1658,7 +1637,7 @@ public final class StatesModel
         {
             boolean isDataBound = getDeclaredClass() == SETPROPERTY ? 
                     context.hasDataBoundProperty(property) :
-                    context.hasDataBoundStyle(property);
+                    false;
             
             String typeName = NameFormatter.toDot(getDeclaredType());
             String prefix = (declaration != null) ? declaration + " = " + typeName + "( " : "";
@@ -1695,7 +1674,7 @@ public final class StatesModel
         {
             boolean isDataBound = getDeclaredClass() == SETPROPERTY ? 
                     context.hasDataBoundProperty(property) :
-                    context.hasDataBoundStyle(property);
+                    false;
                     
             QualifiedIdentifierNode qualifiedIdentifier =
                 AbstractSyntaxTreeUtil.generateQualifiedIdentifier(nodeFactory, 

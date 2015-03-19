@@ -105,14 +105,6 @@ public class DescriptorGenerator
         if (!propsOnly)
             addDescriptorEvents(list, model, indent);
 
-        //  effect names?
-        if (!propsOnly)
-            addDescriptorEffectNames(list, model, indent);
-
-        //  styles and/or effects?
-        if (!propsOnly)
-            addDescriptorStylesAndEffects(list, model, indent);
-
         //  descriptor properties are Model.properties + synthetic property 'childDescriptors' from MovieClip.children
         addDescriptorProperties(list, model, includePropNames, includeDesignLayer, indent);
 
@@ -199,50 +191,6 @@ public class DescriptorGenerator
 
             indent = indent.substring(0, indent.length() - INDENT.length());
             list.add(indent, "}}", 0);
-        }
-    }
-
-    /**
-     *
-     */
-    private static void addDescriptorStylesAndEffects(CodeFragmentList list, Model model, String indent)
-    {
-        Iterator styleAndEffectIter = model.getStyleAndEffectInitializerIterator();
-        if (styleAndEffectIter.hasNext())
-        {
-            if (!list.isEmpty())
-            {
-                list.add(indent, ",", 0);
-            }
-
-            list.add(indent, "stylesFactory: function():void {", 0);
-            indent += DescriptorGenerator.INDENT;
-
-            while (styleAndEffectIter.hasNext())
-            {
-                NamedInitializer init = (NamedInitializer)styleAndEffectIter.next();
-                list.add(indent, "this.", init.getName(), " = ", init.getValueExpr() + ";", init.getLineRef());
-            }
-
-            indent = indent.substring(0, indent.length() - INDENT.length());
-            list.add(indent, "}", 0);
-        }
-    }
-
-    /**
-     *
-     */
-    private static void addDescriptorEffectNames(CodeFragmentList list, Model model, String indent)
-    {
-        String effectEventNames = model.getEffectNames();
-        if (effectEventNames.length() > 0)
-        {
-            if (!list.isEmpty())
-            {
-                list.add(indent, ",", 0);
-            }
-
-            list.add(indent, "effects: [ ", effectEventNames, " ]", model.getXmlLineNumber());
         }
     }
 

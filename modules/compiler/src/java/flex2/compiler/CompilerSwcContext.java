@@ -79,7 +79,6 @@ public class CompilerSwcContext
 
     public int load( VirtualFile[] libPath,
                      VirtualFile[] rslPath,
-                     VirtualFile[] themeFiles,
 					 VirtualFile[] includeLibraries,
 					 NameMappings mappings,
 					 TranslationFormat format,
@@ -121,27 +120,6 @@ public class CompilerSwcContext
         groupList.add( rslGroup );
 		groupList.add( includeGroup );
 
-		for (int i = 0; themeFiles != null && i < themeFiles.length; ++i)
-        {
-            if (themeFiles[i].getName().endsWith( DOT_CSS ))
-            {
-                themeStyles.add( themeFiles[i] );
-	            ts.append(themeFiles[i].getLastModified());
-            }
-            else
-            {
-                SwcGroup tmpThemeGroup = swcCache.getSwcGroup( new VirtualFile[] {themeFiles[i] } );
-                groupList.add( tmpThemeGroup );
-                for (Iterator it = tmpThemeGroup.getFiles().values().iterator(); it.hasNext();)
-                {
-                    VirtualFile f = (VirtualFile) it.next();
-	                ts.append(f.getLastModified());
-                    if (f.getName().endsWith( DOT_CSS ))
-                        themeStyles.add( f );
-                }
-            }
-        }
-
         swcGroup = swcCache.getSwcGroup( groupList, rslGroup );
 
         if (swcGroup == null)
@@ -180,7 +158,7 @@ public class CompilerSwcContext
 					 String resourceFileExt,
 					 SwcCache swcCache)
 	{
-		int retval = load(libPath, null, null, null, mappings, null, swcCache);
+		int retval = load(libPath, null, null, mappings, null, swcCache);
 		if (swcGroup != null)
 		{
 			updateResourceBundles(swcGroup.getFiles(), resourceFileExt);
@@ -445,11 +423,6 @@ public class CompilerSwcContext
 		return def2script.get(qName.getNamespace(), qName.getLocalPart()) != null;
 	}
 
-	public List<VirtualFile> getThemeStyleSheets()
-    {
-        return themeStyles;
-    }
-
     public List<String> errorLocations()
     {
         return errlocations;
@@ -520,7 +493,6 @@ public class CompilerSwcContext
     private Map<String, VirtualFile> resourceIncludes = new HashMap<String, VirtualFile>();
     private Map<String, VirtualFile> files = new HashMap<String, VirtualFile>();
     private int loaded = 0;
-    private List<VirtualFile> themeStyles = new LinkedList<VirtualFile>();
     private List<String> errlocations = new LinkedList<String>();
 	private StringBuilder ts = new StringBuilder(); // last modified time of all the swc and css files...
 	private boolean cacheSwcCompilationUnits; // if true, we setup storage for intermediate type info objects when doing incremental compilation...

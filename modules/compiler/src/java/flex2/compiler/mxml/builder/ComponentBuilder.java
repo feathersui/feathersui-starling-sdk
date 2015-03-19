@@ -332,18 +332,6 @@ public class ComponentBuilder extends AbstractBuilder
             processPropertyText(property, text, AbstractBuilder.TextOrigin.FROM_ATTRIBUTE, line, component);
         }
 
-        protected void effect(Effect effect)
-        {
-            checkEffectDeprecation(effect, document.getSourcePath(), line);
-            processEffectText(effect, text, AbstractBuilder.TextOrigin.FROM_ATTRIBUTE, line, component);
-        }
-
-        protected void style(Style style)
-        {
-            checkStyleDeprecation(style, document.getSourcePath(), line);
-            processStyleText(style, text, AbstractBuilder.TextOrigin.FROM_ATTRIBUTE, line, component);
-        }
-
         protected void dynamicProperty(String name, String state)
         {
             processDynamicPropertyText(name, text, AbstractBuilder.TextOrigin.FROM_ATTRIBUTE, line, component, state);
@@ -356,32 +344,7 @@ public class ComponentBuilder extends AbstractBuilder
 
         protected void unknown(String namespace, String localPart)
         {
-            String styleThemes = type.getStyleThemes(localPart);
-
-            if (type.isExcludedStyle(localPart))
-            {
-                    log(line, new ExcludedStyleProperty(localPart,
-                                                        NameFormatter.toDot(component.getType().getName())));
-            }
-            else if (styleThemes != null)
-            {
-                if (mxmlConfiguration.reportInvalidStylesAsWarnings())
-                {
-                    log(line, new InvalidStyleThemeWarning(localPart,
-                                                           NameFormatter.toDot(component.getType().getName()),
-                                                           styleThemes));
-                }
-                else
-                {
-                    log(line, new InvalidStyleThemeError(localPart,
-                                                         NameFormatter.toDot(component.getType().getName()),
-                                                         styleThemes));
-                }
-            }
-            else
-            {
-                unknownAttributeError(namespace, localPart, line);
-            }
+            unknownAttributeError(namespace, localPart, line);
         }
 
         protected void invoke(Type type, String namespace, String localPart)
@@ -520,27 +483,6 @@ public class ComponentBuilder extends AbstractBuilder
             else if (typeTable.arrayType.isAssignableTo(type)) 
             {
                 processPropertySyntheticArray(property, child.beginLine, component);	
-            }
-        }
-
-        protected void effect(Effect effect)
-        {
-            if (checkNonEmpty(child, typeTable.classType))
-            {
-                processEffectNodes(child, effect, component);
-            }
-        }
-
-        protected void style(Style style)
-        {
-            Type type = style.getType();
-            if (checkNonEmpty(child, type))
-            {
-                processStyleNodes(child, style, component);
-            } 
-            else if (allowEmptyDefault(type))
-            {
-                processStyleText(style, "", AbstractBuilder.TextOrigin.FROM_CHILD_CDATA, child.beginLine, component);
             }
         }
 

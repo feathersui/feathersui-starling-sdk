@@ -19,9 +19,6 @@
 
 package flex2.compiler.mxml.analyzer;
 
-import flash.css.StyleParser;
-import flash.css.StyleSheet;
-import flash.css.StyleParser.StyleSheetInvalidCharset;
 import flash.fonts.FontManager;
 import flash.util.FileUtils;
 import flex2.compiler.CompilationUnit;
@@ -100,69 +97,6 @@ public class SyntaxAnalyzer extends AnalyzerAdapter
         }
 
 		super.analyze(node);
-	}
-
-	public void analyze(StyleNode node)
-	{
-		checkForExtraAttributes(StyleNode.attributes, node);
-
-		String source = (String) node.getAttributeValue("source");
-		CDATANode cdata = (CDATANode) node.getChildAt(0);
-
-		if (source != null && cdata != null)
-		{
-			log(node, node.getLineNumber("source"), new IgnoreEmbeddedStylesheet());
-		}
-
-		if (source != null)
-		{
-            if (TextParser.isBindingExpression(source))
-            {
-                log(node, node.getLineNumber("source"), new CompileTimeAttributeBindingExpressionUnsupported());
-                return;
-            }
-
-			// C: Look at the problem this way, AS3 can have [Embed], MXML can have @embed, CSS can have @embed.
-			// AS3 and MXML can "import" each others types. Does it make sense for AS3 or MXML to "import" CSS?
-			// Currently, external CSS stylesheets are pulled in and codegen within MXML-generated classes. Can
-			// CSS be generated in a separate class/factory and make MXML "import" it?
-			//
-			// Can CSS embedded within <mx:Style> be generated within the MXML-generated class as an inner class?
-
-			VirtualFile file = unit.getSource().resolve(source);
-
-			if (file == null)
-			{
-                VirtualFile[] sourcePath = mxmlConfiguration.getSourcePath();
-
-                if (sourcePath != null)
-                {
-                    for (int i = 0; (i < sourcePath.length) && (file == null); i++)
-                    {
-                        file = sourcePath[i].resolve(source);
-                    }
-                }
-			}
-
-			if (file == null)
-			{
-				log(node, node.getLineNumber("source"), new StylesheetNotFound(source));
-			}
-			else
-			{
-				unit.getSource().addFileInclude(file);
-				cdata = parseExternalFile(node, file);
-				if (cdata != null)
-				{
-					//	parseStyle(node, unit.getSource().getName(), cdata);
-					parseStyle(node, file.getName(), file.getLastModified(), cdata);
-				}
-			}
-		}
-		else if (cdata != null)
-		{
-			parseStyle(node, unit.getSource().getName(), unit.getSource().getLastModified(), cdata.beginLine);
-		}
 	}
 
 	public void analyze(ScriptNode node)
@@ -722,21 +656,7 @@ public class SyntaxAnalyzer extends AnalyzerAdapter
 		{
             BufferedInputStream bufferedInputStream = new BufferedInputStream(f.getInputStream());
             String charsetName = null;
-            
-            // special handling to get the charset for CSS files.
-            if (f.getName().toLowerCase().endsWith(".css")) 
-            {
-                try
-                {
-                    charsetName = StyleParser.readCSSCharset(bufferedInputStream);
-                }
-                catch (StyleSheetInvalidCharset e)
-                {
-                    // add filename to exception and log warning.
-                    log(node, new StyleSheetInvalidCharset(f.getName(), e.charsetName));
-                    return null;
-                }
-            }
+			
             String bomCharsetName = FileUtils.consumeBOM(bufferedInputStream, null, true);
             if (charsetName == null) {
                 charsetName = bomCharsetName;
@@ -777,40 +697,6 @@ public class SyntaxAnalyzer extends AnalyzerAdapter
 			}
 		}
 		return cdata;
-	}
-
-    private void parseStyle(StyleNode node, String stylePath, long lastModified, CDATANode cdata)
-	{
-		FontManager fontManager = mxmlConfiguration.getFontsConfiguration().getTopLevelManager();
-
-		StyleSheet styleSheet = new StyleSheet();
-		styleSheet.checkDeprecation(mxmlConfiguration.showDeprecationWarnings());
-		styleSheet.parse(stylePath, new StringReader(cdata.image), ThreadLocalToolkit.getLogger(), fontManager);
-
-		if (styleSheet.errorsExist())
-		{
-			// Error
-			log(node, new StyleSheetParseError(stylePath));
-		}
-
-		node.setStyleSheet(styleSheet);
-	}
-
-	private void parseStyle(StyleNode node, String enclosingDocumentPath, long lastModified, int startLine)
-	{
-		FontManager fontManager = mxmlConfiguration.getFontsConfiguration().getTopLevelManager();
-
-		CDATANode cdata = (CDATANode) node.getChildAt(0);
-		StyleSheet styleSheet = new StyleSheet();
-		styleSheet.checkDeprecation(mxmlConfiguration.showDeprecationWarnings());
-		styleSheet.parse(enclosingDocumentPath, startLine, new StringReader(cdata.image), ThreadLocalToolkit.getLogger(), fontManager);
-		if (styleSheet.errorsExist())
-		{
-			// Error
-			log(node, new StyleSheetParseError(enclosingDocumentPath));
-		}
-
-		node.setStyleSheet(styleSheet);
 	}
 
 	// error messages

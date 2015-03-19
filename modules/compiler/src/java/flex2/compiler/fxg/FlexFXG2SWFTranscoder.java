@@ -1041,10 +1041,6 @@ public class FlexFXG2SWFTranscoder extends FXG2SWFTranscoder
                          thisAttrib = attribName + " = " + attribValue;
                     }
                 }
-                else if (type.getStyle(attribName) != null)
-                {
-                    thisAttrib = "setStyle(\"" + attribName + "\", \"" + attribValue + "\")";
-                }
 
                 if (thisAttrib != null)
                     buf.append("        " + variableName + '.' + thisAttrib + ";\r\n");

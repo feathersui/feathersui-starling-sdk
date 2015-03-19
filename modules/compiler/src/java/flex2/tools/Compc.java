@@ -220,7 +220,6 @@ public class Compc extends Tool implements FlexTool
         // for include-libraries at least, since this value appears in flex-config.xml
         swcContext.load( compilerConfig.getLibraryPath(),
                          compilerConfig.getExternalLibraryPath(),
-                         null,
                          compilerConfig.getIncludeLibraries(),
                          mappings,
                          I18nUtils.getTranslationFormat(compilerConfig),

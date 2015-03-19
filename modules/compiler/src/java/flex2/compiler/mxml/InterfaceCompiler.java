@@ -442,7 +442,6 @@ public class InterfaceCompiler extends flex2.compiler.AbstractSubCompiler implem
         Source.transferLoaderClassBase(interfaceUnit, unit);
         Source.transferGeneratedSources(interfaceUnit, unit);
         Source.transferClassTable(interfaceUnit, unit);
-        Source.transferStyles(interfaceUnit, unit);
     }
 
     public void generate(CompilationUnit unit, SymbolTable symbolTable)
@@ -468,8 +467,7 @@ public class InterfaceCompiler extends flex2.compiler.AbstractSubCompiler implem
         TypeTable typeTable = (TypeTable) symbolTable.getContext().getAttribute(MxmlCompiler.TYPE_TABLE);
         if (typeTable == null)
         {
-            typeTable = new TypeTable(symbolTable, nameMappings, unit.getStandardDefs(),
-                                      mxmlConfiguration.getThemeNames());
+            typeTable = new TypeTable(symbolTable, nameMappings, unit.getStandardDefs());
             symbolTable.getContext().setAttribute(MxmlCompiler.TYPE_TABLE, typeTable);
         }
 
@@ -1698,11 +1696,6 @@ public class InterfaceCompiler extends flex2.compiler.AbstractSubCompiler implem
 
         public void analyze(CDATANode node) {}
 
-        public void analyze(StyleNode node)
-        {
-            //  TODO register dependencies arising from e,g, object/inline styles
-        }
-
         public void analyze(ScriptNode node) {}
 
         public void analyze(MetaDataNode node) {}
@@ -1960,10 +1953,6 @@ public class InterfaceCompiler extends flex2.compiler.AbstractSubCompiler implem
 
             protected void dynamicProperty(String name) {}
 
-            protected void effect(Effect effect) {}
-
-            protected void style(Style style) {}
-
             protected void dynamicProperty(String name, String state) {}
 
             protected void qualifiedAttribute(Node node, Type type, String namespace, String localPart) {}
@@ -2035,16 +2024,6 @@ public class InterfaceCompiler extends flex2.compiler.AbstractSubCompiler implem
                     }
                 }
 
-                scanGrandchildren();
-            }
-
-            protected void effect(Effect effect)
-            {
-                scanGrandchildren();
-            }
-
-            protected void style(Style style)
-            {
                 scanGrandchildren();
             }
 

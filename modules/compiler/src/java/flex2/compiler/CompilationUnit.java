@@ -21,8 +21,6 @@ package flex2.compiler;
 
 import flex2.compiler.abc.AbcClass;
 import flex2.compiler.abc.MetaData;
-import flex2.compiler.css.Styles;
-import flex2.compiler.css.StylesContainer;
 import flex2.compiler.mxml.lang.StandardDefs;
 import flex2.compiler.io.VirtualFile;
 import flex2.compiler.util.*;
@@ -196,15 +194,8 @@ public final class CompilationUnit
 	public MultiNameMap namespaceHistory;
 	public MultiNameMap expressionHistory;
 
-
-	public Styles styles;
     public String styleName;
     public HashSet<String> skinStates;
-
-	/**
-	 * only MXML components set StylesContainer
-	 */
-	private StylesContainer stylesContainer;
 
 	public boolean hasTypeInfo;
 	public ObjectValue typeInfo;
@@ -364,15 +355,6 @@ public final class CompilationUnit
 			typeHistory.clear();
 			expressionHistory.clear();
 			namespaceHistory.clear();
-		}
-
-		if (styles == null)
-		{
-			styles = new Styles(2);
-		}
-		else
-		{
-			styles.clear();
 		}
 		
 		checkBits = 0;
@@ -560,16 +542,6 @@ public final class CompilationUnit
 	public byte[] getByteCodes()
 	{
 		return bytes.toByteArray(false);
-	}
-
-	public StylesContainer getStylesContainer()
-	{
-		return stylesContainer;
-	}
-
-	public void setStylesContainer(StylesContainer stylesContainer)
-	{
-		this.stylesContainer = stylesContainer;
 	}
 
 	public StandardDefs getStandardDefs()

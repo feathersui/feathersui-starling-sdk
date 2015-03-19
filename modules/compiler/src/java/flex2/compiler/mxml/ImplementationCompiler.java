@@ -26,7 +26,6 @@ import flex2.compiler.as3.BytecodeEmitter;
 import flex2.compiler.as3.EmbedExtension;
 import flex2.compiler.as3.HostComponentExtension;
 import flex2.compiler.as3.SignatureExtension;
-import flex2.compiler.as3.StyleExtension;
 import flex2.compiler.as3.binding.BindableExtension;
 import flex2.compiler.as3.binding.DataBindingExtension;
 import flex2.compiler.as3.managed.ManagedExtensionError;
@@ -98,7 +97,6 @@ class ImplementationCompiler extends flex2.compiler.AbstractSubCompiler
         }
         String gendir = (mxmlConfiguration.keepGeneratedActionScript()? mxmlConfiguration.getGeneratedDirectory() : null);
 		asc.addCompilerExtension(new EmbedExtension(transcoders, gendir, mxmlConfiguration.showDeprecationWarnings()));
-		asc.addCompilerExtension(new StyleExtension());
 		
 		// IMPORTANT!!!! The HostComponentExtension must run before the BindableExtension!!!!
 		asc.addCompilerExtension(new HostComponentExtension(mxmlConfiguration.reportMissingRequiredSkinPartsAsWarnings()));
@@ -164,8 +162,7 @@ class ImplementationCompiler extends flex2.compiler.AbstractSubCompiler
 		TypeTable typeTable = (TypeTable) symbolTable.getContext().getAttribute(MxmlCompiler.TYPE_TABLE);
 		if (typeTable == null)
 		{
-			typeTable = new TypeTable(symbolTable, nameMappings, unit.getStandardDefs(),
-                                      mxmlConfiguration.getThemeNames());
+			typeTable = new TypeTable(symbolTable, nameMappings, unit.getStandardDefs());
 			symbolTable.getContext().setAttribute(MxmlCompiler.TYPE_TABLE, typeTable);
 		}
 
@@ -209,7 +206,6 @@ class ImplementationCompiler extends flex2.compiler.AbstractSubCompiler
 												  symbolTable.emitter);
 
 			// C: null out MxmlDocument after generation
-			document.getStylesContainer().setMxmlDocument(null);
 			document = null;
 			// C: MXML DOM no longer needed
 			unit.setSyntaxTree(null);
@@ -244,7 +240,6 @@ class ImplementationCompiler extends flex2.compiler.AbstractSubCompiler
 			ThreadLocalToolkit.setLogger(adapter);
 
 			// C: null out MxmlDocument after generation
-			document.getStylesContainer().setMxmlDocument(null);
 			document = null;
 			// C: MXML DOM no longer needed
 			unit.setSyntaxTree(null);
@@ -361,7 +356,6 @@ class ImplementationCompiler extends flex2.compiler.AbstractSubCompiler
 		Source.transferMetaData(ascUnit, unit);
 		Source.transferLoaderClassBase(ascUnit, unit);
 		Source.transferClassTable(ascUnit, unit);
-		Source.transferStyles(ascUnit, unit);
 	}
 
 	public void generate(CompilationUnit unit, SymbolTable symbolTable)

@@ -145,11 +145,6 @@ public class ApplicationCache extends CacheBase
                 result = false;
             }
 
-            if (result && !compilerConfiguration.getThemeNames().equals(cacheCompilerConfiguration.getThemeNames()))
-            {
-                result = false;
-            }
-
             if (result && !ApplicationCache.<VirtualFile>equals(compilerConfiguration.getSourcePath(),
                                                                 cacheCompilerConfiguration.getSourcePath()))
             {

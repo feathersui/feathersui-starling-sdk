@@ -80,35 +80,6 @@ $str
 
 #**
  *
- *  emitComponentStyleSettings
- *
- *#
-#macro (emitComponentStyleSettings)
-#set ($iter = $doc.root.styleAndEffectInitializerIterator)
-#if ($iter.hasNext())
-        //  initialize component styles
-        if (!this.styleDeclaration)
-        {
-            this.styleDeclaration = new CSSStyleDeclaration(null, styleManager);
-        }
-
-        this.styleDeclaration.defaultFactory = function():void
-        {
-#foreach ($init in $iter)
-#embedText("            this.${init.name} = ${init.valueExpr};" $init.lineRef)
-#end
-        };
-#end
-
-#set ($effectEventNames = $doc.root.effectNames)
-#if ($effectEventNames.length() > 0)
-        //  register effect events
-        this.registerEffects( [ $effectEventNames ] );
-#end
-#end
-
-#**
- *
  *  emitAddedToStageHandlerFunc
  *  initializers that run after the object is added to the stage.
  *
@@ -137,17 +108,6 @@ $str
  *#
 #macro (emitComponentInitializers_1)
 
-#if (!$doc.isIFlexModule)
-
-        // our style settings
-#emitComponentStyleSettings()
-
-#if ($doc.stylesContainer.styleDefs.size() > 0 || $doc.isFlexApplication)
-        // ambient styles
-        mx_internal::_${doc.className}_StylesInit();
-#end
-
-#end
         // layer initializers
 #emitInitializers("        " $doc.designLayerPropertyInitializerIterator "this")
 
@@ -162,24 +122,6 @@ $str
 
         // events
 #emitInitializers("        " $doc.root.eventInitializerIterator "this")
-
-#end
-
-#**
- *
- *  emitComponentStyleInitializers
- *  initializers that run in the module factory override of a IFlexModule object.
- *
- *#
-#macro (emitComponentStyleInitializers)
-
-        // our style settings
-#emitComponentStyleSettings()
-
-#if ($doc.stylesContainer.styleDefs.size() > 0 || $doc.isFlexApplication)
-        // ambient styles
-        mx_internal::_${doc.className}_StylesInit();
-#end
 
 #end
 
@@ -275,161 +217,6 @@ $str
 
 #**
  *
- *  emitStylesInitFunc
- *  emit styles initialization function with specified name
- *
- *#
-#macro (emitStylesInitFunc $fname)
-#trace("    //  initialize style defs for $doc.className")
-
-    mx_internal var ${fname}_done:Boolean = false;
-
-    mx_internal function $fname():void
-    {
-        //  only add our style defs to the style manager once
-        if (mx_internal::${fname}_done)
-            return;
-        else
-            mx_internal::${fname}_done = true;
-            
-        var style:CSSStyleDeclaration;
-        var effects:Array;
-                    
-#if (!$doc.isIUIComponent)
-
-#if ($doc.isIFlexModule)         
-        var styleManager:IStyleManager2 = StyleManager.getStyleManager(moduleFactory);
-#else
-        var styleManager:IStyleManager2 = StyleManager.getStyleManager(null);
-#end
-
-#end
-
-#if ($doc.stylesContainer.isAdvanced())
-        var conditions:Array;
-        var condition:CSSCondition;
-        var selector:CSSSelector;
-#end
-#foreach ($styleDef in $doc.stylesContainer.styleDefs)
-#if ($styleDef.isAdvanced())
-##
-## Start Advanced Flex 4 StyleDeclarations
-##
-#foreach ($styleDecl in $styleDef.declarations)
-#set ($selector = $styleDecl.selector)
-        selector = null;
-        conditions = null;
-#emitSelectorAncestor($selector)
-        // $selector.toString()
-        style = styleManager.getStyleDeclaration("$selector.toString()");
-        if (!style)
-        {
-            style = new CSSStyleDeclaration(selector, styleManager);
-        }
-
-#if ($styleDecl.declarationBlocks.size() > 0)
-        if (style.factory == null)
-        {
-            style.factory = function():void
-            {
-#foreach ($block in $styleDecl.declarationBlocks)
-#if ($block.hasMediaList())
-              if (styleManager.acceptMediaList("$block.mediaList.toEscapedString()"))
-              {
-#end
-#foreach ($styleProp in $block.properties.values())
-                this.${styleProp.name} = ${styleProp.value};
-#end
-#if ($block.hasMediaList())
-              }
-#end
-#end
-            };
-        }
-
-#if ($styleDecl.hasEffectStyles())
-        effects = style.mx_internal::effects;
-        if (!effects)
-        {
-            effects = style.mx_internal::effects = [];
-        }
-#end
-
-#foreach ($block in $styleDecl.declarationBlocks)
-#if ($block.effectStyles.size() > 0)
-#if ($block.hasMediaList())
-        if (styleManager.acceptMediaList("$block.mediaList.toEscapedString()"))
-        {
-#end
-
-#foreach ($effectStyle in $block.effectStyles)
-          effects.push("${effectStyle}");
-#end
-#if ($block.hasMediaList())
-        }
-#end
-#end
-#end
-
-#end
-
-#end
-##
-## End Advanced Flex 4 StyleDeclarations
-##
-#else
-##
-## Start Legacy Flex 3 StyleDeclarations
-##
-        // ${styleDef.subject}
-#if ($styleDef.isTypeSelector())
-        style = styleManager.getStyleDeclaration("${styleDef.typeName}");
-#else
-        style = styleManager.getStyleDeclaration(".${styleDef.typeName}");
-#end
-        if (!style)
-        {
-            style = new CSSStyleDeclaration(null, styleManager);
-#if ($styleDef.isTypeSelector())
-            styleManager.setStyleDeclaration("${styleDef.typeName}", style, false);
-#else
-            styleManager.setStyleDeclaration(".${styleDef.typeName}", style, false);
-#end
-        }
-#if ($styleDef.styles.size() > 0)
-        if (style.factory == null)
-        {
-            style.factory = function():void
-            {
-#foreach ($style in $styleDef.styles)
-                this.${style.name} = ${style.value};
-#end
-            };
-        }
-#end
-#if ($styleDef.effectStyles.size() > 0)
-        effects = style.mx_internal::effects;
-        if (!effects)
-            effects = style.mx_internal::effects = [];
-#foreach ($effectStyle in $styleDef.effectStyles)
-        effects.push("${effectStyle}");
-#end
-#end
-##
-## End Legacy Flex 3 StyleDeclarations
-##
-#end
-#end
-
-#if ($doc.isFlexApplication)
-        styleManager.initProtoChainRoots();
-#end
-    }
-#end
-
-
-#**
- *
  *  emitEmbedMetadata
  *
  *#
@@ -467,9 +254,7 @@ $str
             function(_sourceFunctionReturnValue:${bindingExpression.getDestinationTypeName()},
                      instanceIndices:Array):void
             {
-#if ($bindingExpression.isStyle())
-                ${bindingExpression.getDestinationPathRoot(true)}.setStyle("${bindingExpression.destinationLValue}", _sourceFunctionReturnValue);
-#elseif ($bindingExpression.isDestinationObjectProxy())
+#if ($bindingExpression.isDestinationObjectProxy())
                 ${bindingExpression.getDestinationPathRoot(true)}.${bindingExpression.destinationLValue} = new mx.utils.ObjectProxy(_sourceFunctionReturnValue);
 #else
                 ${bindingExpression.getDestinationPathRoot(true)}.${bindingExpression.destinationLValue} = _sourceFunctionReturnValue;
@@ -503,9 +288,7 @@ $str
 #else
             function(_sourceFunctionReturnValue:${bindingExpression.getDestinationTypeName()}):void
             {
-#if ($bindingExpression.isStyle())
-                ${bindingExpression.getDestinationPathRoot(true)}.setStyle("${bindingExpression.destinationStyle}", _sourceFunctionReturnValue);
-#elseif ($bindingExpression.isDestinationObjectProxy())
+#if ($bindingExpression.isDestinationObjectProxy())
                 ${bindingExpression.getDestinationPath(true)} = new mx.utils.ObjectProxy(_sourceFunctionReturnValue);
 #else
                 ${bindingExpression.getNamespaceDeclarations()}
@@ -571,7 +354,7 @@ $str
  *#
 #macro (emitInitializerSupportDefs)
 
-    //  supporting function definitions for properties, events, styles, effects
+    //  supporting function definitions for properties, events
 #foreach($def in $doc.definitionIterator)
 #foreach($fragment in $def)
 #embedText($fragment.text $fragment.xmlLineNumber)
@@ -582,10 +365,6 @@ $str
 #if ($doc.bindingExpressions.size() > 0)
     //  binding mgmt
 #emitBindingsSetup( ${doc.convertedClassName} )
-#end
-
-#if ($doc.stylesContainer.styleDefs.size() > 0 || $doc.isFlexApplication)
-#emitStylesInitFunc("_${doc.className}_StylesInit")
 #end
 
 #end

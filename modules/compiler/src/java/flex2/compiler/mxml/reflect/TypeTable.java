@@ -24,7 +24,6 @@ import flex2.compiler.abc.AbcClass;
 import flex2.compiler.abc.MetaData;
 import flex2.compiler.abc.Method;
 import flex2.compiler.abc.Variable;
-import flex2.compiler.css.Styles;
 import flex2.compiler.mxml.lang.StandardDefs;
 import flex2.compiler.util.NameFormatter;
 import flex2.compiler.util.NameMappings;
@@ -52,7 +51,6 @@ public class TypeTable
     private SymbolTable symbolTable;
     private final StandardDefs standardDefs;
     private NameMappings manifest;
-    private Set<String> themeNames;
 
     public final Type noType;
     public final Type stringType;
@@ -73,12 +71,11 @@ public class TypeTable
     private Map<String, String> nonRepeaters;
 
     public TypeTable(SymbolTable symbolTable, NameMappings manifest,
-                     StandardDefs standardDefs, Set<String> themeNames)
+                     StandardDefs standardDefs)
     {
         this.symbolTable = symbolTable;
         this.manifest = manifest;
         this.standardDefs = standardDefs;
-        this.themeNames = themeNames;
 
         nonRepeaters = new WeakHashMap<String, String>();
         typeMap = new HashMap<String, Type>();
@@ -185,27 +182,6 @@ public class TypeTable
         assert type.getName().equals(className) : "type = " + type.getName() + ", className = " + className;
 
         return type;
-    }
-
-    /**
-     * Look up a globally-defined style property
-     */
-    public Style getStyle(String styleName)
-    {
-        MetaData md = symbolTable.getStyle(styleName);
-        return md == null ? null : new StyleHelper(styleName,
-                                                   md.getValue("type"),
-                                                   md.getValue("enumeration"),
-                                                   md.getValue("format"),
-                                                   md.getValue("inherit"),
-                                                   md.getValue(Deprecated.DEPRECATED_MESSAGE),
-                                                   md.getValue(Deprecated.DEPRECATED_REPLACEMENT),
-                                                   md.getValue(Deprecated.DEPRECATED_SINCE));
-    }
-
-    public Styles getStyles()
-    {
-        return symbolTable.getStyles();
     }
 
     /**
@@ -462,131 +438,6 @@ public class TypeTable
                 Type st = getSuperType();
                 return (st != null) ? st.getEvent(name) : null;
             }
-        }
-
-        /**
-         * [Effect]
-         */
-        public Effect getEffect(String name)
-        {
-            if (effects == null)
-            {
-                effects = classInfo.getMetaData("Effect", true);
-            }
-
-            for (int i = 0, length = effects.size(); i < length; i++)
-            {
-                MetaData md = effects.get(i);
-                if (name.equals(md.getValue(0)))
-                {
-                    return new EffectHelper(name,
-                                            md.getValue("event"),
-                                            md.getValue(Deprecated.DEPRECATED_MESSAGE),
-                                            md.getValue(Deprecated.DEPRECATED_REPLACEMENT),
-                                            md.getValue(Deprecated.DEPRECATED_SINCE));
-                }
-            }
-
-            return null;
-        }
-
-        /**
-         * [Style]
-         */
-        public Style getStyle(String name)
-        {
-            if (styles == null)
-            {
-                styles = classInfo.getMetaData("Style", true);
-            }
-
-            if (!isExcludedStyle(name))
-            {
-                for (int i = 0, length = styles.size(); i < length; i++)
-                {
-                    MetaData md = styles.get(i);
-
-                    if (name.equals(md.getValue("name")))
-                    {
-                        String theme = md.getValue("theme");
-
-                        if ((theme == null) || (themeNames == null) || hasTheme(theme))
-                        {
-                            return new StyleHelper(name,
-                                                   md.getValue("type"),
-                                                   md.getValue("enumeration"),
-                                                   md.getValue("format"),
-                                                   md.getValue("inherit"),
-                                                   md.getValue(Deprecated.DEPRECATED_MESSAGE),
-                                                   md.getValue(Deprecated.DEPRECATED_REPLACEMENT),
-                                                   md.getValue(Deprecated.DEPRECATED_SINCE));
-                        }
-                    }
-                }
-            }
-
-            return null;
-        }
-
-        public boolean isExcludedStyle(String name)
-        {
-            boolean result = false;
-
-            if (excludes == null)
-            {
-                excludes = classInfo.getMetaData("Exclude", true);
-            }
-
-            for (MetaData metaData : excludes)
-            {
-                if (name.equals(metaData.getValue("name")) &&
-                    "style".equals(metaData.getValue("kind")))
-                {
-                    result = true;
-                }
-            }
-
-            return result;
-        }
-
-        /**
-         * [Style(theme="...")]
-         */
-        public String getStyleThemes(String name)
-        {
-            if (styles == null)
-            {
-                styles = classInfo.getMetaData("Style", true);
-            }
-
-            for (int i = 0, length = styles.size(); i < length; i++)
-            {
-                MetaData md = styles.get(i);
-
-                if (name.equals(md.getValue("name")))
-                {
-                    return md.getValue("theme");
-                }
-            }
-
-            return null;
-        }
-        
-        private boolean hasTheme(String value)
-        {
-            boolean result = false;
-            String[] themes = value.split("[, ]");
-            
-            for (int i = 0; i < themes.length; i++)
-            {
-                if (themeNames.contains(themes[i]))
-                {
-                    result = true;
-                    break;
-                }
-            }
-
-            return result;
         }
 
         /**
@@ -1332,200 +1183,6 @@ public class TypeTable
         public String toString()
         {
             return "Event " + getName();
-        }
-    }
-
-    private final class StyleHelper extends StatefulHelper implements Style
-    {
-        /**
-         * NOTE for now, we assume that specified type name (if specified) is either fully qualified,
-         * TODO fix this, following ASC rearchitecture. StyleExtension should a) try resolving unqualified
-         * type against current imports; b) add import if implied by qualified type; c) logError if a/b fail
-         * TODO make StyleHelper and EventHelper consistent w.r.t. type member
-         */
-        private StyleHelper(String name, String typeName, String enumeration, String format, String inherit,
-                            String message, String replacement, String since)
-        {
-            if (typeName == null)
-            {
-                typeName = (enumeration == null) ? SymbolTable.OBJECT : SymbolTable.STRING;
-            }
-            else
-            {
-                //  HACK: for now, if declared type isn't found... (no more actionscript.lang)
-                //  TODO: this should no longer be necessary given metadata scanning in as3.SyntaxTreeEvaluator, but
-                //  leaving it in place for now out of cowardice.
-                Type t = TypeTable.this.getType(NameFormatter.toColon(typeName));
-                if (t == null)
-                {
-                    typeName = SymbolTable.OBJECT;
-                }
-                //  /HACK
-            }
-
-            this.name = name;
-			this.typeName = NameFormatter.toColon(typeName);
-            if (enumeration != null)
-            {
-                StringTokenizer t = new StringTokenizer(enumeration, ",");
-                this.enumeration = new String[t.countTokens()];
-                for (int i = 0; t.hasMoreTokens(); i++)
-                {
-                    this.enumeration[i] = t.nextToken();
-                }
-            }
-            this.format = format;
-            isInherit = "yes".equalsIgnoreCase(inherit);
-            
-            this.message = message;
-            this.replacement = replacement;
-            this.since = since;
-        }
-
-        private final String name;
-        private final String typeName;
-        private String[] enumeration;
-        private String format;
-        private final boolean isInherit;
-        private final String message;
-        private final String replacement;
-        private final String since;
-        private Type type;
-        private Type lvalueType;
-
-        public String getName()
-        {
-            return name;
-        }
-
-        public Type getType()
-        {
-            if (type == null)
-            {
-                type = TypeTable.this.getType(typeName);
-            }
-            return type;
-        }
-
-        public Type getLValueType()
-        {
-            if (lvalueType == null)
-            {
-                lvalueType = getType();
-
-                //  lvalue type - initializers to IDeferredInstance-typed styles
-                // are values to be returned by the generated factory.
-                if (standardDefs.isIDeferredInstance(lvalueType))
-                {
-                    lvalueType = TypeTable.this.objectType;
-                }
-            }
-            return lvalueType;
-        }
-
-        public Type getElementType()
-        {
-            return objectType;
-        }
-
-        public String[] getEnumeration()
-        {
-            return enumeration;
-        }
-
-        public String getFormat()
-        {
-            return format;
-        }
-
-        public boolean isInherit()
-        {
-            return isInherit;
-        }
-
-        public String getDeprecatedMessage()
-        {
-            return message;
-        }
-
-        public String getDeprecatedReplacement()
-        {
-            return replacement;
-        }
-
-        public String getDeprecatedSince()
-        {
-            return since;
-        }
-
-        @Override
-        public String toString()
-        {
-            return "Style " + getName();
-        }
-    }
-
-    private final class EffectHelper extends StatefulHelper implements Effect
-    {
-        private final String name;
-        private final String event;
-        private final String message;
-        private final String replacement;
-        private final String since;
-
-        private EffectHelper(String name, String event, String message, String replacement, String since)
-        {
-            this.name = name;
-            this.event = event;
-            this.message = message;
-            this.replacement = replacement;
-            this.since = since;
-        }
-
-        public String getName()
-        {
-            return name;
-        }
-
-        public Type getType()
-        {
-            return TypeTable.this.getType(standardDefs.CLASS_EFFECT);
-        }
-
-        public Type getLValueType()
-        {
-            return getType();
-        }
-
-        public Type getElementType()
-        {
-            return objectType;
-        }
-
-        public String getEvent()
-        {
-            return event;
-        }
-
-        public String getDeprecatedMessage()
-        {
-            return message;
-        }
-
-        public String getDeprecatedReplacement()
-        {
-            return replacement;
-        }
-
-        public String getDeprecatedSince()
-        {
-            return since;
-        }
-
-        @Override
-        public String toString()
-        {
-            return "Effect " + getName();
         }
     }
 

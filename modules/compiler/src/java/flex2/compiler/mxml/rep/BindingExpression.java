@@ -25,7 +25,6 @@ import flex2.compiler.as3.binding.Watcher;
 import flex2.compiler.mxml.builder.AbstractBuilder;
 import flex2.compiler.mxml.lang.StandardDefs;
 import flex2.compiler.mxml.reflect.Property;
-import flex2.compiler.mxml.reflect.Style;
 import flex2.compiler.mxml.reflect.Type;
 import flex2.compiler.util.NameFormatter;
 import macromedia.asc.parser.*;
@@ -51,8 +50,6 @@ public class BindingExpression implements Comparable<BindingExpression>
     private Model destination;
     /** The destination property within the Model (numeric for Arrays) */
     private String destinationProperty;
-    /** The destination style */
-    private String destinationStyle;
     /** If destinationProperty is an array index, this is true.  Controlled by
      * calling setDestinationProperty(int).
      */
@@ -190,7 +187,7 @@ public class BindingExpression implements Comparable<BindingExpression>
     	// validate the simple property case.
     	boolean result = false;
     	
-    	if ((destination != null) && (destinationProperty != null && destinationStyle == null) &&
+    	if ((destination != null) && (destinationProperty != null) &&
             !isArrayAccess() && !((isDestinationXMLAttribute || isDestinationXMLNode)))
     	{
     		Type type = destination.getType();
@@ -264,10 +261,6 @@ public class BindingExpression implements Comparable<BindingExpression>
         {
             identifier = nodeFactory.identifier(destinationProperty);
         }
-        else if (destinationStyle != null)
-        {
-            identifier = nodeFactory.identifier(destinationStyle);
-        }
 
         assert identifier != null;
 
@@ -285,7 +278,7 @@ public class BindingExpression implements Comparable<BindingExpression>
         SetExpressionNode selector = nodeFactory.setExpression(identifier, argumentList, false);
 
         if ((destination != null) &&
-            (destinationProperty != null || destinationStyle != null) &&
+            (destinationProperty != null) &&
             !isArrayAccess() &&
             !((isDestinationXMLAttribute || isDestinationXMLNode)))
         {
@@ -295,31 +288,6 @@ public class BindingExpression implements Comparable<BindingExpression>
         {
             selector.setMode(Tokens.LEFTBRACKET_TOKEN);
         }
-
-        return nodeFactory.memberExpression(base, selector);
-    }
-
-    private static final String SET_STYLE = "setStyle".intern();
-    private static final String _SOURCE_FUNCTION_RETURN_VALUE = "_sourceFunctionReturnValue".intern();
-
-    public MemberExpressionNode generateDestinationSetStyle(NodeFactory nodeFactory, String rvalue)
-    {
-        Node base = null;
-
-        if (!((isDestinationXMLAttribute || isDestinationXMLNode)))
-        {
-            base = generateDestinationPathRoot(nodeFactory, false);
-        }
-
-        IdentifierNode identifier = nodeFactory.identifier(SET_STYLE, false);
-        LiteralStringNode literalString = nodeFactory.literalString(destinationStyle);
-        ArgumentListNode argumentList = nodeFactory.argumentList(null, literalString);
-        MemberExpressionNode memberExpression =
-            AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, _SOURCE_FUNCTION_RETURN_VALUE, false);
-        argumentList = nodeFactory.argumentList(argumentList, memberExpression);
-        CallExpressionNode selector = (CallExpressionNode) nodeFactory.callExpression(identifier,
-                                                                                      argumentList);
-        selector.setRValue(false);
 
         return nodeFactory.memberExpression(base, selector);
     }
@@ -375,7 +343,7 @@ public class BindingExpression implements Comparable<BindingExpression>
         }
 
         if ((destination != null) &&
-            (destinationProperty != null || destinationStyle != null) &&
+            (destinationProperty != null) &&
             !isArrayAccess() &&
             !(doXML && (isDestinationXMLAttribute || isDestinationXMLNode)))
         {
@@ -394,10 +362,6 @@ public class BindingExpression implements Comparable<BindingExpression>
         else if (destinationProperty != null)
         {
             buffer.append(destinationProperty);
-        }
-        else if (destinationStyle != null)
-        {
-            buffer.append(destinationStyle);
         }
 
         if (doXML && isDestinationXMLNode && !isDestinationE4X)
@@ -596,16 +560,6 @@ public class BindingExpression implements Comparable<BindingExpression>
                     }
                 }
             }
-            else if (destinationStyle != null)
-            {
-                Type destinationType = destination.getType();
-                Style style = destinationType.getStyle(destinationStyle);
-
-                if (style != null)
-                {
-                    type = style.getType();
-                }
-            }
             else
             {
                 type = destination.getType();
@@ -677,29 +631,13 @@ public class BindingExpression implements Comparable<BindingExpression>
         arrayAccess = true;
     }
 
-    public void setDestinationStyle(String destinationStyle)
-    {
-        this.destinationStyle = destinationStyle;
-    }
-
-    public String getDestinationStyle()
-    {
-        return destinationStyle;
-    }
-
     public boolean isSimpleChain()
     {
         return (!isFromBindingNode() &&
-                !isStyle() &&
                 !isDestinationObjectProxy() &&
                 getNamespaceDeclarations().equals("") &&
                 (twoWayCounterpart == null) &&
                 (getDestinationPath(false).indexOf("[") == -1));
-    }
-
-    public boolean isStyle()
-    {
-        return destinationStyle != null;
     }
 
     public void setId(int id)

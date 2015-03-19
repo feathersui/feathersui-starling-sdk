@@ -600,12 +600,6 @@ public class OEMUtil
 			VirtualFile file = (VirtualFile)entry.getValue();
 			data.swcFileChecksums.put(filename, new Long(file.getLastModified())); 
 		}
-
-        for (VirtualFile themeStyleSheet : swcContext.getThemeStyleSheets())
-        {
-            data.swcFileChecksums.put(themeStyleSheet.getName(),
-                                      new Long(themeStyleSheet.getLastModified()));
-        }
 	}
 
 	/**
@@ -798,11 +792,6 @@ public class OEMUtil
     	}
 
     	Map swcFiles = swcContext.getFiles();
-
-        for (VirtualFile themeStyleSheet : swcContext.getThemeStyleSheets())
-        {
-            swcFiles.put(themeStyleSheet.getName(), themeStyleSheet);
-        }
 
     	Set dataSet = data.swcFileChecksums.entrySet();
 

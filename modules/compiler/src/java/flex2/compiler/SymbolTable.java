@@ -24,8 +24,6 @@ import flex2.compiler.as3.BytecodeEmitter;
 import flex2.compiler.as3.binding.TypeAnalyzer;
 import flex2.compiler.common.CompilerConfiguration;
 import flex2.compiler.common.Configuration;
-import flex2.compiler.css.StyleConflictException;
-import flex2.compiler.css.Styles;
 import flex2.compiler.util.*;
 import flex2.tools.oem.ProgressMeter;
 import macromedia.asc.util.Context;
@@ -219,7 +217,6 @@ public final class SymbolTable
 	public SymbolTable(Configuration configuration, ContextStatics contextStatics)
 	{
 		classTable = new HashMap<String, AbcClass>(300);
-		styles = new Styles();
         perCompileData = contextStatics;
 
         CompilerConfiguration compilerConfiguration = configuration.getCompilerConfiguration();
@@ -260,9 +257,6 @@ public final class SymbolTable
 	}
 
 	private final Map<String, AbcClass> classTable;
-
-	// C: if possible, move styles out of SymbolTable...
-	private final Styles styles;
 
 	// C: ContextStatics stays here because it holds namespace and type info...
 	public final ContextStatics perCompileData;
@@ -327,30 +321,6 @@ public final class SymbolTable
     {
         return classTable.keySet();
     }
-
-	// app-wide style management
-
-	public void registerStyles(Styles newStyles) throws StyleConflictException
-	{
-		styles.addStyles(newStyles);
-	}
-
-	public MetaData getStyle(String styleName)
-	{
-		if (styleName != null)
-		{
-			return styles.getStyle(styleName);
-		}
-		else
-		{
-			return null;
-		}
-	}
-
-	public Styles getStyles()
-	{
-		return styles;
-	}
 
 	/**
 	 * It is possible for a Source to define multiple definitions. This method creates mappings between

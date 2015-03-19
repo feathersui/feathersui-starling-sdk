@@ -19,11 +19,6 @@
 
 package flex2.tools;
 
-import flash.css.StyleCondition;
-import flash.css.StyleDeclaration;
-import flash.css.StyleDeclarationBlock;
-import flash.css.StyleProperty;
-import flash.css.StyleSelector;
 import flash.swf.tags.DefineFont;
 import flash.swf.tags.DefineTag;
 import flash.util.FileUtils;
@@ -33,14 +28,12 @@ import flex2.compiler.*;
 import flex2.compiler.abc.AbcClass;
 import flex2.compiler.as3.binding.ClassInfo;
 import flex2.compiler.as3.binding.TypeAnalyzer;
-import flex2.compiler.css.StyleDef;
 import flex2.compiler.common.CompilerConfiguration;
 import flex2.compiler.common.Configuration;
 import flex2.compiler.common.FramesConfiguration;
 import flex2.compiler.common.MxmlConfiguration;
 import flex2.compiler.common.Configuration.RslPathInfo;
 import flex2.compiler.common.FramesConfiguration.FrameInfo;
-import flex2.compiler.css.StylesContainer;
 import flex2.compiler.extensions.ExtensionManager;
 import flex2.compiler.extensions.IPreLinkExtension;
 import flex2.compiler.i18n.I18nUtils;
@@ -79,10 +72,6 @@ import java.util.*;
  */
 public class PreLink implements flex2.compiler.PreLink
 {
-    private final static String DEFAULTS_CSS = "defaults.css";
-    private final static String DEFAULTS_DASH = "defaults-";
-    private final static String DOT_CSS = ".css";
-
     public boolean run(List<Source> sources, List<CompilationUnit> units,
                     FileSpec fileSpec, SourceList sourceList, SourcePath sourcePath, ResourceBundlePath bundlePath,
                     ResourceContainer resources, SymbolTable symbolTable, CompilerSwcContext swcContext,
@@ -167,33 +156,6 @@ public class PreLink implements flex2.compiler.PreLink
 
             if (u.isRoot())
             {
-                StylesContainer stylesContainer =
-                    (StylesContainer) symbolTable.getContext().getAttribute(StylesContainer.class.getName());
-                StylesContainer rootStylesContainer = u.getStylesContainer();
-
-                // If the backgroundColor wasn't specified inline, go looking for it in CSS.
-                if ((u.swfMetaData == null) || (u.swfMetaData.getValue("backgroundColor") == null))
-                {
-                    QName qName = u.topLevelDefinitions.last();
-                    
-                    if (qName != null)
-                    {
-                        String def = qName.toString();
-                        lookupBackgroundColor(stylesContainer, rootStylesContainer, u.styleName,
-                                              NameFormatter.toDot(def), symbolTable, configuration);
-                    }
-                }
-
-                if (rootStylesContainer != null)
-                {
-                    // Swap in root's Logger, so warnings get associated correctly.
-                    Logger originalLogger = ThreadLocalToolkit.getLogger();
-                    ThreadLocalToolkit.setLogger(u.getSource().getLogger());
-                    rootStylesContainer.validate(symbolTable, nameMappings, u.getStandardDefs(),
-                                                 compilerConfiguration.getThemeNames(), null);
-                    ThreadLocalToolkit.setLogger(originalLogger);
-                }
-
                 Source source = u.getSource();
 
                 // Now that we're done validating the StyleContainer,
@@ -210,9 +172,6 @@ public class PreLink implements flex2.compiler.PreLink
                 // root's path resolver until now, because of the
                 // styles
                 source.setPathResolver(null);
-
-                // C: we don't need the styles container anymore
-                u.setStylesContainer(null);
             }
             else if (generatedLoaderClass && !u.getSource().isInternal() && !u.getSource().isSwcScriptOwner())
             {
@@ -304,49 +263,6 @@ public class PreLink implements flex2.compiler.PreLink
         
     }
 
-    private void locateStyleDefaults(List<CompilationUnit> units, CompilerConfiguration compilerConfiguration)
-    {
-        Set<VirtualFile> defaultsCssFiles = new HashSet<VirtualFile>();
-        String versionDefaultsCssFileName = null;
-
-        if (compilerConfiguration.getCompatibilityVersionString() != null)
-        {
-            versionDefaultsCssFileName = DEFAULTS_DASH + compilerConfiguration.getCompatibilityVersionString() + DOT_CSS;
-        }
-
-        for (int i = 0, length = units.size(); i < length; i++)
-        {
-            CompilationUnit compilationUnit = (CompilationUnit) units.get(i);
-            assert compilationUnit != null : "Must have missed a forcedToStop() check after the most recent batch()";
-            Source source = compilationUnit.getSource();
-
-            if (source.isSwcScriptOwner())
-            {
-                SwcScript swcScript = (SwcScript) source.getOwner();
-                Swc swc = swcScript.getLibrary().getSwc();
-                VirtualFile defaultsCssFile = null;
-
-                if (versionDefaultsCssFileName != null)
-                {
-                    defaultsCssFile = swc.getFile(versionDefaultsCssFileName);
-                }
-
-                if (defaultsCssFile == null)
-                {
-                    defaultsCssFile = swc.getFile(DEFAULTS_CSS);
-                }
-
-                if (defaultsCssFile != null)
-                {
-                    defaultsCssFiles.add(defaultsCssFile);
-                }
-            }
-        }
-
-        // TODO: figure out how to get these into the correct order
-        compilerConfiguration.addDefaultsCssFiles(defaultsCssFiles);
-    }
-
     private boolean processMainUnit(List<Source> sources, List<CompilationUnit> units, ResourceContainer resources,
                                  SymbolTable symbolTable, NameMappings nameMappings, Configuration configuration)
     {
@@ -380,95 +296,12 @@ public class PreLink implements flex2.compiler.PreLink
                     if (u.loaderClass != null || u.loaderClassBase != null)
                     {
                         CompilerConfiguration compilerConfig = configuration.getCompilerConfiguration();
-
-                        StylesContainer stylesContainer =
-                            (StylesContainer) symbolTable.getContext().getAttribute(StylesContainer.class.getName());
-
-                        if (stylesContainer == null)
-                        {
-                            stylesContainer = new StylesContainer(compilerConfig, u, symbolTable.perCompileData);
-                            stylesContainer.setNameMappings(nameMappings);
-                            symbolTable.getContext().setAttribute(StylesContainer.class.getName(), stylesContainer);
-                        }
-
-                        // locate style defaults each time through,
-                        // because new dependencies could have brought
-                        // in new SWC files with a defaults.css file.
-                        List<VirtualFile> cssFiles = compilerConfig.getDefaultsCssFiles();
-                        Set<String> cssFilesSet = new HashSet<String>();
                         
-                        for (VirtualFile cssFile : cssFiles )
-                        {
-                            cssFilesSet.add(cssFile.getName());
-                        }
-                        
-                        locateStyleDefaults(units, compilerConfig);
-                        
-                        cssFiles = compilerConfig.getDefaultsCssFiles();
-                        Set<String> addedCssFilesSet = null;
-                        
-                        if (!cssFilesSet.isEmpty())
-                        {
-                            Set<String> secondCssFilesSet = new HashSet<String>();
-                            
-                            for (VirtualFile cssFile : cssFiles )
-                            {
-                                secondCssFilesSet.add(cssFile.getName());
-                            }
-                            
-                            addedCssFilesSet = new HashSet<String>();
-                            for (String cssName : secondCssFilesSet )
-                            {
-                                if (!cssFilesSet.contains(cssName))
-                                {
-                                    addedCssFilesSet.add(cssName);
-                                }
-                            }
-                        }
-                        
-                        stylesContainer.loadDefaultStyles();
-                        stylesContainer.validate(symbolTable, nameMappings, u.getStandardDefs(), compilerConfig.getThemeNames(), addedCssFilesSet);
-
                         List<CULinkable> linkables = new LinkedList<CULinkable>();
 
                         for (Iterator it2 = units.iterator(); it2.hasNext();)
                         {
                             linkables.add( new CULinkable( (CompilationUnit) it2.next() ) );
-                        }
-
-                        try
-                        {
-                            LinkState state = new LinkState(linkables, new HashSet(), configuration.getIncludes(), new HashSet<String>());
-
-                            // C: generate style classes for components which we want to link in.
-                            List<Source> styleSources = new ArrayList<Source>();
-                            generatedSources = stylesContainer.processDependencies(styleSources, state.getDefNames(), resources, 
-                                                                    u.getSource().getRelativePath().replace('/', '.'),
-                                                                    u.getSource().getShortName());
-
-                            // Sweep through and remove any previous style sources.
-                            Iterator<Source> iterator = sources.iterator();
-
-                            while (iterator.hasNext())
-                            {
-                                Source source = iterator.next();
-
-                                for (Source styleSource : styleSources)
-                                {
-                                    if (source.getName().equals(styleSource.getName()))
-                                    {
-                                        iterator.remove();
-                                        break;
-                                    }
-                                }
-                            }
-
-                            // Now add the new style sources.
-                            sources.addAll(styleSources);
-                        }
-                        catch (LinkerException e)
-                        {
-                            ThreadLocalToolkit.log( e );
                         }
                     }
                 }
@@ -482,262 +315,6 @@ public class PreLink implements flex2.compiler.PreLink
         }
 
         return generatedSources;
-    }
-
-    /**
-     * Looks up the backgroundColor.  The first time through, if an
-     * inline styleName from the MXML tag is available, it is used to
-     * lookup a class selector.  Otherwise, we look for a styleName in
-     * the local StylesContainer and then the global StylesContainer.
-     * If found, we use it to lookup a class selector.  If a class
-     * selector is found, we look for a backgroundColor style
-     * property.  If a backgroundColor style property is not found, we
-     * look for a type selector in the local StylesContainer and then
-     * the global StylesContainer.  If found, we look for a
-     * backgroundColor style property.  If the backgroundColor is
-     * still not found, we recursively call lookupBackgroundColor()
-     * using the super type.  If the backgroundColor is still not
-     * found, we look for the backgroundColor in the global selector.
-     */
-    private static void lookupBackgroundColor(StylesContainer globalStylesContainer,
-                                              StylesContainer localStylesContainer,
-                                              String inlineStyleName,
-                                              String className,
-                                              SymbolTable symbolTable,
-                                              Configuration configuration)
-    {
-        assert NameFormatter.toDot(className).equals(className);
-        String styleName = inlineStyleName;
-
-        if ((styleName == null) && (localStylesContainer != null))
-        {
-            styleName = lookupStyleName(localStylesContainer, className);
-        }
-
-        if ((styleName == null) && (globalStylesContainer != null))
-        {
-            styleName = lookupStyleName(globalStylesContainer, className);
-        }
-
-        int backgroundColor = -1;
-
-        if ((styleName != null) && (localStylesContainer != null))
-        {
-            backgroundColor = lookupClassSelectorBackgroundColor(localStylesContainer, styleName);
-        }
-
-        if ((backgroundColor == -1) && (styleName != null) && (globalStylesContainer != null))
-        {
-            backgroundColor = lookupClassSelectorBackgroundColor(globalStylesContainer, styleName);
-        }        
-
-        if ((backgroundColor == -1) && (localStylesContainer != null))
-        {
-            backgroundColor = lookupTypeSelectorBackgroundColor(localStylesContainer, className);
-        }
-
-        if ((backgroundColor == -1) && (globalStylesContainer != null))
-        {
-            backgroundColor = lookupTypeSelectorBackgroundColor(globalStylesContainer, className);
-        }
-
-        if (backgroundColor == -1)
-        {
-            AbcClass abcClass = symbolTable.getClass(NameFormatter.toColon(className));
-
-            if (abcClass != null)
-            {
-                String superTypeName = abcClass.getSuperTypeName();
-
-                if (superTypeName != null)
-                {
-                    // The styleName is intentionally not passed in,
-                    // because we've already tried doing a lookup with it.
-                    lookupBackgroundColor(globalStylesContainer, localStylesContainer, null,
-                                          NameFormatter.toDot(superTypeName),
-                                          symbolTable, configuration);
-                }
-                else
-                {
-                    // A null superTypeName means that we've gone up
-                    // the whole inheritance chain, so try the global
-                    // selector.
-                    if (localStylesContainer != null)
-                    {
-                        backgroundColor = lookupTypeSelectorBackgroundColor(localStylesContainer, "global");
-                    }
-
-                    if ((backgroundColor == -1) && (globalStylesContainer != null))
-                    {
-                        backgroundColor = lookupTypeSelectorBackgroundColor(globalStylesContainer, "global");
-                    }
-                }
-            }
-        }
-
-        if (backgroundColor != -1)
-        {
-            configuration.setBackgroundColor(backgroundColor);
-        }
-    }
-
-    /**
-     * Looks for the backgroundColor in a type selector in the
-     * StylesContainer.
-     */
-    private static int lookupTypeSelectorBackgroundColor(StylesContainer stylesContainer, String className)
-    {
-        int result = -1;
-        StyleDef styleDef = stylesContainer.getStyleDef(className);
-                        
-        if (styleDef != null)
-        {
-            Map<String, StyleDeclaration> declarations = styleDef.getDeclarations();
-
-            if (declarations != null)
-            {
-                for (StyleDeclaration styleDeclaration : declarations.values())
-                {
-                    Collection<StyleDeclarationBlock> blocks = styleDeclaration.getDeclarationBlocks();
-                    for (StyleDeclarationBlock block : blocks)
-                    {
-                        StyleProperty styleProperty = block.getProperties().get("backgroundColor");
-    
-                        if (styleProperty != null)
-                        {
-                            Object value = styleProperty.getValue();
-    
-                            if (value instanceof String)
-                            {
-                                String backgroundColor = (String) value;
-    
-                                try
-                                {
-                                    result = Integer.decode(backgroundColor).intValue();
-                                }
-                                catch (NumberFormatException numberFormatException)
-                                {
-                                    ThreadLocalToolkit.log(new InvalidBackgroundColor(backgroundColor),
-                                                           styleDeclaration.getPath(),
-                                                           styleProperty.getLineNumber());
-                                }
-                            }
-                            // If value is not a String an error will have been reported upstream.
-                        }
-                    }
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Looks for the backgroundColor in a class selector in the
-     * StylesContainer.
-     */
-    private static int lookupClassSelectorBackgroundColor(StylesContainer stylesContainer, String styleName)
-    {
-        int result = -1;
-        StyleDef styleDef = stylesContainer.getStyleDef("global");
-                        
-        if (styleDef != null)
-        {
-            Map<String, StyleDeclaration> declarations = styleDef.getDeclarations();
-
-            if (declarations != null)
-            {
-                for (StyleDeclaration styleDeclaration : declarations.values())
-                {
-                    StyleSelector styleSelector = styleDeclaration.getSelector();
-
-                    if (styleSelector != null)
-                    {
-                        List<StyleCondition> conditions = styleSelector.getConditions();
-
-                        if (conditions != null)
-                        {
-                            for (StyleCondition styleCondition : conditions)
-                            {
-                                if ((styleCondition.getKind() == StyleCondition.CLASS_CONDITION) &&
-                                    styleCondition.getValue().equals(styleName))
-                                {
-                                    Collection<StyleDeclarationBlock> blocks = styleDeclaration.getDeclarationBlocks();
-                                    for (StyleDeclarationBlock block : blocks)
-                                    {
-                                        StyleProperty styleProperty = block.getProperties().get("backgroundColor");
-    
-                                        if (styleProperty != null)
-                                        {
-                                            Object value = styleProperty.getValue();
-    
-                                            if (value instanceof String)
-                                            {
-                                                String backgroundColor = (String) value;
-    
-                                                try
-                                                {
-                                                    result = Integer.decode(backgroundColor).intValue();
-                                                }
-                                                catch (NumberFormatException numberFormatException)
-                                                {
-                                                    ThreadLocalToolkit.log(new InvalidBackgroundColor(backgroundColor),
-                                                                           styleDeclaration.getPath(),
-                                                                           styleProperty.getLineNumber());
-                                                }
-                                            }
-                                            // If value is not a String an error will have been reported upstream.
-                                        }
-                                    }
-                                }
-                                // The id attribute is not allowed on the
-                                // root tag, so we don't need to handle
-                                // StyleCondition.ID_CONDITION here.
-                                // Also, StyleCondition.PSEUDO_CONDITION
-                                // does not apply, because the root tag
-                                // can not be in a state.
-                            }
-                        }
-                    }
-                }
-            }
-        }
-
-        return result;
-    }
-
-    /**
-     * Looks for the styleName in a type selector in the
-     * StylesContainer.
-     */
-    private static String lookupStyleName(StylesContainer stylesContainer, String className)
-    {
-        String result = null;
-        StyleDef styleDef = stylesContainer.getStyleDef(className);
-                        
-        if (styleDef != null)
-        {
-            for (StyleDeclaration styleDeclaration : styleDef.getDeclarations().values())
-            {
-                Collection<StyleDeclarationBlock> blocks = styleDeclaration.getDeclarationBlocks();
-                for (StyleDeclarationBlock block : blocks)
-                {
-                    StyleProperty styleProperty = block.getProperties().get("styleName");
-    
-                    if (styleProperty != null)
-                    {
-                        Object value = styleProperty.getValue();
-    
-                        if (value instanceof String)
-                        {
-                            result = (String) value;
-                        }
-                    }
-                }
-            }
-        }
-
-        return result;
     }
 
     private static void swfmetadata(CompilationUnit u, Configuration cfg)

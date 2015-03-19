@@ -826,7 +826,6 @@ public final class Source implements Comparable<Source>
 		{
 			// There is no need to persist these properties because they exists as AS3 metadata in abc[], which
 			// PersistenceStore always persists.
-			toUnit.styles = fromUnit.styles;
 			toUnit.typeInfo = fromUnit.typeInfo;
 			toUnit.hasTypeInfo = true;
 			toUnit.classTable.putAll(fromUnit.classTable);
@@ -1024,10 +1023,5 @@ public final class Source implements Comparable<Source>
 		to.bytes.clear();
 		to.bytes.set(from.bytes.toByteArray(false), from.bytes.size());
 		to.getSource().lineCount = from.getSource().lineCount;
-	}
-
-	public static void transferStyles(CompilationUnit from, CompilationUnit to)
-	{
-		to.styles = from.styles;
 	}
 }

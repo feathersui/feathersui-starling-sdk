@@ -423,7 +423,6 @@ public class Fcsh extends Tool
             swcContext.load( compilerConfig.getLibraryPath(),
                              compilerConfig.getExternalLibraryPath(),
                              null,
-                             null,
                              mappings,
                              I18nUtils.getTranslationFormat(compilerConfig),
                              s.swcCache );
@@ -575,14 +574,12 @@ public class Fcsh extends Tool
             CompilerSwcContext swcContext = new CompilerSwcContext(true);
             swcContext.load( compilerConfig.getLibraryPath(),
                              Configuration.getAllExcludedLibraries(compilerConfig, configuration),
-                             compilerConfig.getThemeFiles(),
                              compilerConfig.getIncludeLibraries(),
                              mappings,
                              I18nUtils.getTranslationFormat(compilerConfig),
                              s.swcCache );
             configuration.addExterns( swcContext.getExterns() );
             configuration.addIncludes( swcContext.getIncludes() );
-            configuration.getCompilerConfiguration().addThemeCssFiles( swcContext.getThemeStyleSheets() );
 
             // recompile or incrementally compile...
             boolean recompile = false;
@@ -931,14 +928,12 @@ public class Fcsh extends Tool
             CompilerSwcContext swcContext = new CompilerSwcContext(true);
             swcContext.load( compilerConfig.getLibraryPath(),
                              Configuration.getAllExcludedLibraries(compilerConfig, configuration),
-                             compilerConfig.getThemeFiles(),
                              compilerConfig.getIncludeLibraries(),
                              mappings,
                              I18nUtils.getTranslationFormat(compilerConfig),
                              s.swcCache );
             configuration.addExterns( swcContext.getExterns() );
             configuration.addIncludes( swcContext.getIncludes() );
-            configuration.getCompilerConfiguration().addThemeCssFiles( swcContext.getThemeStyleSheets() );
 
                s.checksum = cfgbuf.checksum_ts() + swcContext.checksum();
 
@@ -1164,7 +1159,6 @@ public class Fcsh extends Tool
             // for include-libraries at least, since this value appears in flex-config.xml
             swcContext.load( compilerConfig.getLibraryPath(),
                              compilerConfig.getExternalLibraryPath(),
-                             null,
                              null,
                              mappings,
                              I18nUtils.getTranslationFormat(compilerConfig),

@@ -1186,28 +1186,29 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 	{
 		args.put(COMPILER_STRICT, b ? Boolean.TRUE : Boolean.FALSE);
 	}
-	
+
 	/**
 	 * Sets a list of CSS or SWC files to apply as a theme.
 	 * This is equivalent to using <code>mxmlc/compc --compiler.theme</code>.
-	 * 
+	 *
 	 * @param files an array of <code>java.io.File</code>
 	 */
 	public void setTheme(File[] files)
 	{
-		args.put(COMPILER_THEME, files);
-		more.remove(COMPILER_THEME);
+		// Feathers: we ignore the theme option, but keep it around for
+		// compatibility with existing Flex IDEs that expect it.
 	}
 
 	/**
 	 * Adds a list of CSS or SWC files to the existing list of theme files.
-	 * 
+	 *
 	 * @param files an array of <code>java.io.File</code>
 	 * @see #setTheme(File[])
 	 */
 	public void addTheme(File[] files)
 	{
-		addFiles(COMPILER_THEME, files);
+		// Feathers: we ignore the theme option, but keep it around for
+		// compatibility with existing Flex IDEs that expect it.
 	}
     
 	/**
@@ -2399,7 +2400,6 @@ public class OEMConfiguration implements Configuration, ConfigurationConstants, 
 		showUnusedTypeSelectorWarnings(cc.showUnusedTypeSelectorWarnings());
 		setSourcePath(cc.getUnexpandedSourcePath());
 		enableStrictChecking(cc.strict());
-		setTheme(toFiles(cc.getThemeFiles()));
 		useResourceBundleMetaData(cc.useResourceBundleMetadata());
 		enableVerboseStacktraces(cc.debug());
         setDefineDirective(cc.getDefine());

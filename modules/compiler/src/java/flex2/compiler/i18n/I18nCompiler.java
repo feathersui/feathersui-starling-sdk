@@ -554,7 +554,6 @@ public class I18nCompiler extends AbstractSubCompiler implements flex2.compiler.
 	    // Source.transferLoaderClassBase(ascUnit, unit);
 	    // Source.transferGeneratedSources(ascUnit, unit);
 	    // Source.transferClassTable(ascUnit, unit);
-	    // Source.transferStyles(ascUnit, unit);
         if (benchmarkHelper != null)
         {
             benchmarkHelper.endPhase(CompilerBenchmarkHelper.ANALYZE4);

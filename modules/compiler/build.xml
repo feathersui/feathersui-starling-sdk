@@ -147,10 +147,6 @@
             <arg value="flex2/compiler/mxml/gen/ClassDef.vm"/>
             <arg value="flex2/compiler/mxml/gen/ClassDefLib.vm"/>
             <arg value="flex2/compiler/mxml/gen/InterfaceDef.vm"/>
-            <arg value="flex2/compiler/css/FontFaceRules.vm"/>
-            <arg value="flex2/compiler/css/StyleDef.vm"/>
-            <arg value="flex2/compiler/css/StyleModule.vm"/>
-            <arg value="flex2/compiler/css/StyleLibrary.vm"/>
             <arg value="flex2/compiler/as3/EmbedClass.vm"/>
             <arg value="flex2/compiler/as3/binding/BindableProperty.vm"/>
             <arg value="flex2/compiler/as3/binding/BindablePropertyStarling.vm"/>

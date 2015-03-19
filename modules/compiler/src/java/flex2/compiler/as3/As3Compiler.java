@@ -29,7 +29,6 @@ import flex2.compiler.abc.AbcClass;
 import flex2.compiler.abc.MetaData;
 import flex2.compiler.as3.reflect.TypeTable;
 import flex2.compiler.as3.reflect.NodeMagic;
-import flex2.compiler.css.StyleConflictException;
 import flex2.compiler.io.VirtualFile;
 import flex2.compiler.util.CompilerMessage;
 import flex2.compiler.util.LineNumberMap;
@@ -760,16 +759,6 @@ public class As3Compiler extends AbstractSubCompiler implements flex2.compiler.S
                 symbolTable.registerClass(entry.getKey(), c);
             }
 
-            try
-            {
-                symbolTable.registerStyles(unit.styles);
-            }
-            catch (StyleConflictException e)
-            {
-                // C: assume that StyleConflictException is going to be internationalized...
-                ThreadLocalToolkit.logError(unit.getSource().getNameForReporting(), e.getLocalizedMessage());
-            }
-
             evaluateLoaderClassBase(unit, typeTable);
             return;
         }
@@ -824,16 +813,6 @@ public class As3Compiler extends AbstractSubCompiler implements flex2.compiler.S
             AbcClass c = (AbcClass) classMap.get(className);
             symbolTable.registerClass(className, c);
             unit.classTable.put(className, c);
-        }
-
-        try
-        {
-            symbolTable.registerStyles(unit.styles);
-        }
-        catch (StyleConflictException e)
-        {
-            // C: assume that StyleConflictException is going to be internationalized...
-            ThreadLocalToolkit.logError(unit.getSource().getNameForReporting(), e.getLocalizedMessage());
         }
 
         evaluateLoaderClassBase(unit, typeTable);

@@ -28,8 +28,6 @@ public interface Analyzer
 {
 	void analyze(CDATANode node);
 
-	void analyze(StyleNode node);
-
 	void analyze(ScriptNode node);
 
 	void analyze(MetaDataNode node);

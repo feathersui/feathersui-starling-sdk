@@ -106,7 +106,6 @@ public class FXGCompiler extends AbstractSubCompiler
     private String generatedOutputDir;
     private SkeletonCompiler skeletonCompiler;
     private ImplementationCompiler implementationCompiler;
-    private Set<String> themeNames;
     private String profile = FXG_PROFILE_DESKTOP;
 
     /**
@@ -127,7 +126,6 @@ public class FXGCompiler extends AbstractSubCompiler
         generatedOutputDir = configuration.keepGeneratedActionScript() ? configuration.getGeneratedDirectory() : null;
         skeletonCompiler = new SkeletonCompiler(configuration);
         implementationCompiler = new ImplementationCompiler(configuration);
-        themeNames = configuration.getThemeNames();
 
         // Honor the compiler's mobile profile flag
         boolean mobile = configuration.getMobile();
@@ -901,8 +899,7 @@ public class FXGCompiler extends AbstractSubCompiler
             // TypeTable will be used to determine if an text related FXG
             // attribute apply to a property or style of the associated
             // ActionScript API.
-            TypeTable typeTable = new TypeTable(symbolTable, nameMappings, unit.getStandardDefs(),
-                                                themeNames);
+            TypeTable typeTable = new TypeTable(symbolTable, nameMappings, unit.getStandardDefs());
 
             // Transcode the FXG DOM to SWF graphics primitives
             FXGSymbolClass asset = transcodeFXG(unit, packageName, className, typeTable);

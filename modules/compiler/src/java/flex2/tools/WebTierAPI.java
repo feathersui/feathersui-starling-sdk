@@ -30,14 +30,12 @@ import flex2.compiler.abc.AbcCompiler;
 import flex2.compiler.as3.As3Compiler;
 import flex2.compiler.as3.EmbedExtension;
 import flex2.compiler.as3.SignatureExtension;
-import flex2.compiler.as3.StyleExtension;
 import flex2.compiler.as3.HostComponentExtension;
 import flex2.compiler.as3.binding.BindableExtension;
 import flex2.compiler.as3.SkinPartExtension;
 import flex2.compiler.as3.managed.ManagedExtension;
 import flex2.compiler.common.CompilerConfiguration;
 import flex2.compiler.common.Configuration;
-import flex2.compiler.css.CssCompiler;
 import flex2.compiler.fxg.FXGCompiler;
 import flex2.compiler.i18n.I18nCompiler;
 import flex2.compiler.i18n.I18nUtils;
@@ -139,14 +137,12 @@ public final class WebTierAPI extends Tool
 			CompilerSwcContext swcContext = new CompilerSwcContext();
 			swcContext.load(compilerConfig.getLibraryPath(),
 							Configuration.getAllExcludedLibraries(compilerConfig, configuration),
-							compilerConfig.getThemeFiles(),
 							compilerConfig.getIncludeLibraries(),
 							mappings,
 							I18nUtils.getTranslationFormat(compilerConfig),
 							swcCache);
 			configuration.addExterns(swcContext.getExterns());
 			configuration.addIncludes( swcContext.getIncludes() );
-			configuration.getCompilerConfiguration().addThemeCssFiles(swcContext.getThemeStyleSheets());
 
 			// validate CompilationUnits in FileSpec, SourceList and SourcePath
 			flex2.compiler.CompilerAPI.validateCompilationUnits(target.fileSpec, target.sourceList, target.sourcePath,
@@ -271,7 +267,6 @@ public final class WebTierAPI extends Tool
 									: null);
         final boolean generateAbstractSyntaxTree = compilerConfig.getGenerateAbstractSyntaxTree();
 		asc.addCompilerExtension(new EmbedExtension(transcoders, gendir, compilerConfig.showDeprecationWarnings()));
-		asc.addCompilerExtension(new StyleExtension());
 		// IMPORTANT!!!! The HostComponentExtension must run before the BindableExtension!!!!
 		asc.addCompilerExtension(new HostComponentExtension(compilerConfig.reportMissingRequiredSkinPartsAsWarnings()));
 		asc.addCompilerExtension(new BindableExtension(gendir, generateAbstractSyntaxTree, false));
@@ -286,7 +281,6 @@ public final class WebTierAPI extends Tool
 
 		// support ABC
 		AbcCompiler abc = new AbcCompiler(compilerConfig);
-		abc.addCompilerExtension(new StyleExtension());
 		
 		// abc.addCompilerExtension(new flex2.compiler.util.TraceExtension());
 
@@ -296,10 +290,7 @@ public final class WebTierAPI extends Tool
 		// support i18n (.properties)
 		I18nCompiler prop = new I18nCompiler(compilerConfig, transcoders);
 
-		// support CSS
-		CssCompiler css = new CssCompiler(compilerConfig, transcoders, mappings);
-
-		return new SubCompiler[]{asc, mxmlc, abc, fxg, prop, css};
+		return new SubCompiler[]{asc, mxmlc, abc, fxg, prop};
 	}
 
 	/**

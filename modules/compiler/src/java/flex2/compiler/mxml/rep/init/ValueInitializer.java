@@ -492,22 +492,9 @@ public abstract class ValueInitializer implements Initializer, Cloneable
                 addAssignExprs(list, self.getPropertyInitializerIterator(self.getType().hasDynamic()), varName);
             }
         }
-        
-        //  set styles
-        addAssignExprs(list, self.getStyleInitializerIterator(), varName);
-
-        //  set effects
-        addAssignExprs(list, self.getEffectInitializerIterator(), varName);
 
         //  add event handlers
         addAssignExprs(list, self.getEventInitializerIterator(), varName);
-
-        //  register effect names
-        String effectEventNames = self.getEffectNames();
-        if (effectEventNames.length() > 0)
-        {
-            list.add("\t", varName, ".registerEffects([ ", effectEventNames, " ]);", line);
-        }
 
         //  post-init actions for values that are being assigned to properties (via id attribution)
         if (isDeclared && standardDefs.isIUIComponentWithIdProperty(selfType))
@@ -807,49 +794,10 @@ public abstract class ValueInitializer implements Initializer, Cloneable
                                varName);
             }
         }
-        
-        //  set styles
-        addAssignExprs(nodeFactory, configNamespaces, generateDocComments, functionStatementList,
-                       self.getStyleInitializerIterator(), varName);
-
-        //  set effects
-        addAssignExprs(nodeFactory, configNamespaces, generateDocComments, functionStatementList,
-                       self.getEffectInitializerIterator(), varName);
 
         //  add event handlers
         addAssignExprs(nodeFactory, configNamespaces, generateDocComments, functionStatementList,
                        self.getEventInitializerIterator(), varName);
-
-        //  register effect names
-        Iterator<Initializer> iterator = self.getEffectInitializerIterator();
-
-        if (iterator.hasNext())
-        {
-            //list.add("\t", varName, ".registerEffects([ ", effectEventNames, " ]);", line);
-            MemberExpressionNode base = AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, varName, false);
-
-            IdentifierNode identifier = nodeFactory.identifier(REGISTER_EFFECTS, false);
-            ArgumentListNode effectEventNamesArgumentList = null;
-
-            while (iterator.hasNext())
-            {
-                EffectInitializer effectInitializer = (EffectInitializer) iterator.next();
-                String effectName = effectInitializer.getName();
-                LiteralStringNode literalString = nodeFactory.literalString(effectName);
-                effectEventNamesArgumentList = nodeFactory.argumentList(effectEventNamesArgumentList,
-                                                                        literalString);
-            }
-
-            LiteralArrayNode literalArray = nodeFactory.literalArray(effectEventNamesArgumentList);
-            ArgumentListNode argumentList = nodeFactory.argumentList(null, literalArray);
-            CallExpressionNode selector = (CallExpressionNode) nodeFactory.callExpression(identifier,
-                                                                                          argumentList);
-            selector.setRValue(false);
-            MemberExpressionNode memberExpression = nodeFactory.memberExpression(base, selector);
-            ListNode list = nodeFactory.list(null, memberExpression);
-            ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(list);
-            functionStatementList = nodeFactory.statementList(functionStatementList, expressionStatement);
-        }
 
         //  post-init actions for values that are being assigned to properties (via id attribution)
         if (isDeclared && standardDefs.isIUIComponentWithIdProperty(selfType))

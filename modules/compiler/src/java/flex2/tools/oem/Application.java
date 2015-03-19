@@ -920,7 +920,6 @@ public class Application implements Builder
             {
                 swcContext.load( compilerConfig.getLibraryPath(),
                                  flex2.compiler.common.Configuration.getAllExcludedLibraries(compilerConfig, tempOEMConfiguration.configuration),
-                                 compilerConfig.getThemeFiles(),
                                  compilerConfig.getIncludeLibraries(),
                                  mappings,
                                  I18nUtils.getTranslationFormat(compilerConfig),
@@ -947,7 +946,6 @@ public class Application implements Builder
             data.excludes = new HashSet<String>(swcContext.getExterns());
             tempOEMConfiguration.configuration.addExterns( swcContext.getExterns() );
             tempOEMConfiguration.configuration.addIncludes( swcContext.getIncludes() );
-            tempOEMConfiguration.configuration.getCompilerConfiguration().addThemeCssFiles( swcContext.getThemeStyleSheets() );
     
             // recompile or incrementally compile...
             if (OEMUtil.isRecompilationNeeded(data, swcContext, tempOEMConfiguration))
@@ -1169,7 +1167,6 @@ public class Application implements Builder
         {
             swcContext.load( compilerConfig.getLibraryPath(),
                              flex2.compiler.common.Configuration.getAllExcludedLibraries(compilerConfig, localOEMConfiguration.configuration),
-                             compilerConfig.getThemeFiles(),
                              compilerConfig.getIncludeLibraries(),
                              mappings,
                              I18nUtils.getTranslationFormat(compilerConfig),
@@ -1196,7 +1193,6 @@ public class Application implements Builder
         data.excludes = new HashSet<String>(swcContext.getExterns());
         localOEMConfiguration.configuration.addExterns( swcContext.getExterns() );
         localOEMConfiguration.configuration.addIncludes( swcContext.getIncludes() );
-        localOEMConfiguration.configuration.getCompilerConfiguration().addThemeCssFiles( swcContext.getThemeStyleSheets() );
 
         data.cmdChecksum = localOEMConfiguration.cfgbuf.checksum_ts(); // OEMUtil.calculateChecksum(data, swcContext, c);
         data.linkChecksum = localOEMConfiguration.cfgbuf.link_checksum_ts();

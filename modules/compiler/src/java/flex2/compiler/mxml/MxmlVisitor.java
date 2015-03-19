@@ -34,8 +34,6 @@ public interface MxmlVisitor
 
 	void parseComponent(Token comp, List<Token> components);
 
-	void parseStyle(Token style, Token text);
-
 	void parseScript(Token script, Token text);
 
 	void parseMetaData(Token metadata, Token text);

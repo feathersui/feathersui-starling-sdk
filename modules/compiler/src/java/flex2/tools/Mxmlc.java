@@ -178,14 +178,12 @@ public final class Mxmlc extends Tool implements FlexTool
 
             swcContext.load( compilerConfig.getLibraryPath(),
                              Configuration.getAllExcludedLibraries(compilerConfig, configuration),
-                             compilerConfig.getThemeFiles(),
                              compilerConfig.getIncludeLibraries(),
                              mappings,
                              I18nUtils.getTranslationFormat(compilerConfig),
                              cache );
             configuration.addExterns( swcContext.getExterns() );
             configuration.addIncludes( swcContext.getIncludes() );
-            configuration.getCompilerConfiguration().addThemeCssFiles( swcContext.getThemeStyleSheets() );
 
             // Figure out the name of the output file.
             File outputFile = getOutputFile(configuration, targetFile);

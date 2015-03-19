@@ -31,7 +31,6 @@ import flex2.compiler.as3.As3Configuration;
 import flex2.compiler.as3.As3Compiler;
 import flex2.compiler.as3.Extension;
 import flex2.compiler.as3.reflect.TypeTable;
-import flex2.compiler.css.StyleConflictException;
 import flex2.compiler.util.NameMappings;
 import flex2.compiler.util.ThreadLocalToolkit;
 
@@ -308,16 +307,6 @@ public class MxmlCompiler extends AbstractSubCompiler
                 c.setTypeTable(typeTable);
                 symbolTable.registerClass(entry.getKey(), c);
             }
-
-			try
-			{
-				symbolTable.registerStyles(unit.styles);
-			}
-			catch (StyleConflictException e)
-			{
-				// C: assume that StyleConflictException is going to be internationalized...
-				ThreadLocalToolkit.logError(unit.getSource().getNameForReporting(), e.getLocalizedMessage());
-			}
 
 			As3Compiler.evaluateLoaderClassBase(unit, typeTable);
 			return;

@@ -130,7 +130,6 @@ public abstract class AbstractDelegatingSubCompiler extends AbstractSubCompiler
         Source.transferMetaData(ascUnit, unit);
         Source.transferLoaderClassBase(ascUnit, unit);
         Source.transferClassTable(ascUnit, unit);
-        Source.transferStyles(ascUnit, unit);
 
     }
 

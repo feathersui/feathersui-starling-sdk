@@ -48,17 +48,6 @@ public abstract class DeclarationHandler
 	protected abstract void states(Property property);
 
 	/**
-	 * name resolves to Effect name
-	 * @param effect
-	 */
-	protected abstract void effect(Effect effect);
-
-	/**
-	 * name resolves to Style
-	 */
-	protected abstract void style(Style style);
-
-	/**
 	 * name resolves to dynamic property
 	  */
 	protected abstract void dynamicProperty(String name, String state);
@@ -103,22 +92,6 @@ public abstract class DeclarationHandler
 			}
 			return;
 		}
-
-		Effect effect = type.getEffect(localPart);
-		if (effect != null)
-		{
-			effect.setStateName(state);
-			effect(effect);
-			return;
-		}
-
-        Style style = type.getStyle(localPart);
-        if (style != null)
-        {
-            style.setStateName(state);
-            style(style);
-            return;
-        }
 
 		if (type.hasDynamic())
 		{

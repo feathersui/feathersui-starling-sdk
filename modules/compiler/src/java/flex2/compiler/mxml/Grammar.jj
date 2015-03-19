@@ -303,8 +303,7 @@ Token parseLanguageComponent():
 }
 {
     ( t = parseMetaData() |
-      t = parseScript() |
-      t = parseStyle() )
+      t = parseScript() )
     {
         return t;
     }
@@ -342,20 +341,6 @@ Token parseServiceComponent():
       t = parseHTTPService() |
       t = parseRemoteObject() )
     {
-        return t;
-    }
-}
-
-Token parseStyle():
-{
-    Token t, d = null;
-}
-{
-    t = <START_STYLE: "Style">
-    [ d = <CDATA> ]
-    <END_STYLE: "/Style">
-    {
-        if (visitor != null) { visitor.parseStyle(t, d); }
         return t;
     }
 }

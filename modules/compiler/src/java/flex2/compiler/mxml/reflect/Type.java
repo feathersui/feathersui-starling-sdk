@@ -81,21 +81,6 @@ public interface Type
 	 */
 	Event getEvent(String name);
 
-	/**
-	 * [Effect]
-	 */
-	Effect getEffect(String name);
-
-	/**
-	 * [Style]
-	 */
-	Style getStyle(String name);
-
-    /**
-     * [Style(theme="...")]
-     */
-    String getStyleThemes(String name);
-
     /**
      * [Frame(loaderClass=...)]
      * Might support other Frame stuff in the future, requiring some refactoring.
@@ -137,11 +122,6 @@ public interface Type
 	 * Return true if this type is assignable to 'baseName'.
 	 */
 	boolean isAssignableTo(String baseName);
-
-    /**
-     * Return true if the type has excluded this styles.
-     */
-    boolean isExcludedStyle(String name);
 
 	/**
 	 * Return true if this type is a subclass of 'baseType'.

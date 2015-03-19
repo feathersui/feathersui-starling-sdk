@@ -84,12 +84,6 @@ public interface MxmlConfiguration
     boolean showBindingWarnings();
 
     /**
-     * Controls whether warnings are displayed when styles, which
-     * don't apply to the current theme(s), are used in CSS.
-     */
-    boolean showInvalidCssPropertyWarnings();
-
-    /**
      * Controls whether warnings are displayed when an embedded font name
      * shadows a device font name.
      */
@@ -126,21 +120,6 @@ public interface MxmlConfiguration
 	boolean getQualifiedTypeSelectors();
 
 	/**
-	 * Location of defaults.css stylesheet.
-	 */
-	VirtualFile getDefaultsCssUrl();
-
-	/**
-	 * Location of SWC defaults.css stylesheets.
-	 */
-	List<VirtualFile> getDefaultsCssFiles();
-
-	/**
-	 * Location of theme stylesheets.
-	 */
-	List<VirtualFile> getThemeCssFiles();
-
-	/**
 	 * Path locations of source files.
 	 */
 	VirtualFile[] getSourcePath();
@@ -165,14 +144,6 @@ public interface MxmlConfiguration
     void setFontsConfiguration(FontsConfiguration fc);
 
 	boolean getGenerateAbstractSyntaxTree();
-
-    Set<String> getThemeNames();
-	
-    /**
-     * Allow a style manager to have the same style declarations as
-     * their parent.
-     */
-	boolean getAllowDuplicateDefaultStyleDeclarations();
 
     /**
      * Whether a missing required skin part should be considered an error or

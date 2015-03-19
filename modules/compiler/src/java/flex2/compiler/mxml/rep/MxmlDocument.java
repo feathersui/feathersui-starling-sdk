@@ -22,8 +22,6 @@ package flex2.compiler.mxml.rep;
 import flash.util.StringUtils;
 import flex2.compiler.CompilationUnit;
 import flex2.compiler.CompilerContext;
-import flex2.compiler.css.Styles;
-import flex2.compiler.css.StylesContainer;
 import flex2.compiler.mxml.MxmlConfiguration;
 import flex2.compiler.mxml.dom.DesignLayerNode;
 import flex2.compiler.mxml.dom.Node;
@@ -76,7 +74,6 @@ public final class MxmlDocument
     private final Map<String, AtEmbed> atEmbeds;
     private final Map<String, AtResource> atResources;
     private final Set<String> typeRefs;
-    private final StylesContainer stylesContainer;
 
     private String preloader;
     private boolean usePreloader;
@@ -94,7 +91,6 @@ public final class MxmlDocument
     private String comment;
 
     private boolean showDeprecationWarnings;
-    private boolean allowDuplicateDefaultStyleDeclarations;
     
     private Map<DesignLayerNode, DesignLayer> designLayers;
 
@@ -115,13 +111,9 @@ public final class MxmlDocument
         
         designLayers = new HashMap<DesignLayerNode, DesignLayer>();
 
-        stylesContainer = new StylesContainer(mxmlConfiguration, unit, typeTable.getPerCompileData());
-        unit.setStylesContainer(stylesContainer);
-        showDeprecationWarnings = mxmlConfiguration.showDeprecationWarnings();
-        allowDuplicateDefaultStyleDeclarations = mxmlConfiguration.getAllowDuplicateDefaultStyleDeclarations();
         
-        stylesContainer.setMxmlDocument(this);
-        stylesContainer.setNameMappings(typeTable.getNameMappings());
+        showDeprecationWarnings = mxmlConfiguration.showDeprecationWarnings();
+        
         sharedObjects = new TreeMap();
         
         statesModel = new StatesModel(this, info, standardDefs);
@@ -220,11 +212,6 @@ public final class MxmlDocument
     public final boolean getIsInlineComponent()
     {
         return info.getRootNode().isInlineComponent();
-    }
-
-    public final boolean getAllowDuplicateDefaultStyleDeclarations()
-    {
-        return allowDuplicateDefaultStyleDeclarations;
     }
 
     /*
@@ -567,11 +554,6 @@ public final class MxmlDocument
     {
         Set<AtEmbed> result = new HashSet(atEmbeds.values());
 
-        if (stylesContainer != null)
-        {
-            result.addAll(stylesContainer.getAtEmbeds());
-        }
-
         return result;
     }
 
@@ -686,26 +668,6 @@ public final class MxmlDocument
     public final List<Script> getMetadata()
     {
         return info.getMetadata();
-    }
-
-    /**
-     *
-     */
-    public StylesContainer getStylesContainer()
-    {
-        return stylesContainer;
-    }
-
-    /**
-     *
-     */
-    public Iterator getInheritingStyleNameIterator()
-    {
-        final Styles styles = typeTable.getStyles();
-        return new FilterIterator(styles.getStyleNames(), new Predicate()
-            {
-                public boolean evaluate(Object obj) { return styles.isInheritingStyle((String)obj); }
-            });
     }
 
     /**

@@ -547,18 +547,18 @@ public interface Configuration
      * @param b Boolean value.
      */
     void enableStrictChecking(boolean b);
-    
+
     /**
      * Sets a list of CSS or SWC files to apply as a theme.
      * This is equivalent to using the <code>compiler.theme</code> option of the mxmlc or compc compilers.
-     * 
+     *
      * @param files An array of <code>java.io.File</code> objects.
      */
     void setTheme(File[] files);
 
     /**
      * Adds a list of CSS or SWC files to the existing list of theme files.
-     * 
+     *
      * @param files An array of <code>java.io.File</code> objects.
      * @see #setTheme(File[])
      */

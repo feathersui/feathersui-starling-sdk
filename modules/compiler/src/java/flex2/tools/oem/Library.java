@@ -816,7 +816,6 @@ public class Library implements Builder, Cloneable
         {
             swcContext.load( compilerConfig.getLibraryPath(),
                              compilerConfig.getExternalLibraryPath(),
-                             null,
                              compilerConfig.getIncludeLibraries(),
                              mappings,
                              I18nUtils.getTranslationFormat(compilerConfig),
@@ -1499,7 +1498,6 @@ public class Library implements Builder, Cloneable
         {
             swcContext.load( compilerConfig.getLibraryPath(),
                              compilerConfig.getExternalLibraryPath(),
-                             null,
                              compilerConfig.getIncludeLibraries(),
                              mappings,
                              I18nUtils.getTranslationFormat(compilerConfig),

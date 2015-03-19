@@ -19,16 +19,10 @@
 
 package flex2.compiler.mxml;
 
-import flash.css.StyleCondition;
-import flash.css.StyleDeclaration;
-import flash.css.StyleDeclarationBlock;
-import flash.css.StyleProperty;
-import flash.css.StyleSelector;
 import flex2.compiler.Source;
 import flex2.compiler.as3.AbstractSyntaxTreeUtil;
 import flex2.compiler.as3.As3Compiler;
 import flex2.compiler.as3.BytecodeEmitter;
-import flex2.compiler.css.StyleDef;
 import flex2.compiler.mxml.lang.FrameworkDefs;
 import flex2.compiler.mxml.lang.StandardDefs;
 import flex2.compiler.mxml.gen.StatesGenerator;
@@ -41,7 +35,6 @@ import flex2.compiler.mxml.rep.MovieClip;
 import flex2.compiler.mxml.rep.MxmlDocument;
 import flex2.compiler.mxml.rep.VariableDeclaration;
 import flex2.compiler.mxml.rep.decl.PropertyDeclaration;
-import flex2.compiler.mxml.rep.init.EffectInitializer;
 import flex2.compiler.mxml.rep.init.EventInitializer;
 import flex2.compiler.mxml.rep.init.Initializer;
 import flex2.compiler.mxml.rep.init.NamedInitializer;
@@ -310,18 +303,6 @@ public class ImplementationGenerator extends AbstractGenerator
 			argumentList = addDescriptorEvents(nodeFactory, argumentList, model);
         }
 
-		//	effect names?
-		if (!propsOnly)
-        {
-			argumentList = addDescriptorEffectNames(nodeFactory, argumentList, model);
-        }
-
-		//	styles and/or effects?
-		if (!propsOnly)
-        {
-			argumentList = addDescriptorStylesAndEffects(nodeFactory, configNamespaces, generateDocComments, argumentList, model);
-        }
-
 		//	descriptor properties are Model.properties + synthetic property 'childDescriptors' from MovieClip.children
 		argumentList = addDescriptorProperties(nodeFactory, configNamespaces, generateDocComments, argumentList,
                                                model, includePropNames, includeDesignLayer);
@@ -444,76 +425,6 @@ public class ImplementationGenerator extends AbstractGenerator
 
         return argumentList;
     }
-
-	/**
-	 *
-	 */
-	private static ArgumentListNode addDescriptorStylesAndEffects(NodeFactory nodeFactory,
-                                                                  HashSet<String> configNamespaces,
-                                                                  boolean generateDocComments,
-                                                                  ArgumentListNode argumentList, Model model)
-	{
-		Iterator styleAndEffectIter = model.getStyleAndEffectInitializerIterator();
-
-		if (styleAndEffectIter.hasNext())
-		{
-            IdentifierNode stylesFactoryIdentifier = nodeFactory.identifier(STYLES_FACTORY, false);
-            FunctionSignatureNode functionSignature = nodeFactory.functionSignature(null, null);
-            functionSignature.void_anno = true;
-            StatementListNode body = null;
-
-			while (styleAndEffectIter.hasNext())
-			{
-				NamedInitializer init = (NamedInitializer) styleAndEffectIter.next();
-                ThisExpressionNode thisExpression = nodeFactory.thisExpression(-1);
-                IdentifierNode identifier = nodeFactory.identifier(init.getName());
-                Node valueExpr = init.generateValueExpr(nodeFactory, configNamespaces, generateDocComments);
-                ArgumentListNode styleAndEffectArgumentList = nodeFactory.argumentList(null, valueExpr);
-                SetExpressionNode setExpression = nodeFactory.setExpression(identifier, styleAndEffectArgumentList, false);
-                MemberExpressionNode memberExpression = nodeFactory.memberExpression(thisExpression, setExpression);
-                ListNode styleAndEffectList = nodeFactory.list(null, memberExpression);
-                ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(styleAndEffectList);
-                body = nodeFactory.statementList(body, expressionStatement);
-			}
-
-            FunctionCommonNode functionCommon = nodeFactory.functionCommon(nodeFactory.getContext(),
-                                                                           null, functionSignature, body);
-            functionCommon.setUserDefinedBody(true);
-            LiteralFieldNode stylesFactoryLiteralField = nodeFactory.literalField(stylesFactoryIdentifier,
-                                                                                  functionCommon);
-            argumentList = nodeFactory.argumentList(argumentList, stylesFactoryLiteralField);
-		}
-
-        return argumentList;
-	}
-
-	/**
-	 *
-	 */
-	private static ArgumentListNode addDescriptorEffectNames(NodeFactory nodeFactory,
-                                                             ArgumentListNode argumentList, Model model)
-	{
-		Iterator effectEventNameIterator = model.getEffects().values().iterator();
-
-		if (effectEventNameIterator.hasNext())
-		{
-            IdentifierNode effectsIdentifier = nodeFactory.identifier(EFFECTS, false);
-            ArgumentListNode effectsArgumentList = null;
-
-            while (effectEventNameIterator.hasNext())
-            {
-                EffectInitializer effectInitializer = (EffectInitializer) effectEventNameIterator.next();
-                LiteralStringNode literalString = nodeFactory.literalString(effectInitializer.getName());
-                effectsArgumentList = nodeFactory.argumentList(effectsArgumentList, literalString);
-            }
-
-            LiteralArrayNode literalArray = nodeFactory.literalArray(effectsArgumentList);
-            LiteralFieldNode literalField = nodeFactory.literalField(effectsIdentifier, literalArray);
-            argumentList = nodeFactory.argumentList(argumentList, literalField);
-		}
-
-        return argumentList;
-	}
 
 	/**
 	 *
@@ -1025,16 +936,11 @@ public class ImplementationGenerator extends AbstractGenerator
            		statementList = nodeFactory.statementList(statementList, 
            										generateModuleFactoryInitializedVariable());
            		
-           		StatementListNode moduleFactoryStatementList = generateComponentStyleInitializers(null);
-           		
            		if (generateDocComments)
            		{
            		    DocCommentNode docComment = AbstractSyntaxTreeUtil.generatePrivateDocComment(nodeFactory);
            		    statementList = nodeFactory.statementList(statementList, docComment);
            		}
-           		
-           		FunctionDefinitionNode functionDefinition = generateModuleFactoryPropertyOverride(moduleFactoryStatementList);
-           		statementList = nodeFactory.statementList(statementList, functionDefinition);
            	}
 
            	if (generateDocComments)
@@ -1139,29 +1045,6 @@ public class ImplementationGenerator extends AbstractGenerator
     private StatementListNode generateComponentInitializers(StatementListNode statementList)
     {
         StatementListNode result = statementList;
-
-        if (!mxmlDocument.getIsIFlexModule())
-        {
-        	result = generateComponentStyleSettings(result);
-
-	        if (mxmlDocument.getStylesContainer().getStyleDefs().size() > 0 ||
-	            (mxmlDocument.getIsFlexApplication()))
-	        {
-	            String functionName = "_" + mxmlDocument.getClassName() + "_StylesInit";
-	            QualifiedIdentifierNode qualifiedIdentifier =
-	                AbstractSyntaxTreeUtil.generateMxInternalQualifiedIdentifier(nodeFactory,
-	                                                                             functionName,
-	                                                                             true);
-	            CallExpressionNode callExpression =
-	                (CallExpressionNode) nodeFactory.callExpression(qualifiedIdentifier, null);
-	            callExpression.setRValue(false);
-	            MemberExpressionNode memberExpression = nodeFactory.memberExpression(null, callExpression);
-	            ListNode list = nodeFactory.list(null, memberExpression);
-	            ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(list);
-	
-	            result = nodeFactory.statementList(result, expressionStatement);
-	        }
-        }
         
         result = generateDesignLayerInitializers(result);
         result = generatePropertyInitializers(result, false);
@@ -1170,35 +1053,6 @@ public class ImplementationGenerator extends AbstractGenerator
 
         return result;
     }
-
-    
-    private StatementListNode generateComponentStyleInitializers(StatementListNode statementList)
-    {
-        StatementListNode result = statementList;
-
-    	result = generateComponentStyleSettings(result);
-
-        if (mxmlDocument.getStylesContainer().getStyleDefs().size() > 0 ||
-            (mxmlDocument.getIsFlexApplication()))
-        {
-            String functionName = "_" + mxmlDocument.getClassName() + "_StylesInit";
-            QualifiedIdentifierNode qualifiedIdentifier =
-                AbstractSyntaxTreeUtil.generateMxInternalQualifiedIdentifier(nodeFactory,
-                                                                             functionName,
-                                                                             true);
-            CallExpressionNode callExpression =
-                (CallExpressionNode) nodeFactory.callExpression(qualifiedIdentifier, null);
-            callExpression.setRValue(false);
-            MemberExpressionNode memberExpression = nodeFactory.memberExpression(null, callExpression);
-            ListNode list = nodeFactory.list(null, memberExpression);
-            ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(list);
-
-            result = nodeFactory.statementList(result, expressionStatement);
-        }
-
-        return result;
-    }
-    
     
     /**
      * Generate code to call either "addEventListener(Event.ADDED_TO_STAGE, _{$doc.className}_addedToStageHandler);"
@@ -1379,83 +1233,6 @@ public class ImplementationGenerator extends AbstractGenerator
         }
         return result;
     }
-    
-    private StatementListNode generateComponentStyleSettings(StatementListNode statementList)
-    {
-        StatementListNode result = statementList;
-
-        Iterator<Initializer> iterator = mxmlDocument.getRoot().getStyleAndEffectInitializerIterator();
-
-        if (iterator.hasNext())
-        {
-            Node ifStatement = generateStyleDeclarationIfStatement();
-            result = nodeFactory.statementList(result, ifStatement);
-
-            ThisExpressionNode thisExpression = nodeFactory.thisExpression(-1);
-            IdentifierNode styleDeclarationIdentifier = nodeFactory.identifier(STYLE_DECLARATION, false);
-            GetExpressionNode getExpression = nodeFactory.getExpression(styleDeclarationIdentifier);
-            MemberExpressionNode base = nodeFactory.memberExpression(thisExpression, getExpression);
-
-            IdentifierNode defaultFactoryIdentifier = nodeFactory.identifier(DEFAULT_FACTORY, false);
-
-            FunctionSignatureNode functionSignature = nodeFactory.functionSignature(null, null);
-            functionSignature.void_anno = true;
-            StatementListNode body = null;
-
-            while (iterator.hasNext())
-            {
-                NamedInitializer namedInitializer = (NamedInitializer) iterator.next();
-                thisExpression = nodeFactory.thisExpression(-1);
-                IdentifierNode nameIdentifier = nodeFactory.identifier(namedInitializer.getName());
-                Node rvalue = namedInitializer.generateValueExpr(nodeFactory, configNamespaces, generateDocComments);
-                ArgumentListNode argumentList = nodeFactory.argumentList(null, rvalue);
-                SetExpressionNode setExpression = nodeFactory.setExpression(nameIdentifier, argumentList, false);
-                MemberExpressionNode memberExpression = nodeFactory.memberExpression(thisExpression, setExpression);
-                ListNode list = nodeFactory.list(null, memberExpression);
-                ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(list);
-                body = nodeFactory.statementList(body, expressionStatement);
-            }
-
-            FunctionCommonNode functionCommon = nodeFactory.functionCommon(context, null, functionSignature, body);
-            ArgumentListNode argumentList = nodeFactory.argumentList(null, functionCommon);
-            SetExpressionNode selector = nodeFactory.setExpression(defaultFactoryIdentifier, argumentList, false);
-
-            MemberExpressionNode memberExpression = nodeFactory.memberExpression(base, selector);
-            ListNode list = nodeFactory.list(null, memberExpression);
-            ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(list);
-            result = nodeFactory.statementList(result, expressionStatement);
-        }
-
-        //this.registerEffects( [ $effectEventNames ] );
-        Iterator<Initializer> effectIterator = mxmlDocument.getRoot().getEffectInitializerIterator();
-
-        if (effectIterator.hasNext())
-        {
-            ThisExpressionNode thisExpression = nodeFactory.thisExpression(-1);
-            IdentifierNode identifier = nodeFactory.identifier(REGISTER_EFFECTS, false);
-            ArgumentListNode effectsArgumentList = null;
-
-            while (effectIterator.hasNext())
-            {
-                EffectInitializer effectInitializer = (EffectInitializer) effectIterator.next();
-                String name = effectInitializer.getName();
-                LiteralStringNode literalString = nodeFactory.literalString(name);
-                effectsArgumentList = nodeFactory.argumentList(effectsArgumentList, literalString);
-            }
-
-            LiteralArrayNode literalArray = nodeFactory.literalArray(effectsArgumentList);
-            ArgumentListNode argumentList = nodeFactory.argumentList(null, literalArray);
-            CallExpressionNode callExpression =
-                (CallExpressionNode) nodeFactory.callExpression(identifier, argumentList);
-            callExpression.setRValue(false);
-            MemberExpressionNode memberExpression = nodeFactory.memberExpression(thisExpression, callExpression);
-            ListNode list = nodeFactory.list(null, memberExpression);
-            ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(list);
-            result = nodeFactory.statementList(result, expressionStatement);
-        }
-
-        return result;
-    }
 
     private StatementListNode generateConstructor(StatementListNode statementList, boolean generateDocComments,
                                                   String className, ParameterListNode parameterList, 
@@ -1487,19 +1264,6 @@ public class ImplementationGenerator extends AbstractGenerator
         return result;
     }
 
-    private VariableDefinitionNode generateStylesPackageVariable(String name, String type)
-    {
-        int kind = Tokens.VAR_TOKEN;
-        QualifiedIdentifierNode qualifiedIdentifier = generateMxInternalQualifiedIdentifier(name, false);
-        MemberExpressionNode memberExpression =
-            AbstractSyntaxTreeUtil.generateResolvedGetterSelector(nodeFactory, standardDefs.getStylesPackage(), type);
-        TypeExpressionNode typeExpression = nodeFactory.typeExpression(memberExpression, true, false, -1);
-        TypedIdentifierNode typedIdentifier = nodeFactory.typedIdentifier(qualifiedIdentifier, typeExpression);
-        VariableBindingNode variableBinding = nodeFactory.variableBinding(null, kind, typedIdentifier, null);
-        ListNode list = nodeFactory.list(null, variableBinding);
-        return (VariableDefinitionNode) nodeFactory.variableDefinition(null, kind, list);
-    }
-
     private FunctionCommonNode generateDestinationFunction(BindingExpression bindingExpression)
     {
         String destinationTypeName = bindingExpression.getDestinationTypeName();
@@ -1512,14 +1276,7 @@ public class ImplementationGenerator extends AbstractGenerator
         StatementListNode body = null;
         String text;
 
-        if (bindingExpression.isStyle())
-        {
-            //${bindingExpression.getDestinationPathRoot(true)}.setStyle("${bindingExpression.destinationStyle}", _sourceFunctionReturnValue);
-            text = (bindingExpression.getDestinationPathRoot(true) +
-                    ".setStyle(\"" + bindingExpression.getDestinationStyle() +
-                    "\", _sourceFunctionReturnValue)");
-        }
-        else if (bindingExpression.isDestinationObjectProxy())
+        if (bindingExpression.isDestinationObjectProxy())
         {
             //${bindingExpression.getDestinationPath(true)} = new mx.utils.ObjectProxy(_sourceFunctionReturnValue);
             text = (bindingExpression.getDestinationPath(true) +
@@ -1631,245 +1388,6 @@ public class ImplementationGenerator extends AbstractGenerator
         return result;
     }
 
-    private ExpressionStatementNode generateGetStyleDeclaration(String styleDeclarationName)
-    {
-        IdentifierNode styleIdentifier = nodeFactory.identifier(STYLE, false);
-        MemberExpressionNode base =
-            AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, STYLE_MANAGER_INSTANCE, false);
-        IdentifierNode getStyleDeclarationIdentifier = nodeFactory.identifier(GET_STYLE_DECLARATION, false);
-        LiteralStringNode literalString = nodeFactory.literalString(styleDeclarationName);
-        ArgumentListNode callExpressionArgumentList = nodeFactory.argumentList(null, literalString);
-        CallExpressionNode selector =
-            (CallExpressionNode) nodeFactory.callExpression(getStyleDeclarationIdentifier,
-                                                            callExpressionArgumentList);
-        selector.setRValue(false);
-        MemberExpressionNode argumentMemberExpression = nodeFactory.memberExpression(base, selector);
-        ArgumentListNode argumentList = nodeFactory.argumentList(null, argumentMemberExpression);
-        SetExpressionNode setExpression = nodeFactory.setExpression(styleIdentifier, argumentList, false);
-        MemberExpressionNode memberExpression = nodeFactory.memberExpression(null, setExpression);
-        ListNode list = nodeFactory.list(null, memberExpression);
-        return nodeFactory.expressionStatement(list);
-    }
-
-    private void generateIfNullEffectsAndPushes(StyleDef styleDef, StyleDeclaration declaration, StatementListNode statementList)
-    {
-        //if (!effects)
-        MemberExpressionNode memberExpression =
-            AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, EFFECTS, false);
-        Node unaryExpression = nodeFactory.unaryExpression(Tokens.NOT_TOKEN, memberExpression);
-        ListNode test = nodeFactory.list(null, unaryExpression);
-
-        //effects = style.mx_internal::effects = [];
-        IdentifierNode effectsIdentifier = nodeFactory.identifier(EFFECTS, false);
-        MemberExpressionNode styleMemberExpression = 
-                AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, STYLE, false);
-        QualifiedIdentifierNode qualifiedIdentifier = 
-            AbstractSyntaxTreeUtil.generateMxInternalQualifiedIdentifier(nodeFactory, EFFECTS, false);
-        LiteralArrayNode literalArray = nodeFactory.literalArray(null);
-        ArgumentListNode mxInternalEffectsArgumentList = nodeFactory.argumentList(null, literalArray);
-        SetExpressionNode mxInternalEffectsSetExpression =
-            nodeFactory.setExpression(qualifiedIdentifier, mxInternalEffectsArgumentList, false);
-        MemberExpressionNode mxInternalEffectsMemberExpression =
-            nodeFactory.memberExpression(styleMemberExpression, mxInternalEffectsSetExpression);
-        ArgumentListNode effectsArgumentList = nodeFactory.argumentList(null, mxInternalEffectsMemberExpression);
-        SetExpressionNode effectsSetExpression =
-            nodeFactory.setExpression(effectsIdentifier, effectsArgumentList, false);
-        MemberExpressionNode effectsMemberExpression = nodeFactory.memberExpression(null, effectsSetExpression);
-        ListNode list = nodeFactory.list(null, effectsMemberExpression);
-        ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(list);
-        StatementListNode ifStatementList = nodeFactory.statementList(null, expressionStatement);
-
-        Node ifStatement = nodeFactory.ifStatement(test, ifStatementList, null);
-        statementList = nodeFactory.statementList(statementList, ifStatement);
-
-        if (declaration != null) // Flex 4 advanced style declarations
-        {
-            List<StyleDeclarationBlock> blocks = declaration.getDeclarationBlocks();
-            for (StyleDeclarationBlock block : blocks)
-            {
-                //effects.push("${effectStyle}");
-                Iterator<String> iterator = block.getEffectStyles().iterator();
-
-                if (block.hasMediaList())
-                {
-                    StatementListNode effectsStatementList = generateEffectStyles(iterator, null);
-
-                    // if (styleManager.acceptMediaList("$block.mediaList.toString()"))
-                    MemberExpressionNode expr = generateStyleManagerAcceptMediaList(block.getMediaList().toString());
-                    ListNode mediaTest = nodeFactory.list(null, expr);
-                    ifStatement = nodeFactory.ifStatement(mediaTest, effectsStatementList, null);
-                    statementList = nodeFactory.statementList(statementList, ifStatement);
-                }
-                else
-                {
-                    statementList = generateEffectStyles(iterator, statementList);
-                }
-            }
-        }
-        else // Flex 3 legacy style def
-        {
-            //effects.push("${effectStyle}");
-            Iterator<String> iterator = styleDef.getEffectStyles().iterator();
-            statementList = generateEffectStyles(iterator, statementList);
-        }
-    }
-
-    private StatementListNode generateEffectStyles(Iterator<String> iterator, StatementListNode statementList)
-    {
-        while (iterator.hasNext())
-        {
-            //effects.push("${effectStyle}");
-            ExpressionStatementNode pushExpressionStatement =
-                generatePush(EFFECTS, nodeFactory.literalString(iterator.next()));
-            statementList = nodeFactory.statementList(statementList, pushExpressionStatement);
-        }
-        
-        return statementList;
-    }
-        
-    private Node generateIfNullStyleDeclaration(String subject, StyleSelector selector)
-    {
-        //if (!style)
-        MemberExpressionNode styleMemberExpression =
-            AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, STYLE, false);
-        Node unaryExpression = nodeFactory.unaryExpression(Tokens.NOT_TOKEN,
-                                                           styleMemberExpression);
-        ListNode test = nodeFactory.list(null, unaryExpression);
-
-        // style = new CSSStyleDeclaration(selector, styleManager);
-        IdentifierNode styleIdentifier = nodeFactory.identifier(STYLE, false);
-        IdentifierNode cssStyleDeclarationIdentifier =
-            AbstractSyntaxTreeUtil.generateResolvedIdentifier(nodeFactory, standardDefs.getStylesPackage(),
-                                                              CSS_STYLE_DECLARATION);
-
-        MemberExpressionNode selectorMemberExpression =
-            AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, SELECTOR, false);
-        ArgumentListNode callArgumentList = nodeFactory.argumentList(null, selectorMemberExpression);
-        MemberExpressionNode memberExpression = AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, STYLE_MANAGER_INSTANCE, false);
-        callArgumentList = nodeFactory.argumentList(callArgumentList, memberExpression);
-
-        CallExpressionNode callExpression =
-            (CallExpressionNode) nodeFactory.callExpression(cssStyleDeclarationIdentifier, callArgumentList);
-        callExpression.is_new = true;
-        callExpression.setRValue(false);
-        MemberExpressionNode argumentMemberExpression = nodeFactory.memberExpression(null, callExpression);
-        ArgumentListNode setArgumentList = nodeFactory.argumentList(null, argumentMemberExpression);
-        SetExpressionNode setExpression = nodeFactory.setExpression(styleIdentifier, setArgumentList, false);
-        memberExpression = nodeFactory.memberExpression(null, setExpression);
-        ListNode list = nodeFactory.list(null, memberExpression);
-        ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(list);
-        StatementListNode statementList = nodeFactory.statementList(null, expressionStatement);
-
-        return nodeFactory.ifStatement(test, statementList, null);
-    }
-
-    private Node generateIfNullStyleDeclaration(StyleDef styleDef)
-    {
-        //if (!style)
-        MemberExpressionNode styleMemberExpression =
-            AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, STYLE, false);
-        Node unaryExpression = nodeFactory.unaryExpression(Tokens.NOT_TOKEN,
-                                                           styleMemberExpression);
-        ListNode test = nodeFactory.list(null, unaryExpression);
-
-        StatementListNode statementList;
-
-        //  style = new CSSStyleDeclaration(null, styleManager);
-        {
-            IdentifierNode styleIdentifier = nodeFactory.identifier(STYLE, false);
-            IdentifierNode cssStyleDeclarationIdentifier =
-                AbstractSyntaxTreeUtil.generateResolvedIdentifier(nodeFactory, standardDefs.getStylesPackage(),
-                                                                  CSS_STYLE_DECLARATION);
-            ArgumentListNode argumentList = nodeFactory.argumentList(null, nodeFactory.literalNull());
-            MemberExpressionNode memberExpression = AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, STYLE_MANAGER_INSTANCE, false);
-            argumentList = nodeFactory.argumentList(argumentList, memberExpression);
-            CallExpressionNode callExpression =
-                (CallExpressionNode) nodeFactory.callExpression(cssStyleDeclarationIdentifier, argumentList);
-            callExpression.is_new = true;
-            callExpression.setRValue(false);
-            MemberExpressionNode argumentMemberExpression = nodeFactory.memberExpression(null, callExpression);
-            argumentList = nodeFactory.argumentList(null, argumentMemberExpression);
-            SetExpressionNode setExpression = nodeFactory.setExpression(styleIdentifier, argumentList, false);
-            memberExpression = nodeFactory.memberExpression(null, setExpression);
-            ListNode list = nodeFactory.list(null, memberExpression);
-            ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(list);
-            statementList = nodeFactory.statementList(null, expressionStatement);
-        }
-
-        {
-            MemberExpressionNode base =
-                AbstractSyntaxTreeUtil.generateResolvedGetterSelector(nodeFactory, standardDefs.getStylesPackage(), STYLE_MANAGER);
-            IdentifierNode setStyleDeclarationIdentifier = nodeFactory.identifier(SET_STYLE_DECLARATION, false);
-            LiteralStringNode literalString;
-
-            if (styleDef.isTypeSelector())
-            {
-                //StyleManager.setStyleDeclaration("${styleDef.typeName}", style, false);
-                literalString = nodeFactory.literalString(styleDef.getTypeName());
-            }
-            else
-            {
-                //StyleManager.setStyleDeclaration(".${styleDef.typeName}", style, false);
-                literalString = nodeFactory.literalString("." + styleDef.getTypeName());
-            }
-
-            ArgumentListNode argumentList = nodeFactory.argumentList(null, literalString);
-            styleMemberExpression =
-                AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, STYLE, false);
-            argumentList = nodeFactory.argumentList(argumentList, styleMemberExpression);
-            LiteralBooleanNode literalBoolean = nodeFactory.literalBoolean(false);
-            argumentList = nodeFactory.argumentList(argumentList, literalBoolean);
-            CallExpressionNode selector =
-                (CallExpressionNode) nodeFactory.callExpression(setStyleDeclarationIdentifier,
-                                                                argumentList);
-            selector.setRValue(false);
-            MemberExpressionNode memberExpression = nodeFactory.memberExpression(base, selector);
-            ListNode list = nodeFactory.list(null, memberExpression);
-            ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(list);
-            statementList = nodeFactory.statementList(statementList, expressionStatement);
-        }
-
-        return nodeFactory.ifStatement(test, statementList, null);
-    }
-
-    private Node generateIfNullStyleFactory(StyleDef styleDef, StyleDeclaration declaration)
-    {
-        //if (style.factory == null)
-        ListNode test;
-        {
-            MemberExpressionNode base = 
-                AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, STYLE, false);
-            IdentifierNode factoryIdentifier = nodeFactory.identifier(FACTORY, false);
-            GetExpressionNode selector = nodeFactory.getExpression(factoryIdentifier);
-            selector.setRValue(false);
-            MemberExpressionNode memberExpression = nodeFactory.memberExpression(base, selector);
-            LiteralNullNode literalNull = nodeFactory.literalNull(-1);
-            BinaryExpressionNode binaryExpression = nodeFactory.binaryExpression(Tokens.EQUALS_TOKEN,
-                                                                                 memberExpression,
-                                                                                 literalNull);
-            test = nodeFactory.list(null, binaryExpression);
-        }
-
-        //style.factory = function():void
-        StatementListNode statementList;
-        {
-            MemberExpressionNode base = 
-                AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, STYLE, false);
-            IdentifierNode factoryIdentifier = nodeFactory.identifier(FACTORY, false);
-            FunctionCommonNode functionCommon = generateStyleFactory(styleDef, declaration);
-            ArgumentListNode argumentList = nodeFactory.argumentList(null, functionCommon);
-            SetExpressionNode selector = nodeFactory.setExpression(factoryIdentifier,
-                                                                   argumentList, false);
-            selector.setRValue(false);
-            MemberExpressionNode memberExpression = nodeFactory.memberExpression(base, selector);
-            ListNode list = nodeFactory.list(null, memberExpression); 
-            ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(list);
-            statementList = nodeFactory.statementList(null, expressionStatement);
-        }
-
-        return nodeFactory.ifStatement(test, statementList, null);
-    }
-
     private StatementListNode generateImports(StatementListNode statementList)
     {
         StatementListNode result = statementList;
@@ -1941,12 +1459,6 @@ public class ImplementationGenerator extends AbstractGenerator
         if (mxmlDocument.getBindingExpressions().size() > 0)
         {
             result = generateBindingsSetup(result);
-        }
-        	
-        if (mxmlDocument.getStylesContainer().getStyleDefs().size() > 0 ||
-            mxmlDocument.getIsFlexApplication())
-        {
-            result = generateStylesInitFunction(result);
         }
 
         return result;
@@ -2256,13 +1768,7 @@ public class ImplementationGenerator extends AbstractGenerator
         functionSignature.void_anno = true;
         String text;
 
-        if (bindingExpression.isStyle())
-        {
-            //${bindingExpression.getDestinationPathRoot(true)}.setStyle("${bindingExpression.destinationLValue}", _sourceFunctionReturnValue);
-            text = (bindingExpression.getDestinationPathRoot(true) + ".setStyle(\"" +
-                    bindingExpression.getDestinationLValue() + "\", _sourceFunctionReturnValue)");
-        }
-        else if (bindingExpression.isDestinationObjectProxy())
+        if (bindingExpression.isDestinationObjectProxy())
         {
             //${bindingExpression.getDestinationPathRoot(true)}.${bindingExpression.destinationLValue} = new mx.utils.ObjectProxy(_sourceFunctionReturnValue);
             text = (bindingExpression.getDestinationPathRoot(true) + "." +
@@ -2347,93 +1853,6 @@ public class ImplementationGenerator extends AbstractGenerator
                                                                           literalArray);
         ListNode list = nodeFactory.list(null, variableBinding);
         return nodeFactory.variableDefinition(null, kind, list);
-    }
-
-    private void generateSelectorAncestor(StyleSelector selector, StatementListNode statementList)
-    {
-        if (selector.getAncestor() != null)
-        {
-            generateSelectorAncestor(selector.getAncestor(), statementList);
-        }
-
-        if (selector.getConditions() != null)
-        {
-            // conditions = [];
-            IdentifierNode identifier = nodeFactory.identifier(CONDITIONS, false);
-            LiteralArrayNode literalArray = nodeFactory.literalArray(null);
-            ArgumentListNode argumentList = nodeFactory.argumentList(null, literalArray);
-            SetExpressionNode setExpression =
-                nodeFactory.setExpression(identifier, argumentList, false);
-            MemberExpressionNode memberExpression =
-                nodeFactory.memberExpression(null, setExpression);
-            ListNode list = nodeFactory.list(null, memberExpression);
-            ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(list);
-            statementList = nodeFactory.statementList(statementList, expressionStatement);
-
-            for (StyleCondition condition : selector.getConditions())
-            {
-                // condition = new CSSCondition($condition.kind, "$condition.value");
-                IdentifierNode conditionIdentifier = nodeFactory.identifier(CONDITION, false);
-                IdentifierNode cssConditionIdentifier =
-                    AbstractSyntaxTreeUtil.generateResolvedIdentifier(nodeFactory,
-                                                                      standardDefs.getStylesPackage(),
-                                                                      CSS_CONDITION);
-                LiteralStringNode literalString = nodeFactory.literalString(condition.getKind());
-                ArgumentListNode callArgumentList = nodeFactory.argumentList(null, literalString);
-                literalString = nodeFactory.literalString(condition.getValue());
-                callArgumentList = nodeFactory.argumentList(callArgumentList, literalString);
-                CallExpressionNode callExpression =
-                    (CallExpressionNode) nodeFactory.callExpression(cssConditionIdentifier, callArgumentList);
-                callExpression.is_new = true;
-                callExpression.setRValue(false);
-                MemberExpressionNode argumentMemberExpression = nodeFactory.memberExpression(null, callExpression);
-                ArgumentListNode setArgumentList = nodeFactory.argumentList(null, argumentMemberExpression);
-                SetExpressionNode conditionSetExpression = nodeFactory.setExpression(conditionIdentifier, setArgumentList, false);
-                MemberExpressionNode conditionMemberExpression = nodeFactory.memberExpression(null, conditionSetExpression);
-                ListNode conditionList = nodeFactory.list(null, conditionMemberExpression);
-                ExpressionStatementNode conditionExpressionStatement = nodeFactory.expressionStatement(conditionList);
-                statementList = nodeFactory.statementList(statementList, conditionExpressionStatement);
-
-                // conditions.push(condition);
-                conditionMemberExpression =
-                    AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, CONDITION, false);
-                ExpressionStatementNode pushExpressionStatement =
-                    generatePush(CONDITIONS, conditionMemberExpression);
-                statementList = nodeFactory.statementList(statementList, pushExpressionStatement);
-            }
-        }
-        else
-        {
-            // conditions = null;
-            ExpressionStatementNode conditionsInitializer = generateNullInitializer(CONDITIONS);
-            statementList = nodeFactory.statementList(statementList, conditionsInitializer);
-        }
-
-        // selector = new CSSSelector($selector.kind, "$selector.value", conditions, selector);
-        IdentifierNode conditionIdentifier = nodeFactory.identifier(SELECTOR, false);
-        IdentifierNode cssSelectorIdentifier =
-            AbstractSyntaxTreeUtil.generateResolvedIdentifier(nodeFactory,
-                                                              standardDefs.getStylesPackage(),
-                                                              CSS_SELECTOR);
-        LiteralStringNode literalString = nodeFactory.literalString(selector.getValue());
-        ArgumentListNode callArgumentList = nodeFactory.argumentList(null, literalString);
-        MemberExpressionNode conditionsMemberExpression =
-            AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, CONDITIONS, false);
-        callArgumentList = nodeFactory.argumentList(callArgumentList, conditionsMemberExpression);
-        MemberExpressionNode selectorMemberExpression =
-            AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, SELECTOR, false);
-        callArgumentList = nodeFactory.argumentList(callArgumentList, selectorMemberExpression);
-        CallExpressionNode callExpression =
-            (CallExpressionNode) nodeFactory.callExpression(cssSelectorIdentifier, callArgumentList);
-        callExpression.is_new = true;
-        callExpression.setRValue(false);
-        MemberExpressionNode argumentMemberExpression = nodeFactory.memberExpression(null, callExpression);
-        ArgumentListNode setArgumentList = nodeFactory.argumentList(null, argumentMemberExpression);
-        SetExpressionNode setExpression = nodeFactory.setExpression(conditionIdentifier, setArgumentList, false);
-        MemberExpressionNode memberExpression = nodeFactory.memberExpression(null, setExpression);
-        ListNode list = nodeFactory.list(null, memberExpression);
-        ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(list);
-        statementList = nodeFactory.statementList(statementList, expressionStatement);
     }
 
     private StatementListNode generateSetWatcherSetupUtilFunction(StatementListNode statementList)
@@ -2702,293 +2121,6 @@ public class ImplementationGenerator extends AbstractGenerator
         StatementListNode thenStatementList = nodeFactory.statementList(null, expressionStatement);
 
         return nodeFactory.ifStatement(testList, thenStatementList, null);
-    }
-
-    private FunctionCommonNode generateStyleFactory(StyleDef styleDef, StyleDeclaration declaration)
-    {
-        //style.factory = function():void
-        FunctionSignatureNode functionSignature = nodeFactory.functionSignature(null, null);
-        functionSignature.void_anno = true;
-        StatementListNode statementList = null;
-
-        if (declaration != null) // Flex 4 advanced styles
-        {
-            List<StyleDeclarationBlock> blocks = declaration.getDeclarationBlocks();
-            for (StyleDeclarationBlock block : blocks)
-            {
-                Iterator<StyleProperty> iterator = block.getProperties().values().iterator();
-                if (block.hasMediaList())
-                {
-                    //this.${style.name} = ${style.value};
-                    StatementListNode stylePropStatementList = generateStyleProperties(null, iterator);
-
-                    // if (styleManager.acceptMediaList("$block.mediaList.toString()"))
-                    MemberExpressionNode expr = generateStyleManagerAcceptMediaList(block.getMediaList().toString());
-                    ListNode test = nodeFactory.list(null, expr);
-                    Node ifStatementNode = nodeFactory.ifStatement(test, stylePropStatementList, null);
-                    statementList = nodeFactory.statementList(statementList,
-                            ifStatementNode);
-                }
-                else
-                {
-                    //this.${style.name} = ${style.value};
-                    statementList = generateStyleProperties(statementList, iterator);
-                }
-            }
-        }
-        else // Flex 3 legacy styles
-        {
-            Iterator<StyleProperty> iterator = styleDef.getStyles().values().iterator();
-            statementList = generateStyleProperties(statementList, iterator);
-        }
-
-        return nodeFactory.functionCommon(context, null, functionSignature, statementList);
-    }
-
-    private StatementListNode generateStyleProperties(StatementListNode statementList, Iterator<StyleProperty> iterator)
-    {
-        while (iterator.hasNext())
-        {
-            StyleProperty styleProperty = iterator.next();
-            //this.${style.name} = ${style.value};
-            /*
-            ThisExpressionNode base = nodeFactory.thisExpression(-1);
-            IdentifierNode identifier = nodeFactory.identifier(styleProperty.getName());
-            ArgumentListNode argumentList = nodeFactory.argumentList(null, );
-            SetExpressionNode selector = nodeFactory.setExpression(identifier,
-                                                                   argumentList, false);
-            selector.setRValue(false);
-            MemberExpressionNode memberExpression = nodeFactory.memberExpression(base, selector);
-            ListNode list = nodeFactory.list(null, memberExpression);
-            ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(list);
-            */
-            // This is a temporary hack.  We should be able to
-            // generate Nodes directly for a StyleProperty.
-            String text = ("this." + styleProperty.getName() + " = " + styleProperty.getValue());
-            int lineNumber = styleProperty.getLineNumber();
-            List<Node> nodeList =
-                AbstractSyntaxTreeUtil.parseExpression(context, configNamespaces, text,
-                                                       lineNumber, generateDocComments);
-            
-            assert nodeList.size() == 1;
-            assert nodeList.get(0) instanceof ExpressionStatementNode;
-            
-            if (!nodeList.isEmpty())
-            {
-                statementList = nodeFactory.statementList(statementList, nodeList.get(0));
-            }
-        }
-
-        return statementList;
-    }
-
-    // styleManager.acceptMediaList("$block.mediaList.toString()")
-    private MemberExpressionNode generateStyleManagerAcceptMediaList(String mediaList)
-    {
-        MemberExpressionNode base =
-            AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, STYLE_MANAGER_INSTANCE, false);
-        IdentifierNode getStyleDeclarationIdentifier = nodeFactory.identifier(ACCEPT_MEDIA_LIST, false);
-        LiteralStringNode literalString = nodeFactory.literalString(mediaList);
-        ArgumentListNode callExpressionArgumentList = nodeFactory.argumentList(null, literalString);
-        CallExpressionNode selector =
-            (CallExpressionNode) nodeFactory.callExpression(getStyleDeclarationIdentifier,
-                                                            callExpressionArgumentList);
-        selector.setRValue(false);
-        MemberExpressionNode argumentMemberExpression = nodeFactory.memberExpression(base, selector);
-        return argumentMemberExpression;
-    }
-    
-    private StatementListNode generateStylesInitFunction(StatementListNode statementList)
-    {
-        StatementListNode result = statementList;
-        result = nodeFactory.statementList(result, generateStylesInitVariable());
-
-        FunctionSignatureNode functionSignature = nodeFactory.functionSignature(null, null);
-        functionSignature.void_anno = true;
-
-        Node ifStatement = generateStylesInitDoneIfStatement();
-        StatementListNode initFunctionStatementList = nodeFactory.statementList(null, ifStatement);
-
-        // var style:CSSStyleDeclaration;
-        VariableDefinitionNode variableDefinition = generateStylesPackageVariable(STYLE, CSS_STYLE_DECLARATION);
-        initFunctionStatementList = nodeFactory.statementList(initFunctionStatementList, variableDefinition);
-
-        // var effects:Array;
-        variableDefinition = generateVariable(EFFECTS, ARRAY);
-        initFunctionStatementList = nodeFactory.statementList(initFunctionStatementList, variableDefinition);
-
-        if (!mxmlDocument.getIsIUIComponent())
-        {
-        	variableDefinition = generateStyleManagerVariableAndInit();
-        	initFunctionStatementList = nodeFactory.statementList(initFunctionStatementList, variableDefinition);
-        }
-        
-        if (mxmlDocument.getStylesContainer().isAdvanced())
-        {
-            // var conditions:Array;
-            variableDefinition = generateVariable(CONDITIONS, ARRAY);
-            initFunctionStatementList = nodeFactory.statementList(initFunctionStatementList, variableDefinition);
-
-            // var condition:CSSCondition;
-            variableDefinition = generateStylesPackageVariable(CONDITION, CSS_CONDITION);
-            initFunctionStatementList = nodeFactory.statementList(initFunctionStatementList, variableDefinition);
-
-            // var selector:CSSSelector;
-            variableDefinition = generateStylesPackageVariable(SELECTOR, CSS_SELECTOR);
-            initFunctionStatementList = nodeFactory.statementList(initFunctionStatementList, variableDefinition);
-        }
-
-        Iterator<StyleDef> styleDefIterator = mxmlDocument.getStylesContainer().getStyleDefs().iterator();
-
-        while (styleDefIterator.hasNext())
-        {
-            StyleDef styleDef = styleDefIterator.next();
-
-            if (styleDef.isAdvanced())
-            {
-                for (StyleDeclaration styleDeclaration : styleDef.getDeclarations().values())
-                {
-                    StyleSelector selector = styleDeclaration.getSelector();
-
-                    // selector = null;
-                    ExpressionStatementNode selectorInitializer = generateNullInitializer(SELECTOR);
-                    initFunctionStatementList = nodeFactory.statementList(initFunctionStatementList, selectorInitializer);
-
-                    // conditions = null;
-                    ExpressionStatementNode conditionsInitializer = generateNullInitializer(CONDITIONS);
-                    initFunctionStatementList = nodeFactory.statementList(initFunctionStatementList, conditionsInitializer);
-
-                    generateSelectorAncestor(selector, initFunctionStatementList);
-
-                    // style = StyleManager.getStyleDeclaration("${selector.toString}");
-                    ExpressionStatementNode expressionStatement = generateGetStyleDeclaration(selector.toString());
-            initFunctionStatementList = nodeFactory.statementList(initFunctionStatementList, expressionStatement);
-
-                    Node nullStyleDeclarationIfStatement = generateIfNullStyleDeclaration(styleDeclaration.getSubject(), selector);
-                    initFunctionStatementList = nodeFactory.statementList(initFunctionStatementList,
-                                                                          nullStyleDeclarationIfStatement);
-
-                    if (styleDeclaration.hasProperties())
-                    {
-                        Node nullStyleFactoryIfStatement =
-                            generateIfNullStyleFactory(styleDef, styleDeclaration);
-                        initFunctionStatementList = nodeFactory.statementList(initFunctionStatementList,
-                                                                              nullStyleFactoryIfStatement);
-                    }
-
-                    if (styleDeclaration.hasEffectStyles())
-                    {
-                        // effects = style.mx_internal::effects;
-                        initFunctionStatementList =
-                            nodeFactory.statementList(initFunctionStatementList, generateEffectsInitializer());
-
-                        generateIfNullEffectsAndPushes(styleDef, styleDeclaration,
-                                                       initFunctionStatementList);
-                    }
-                }
-            }
-            else
-            {
-                ExpressionStatementNode expressionStatement;
-
-                if (styleDef.isTypeSelector())
-                {
-                    //style = StyleManager.getStyleDeclaration("${styleDef.typeName}");
-                    expressionStatement = generateGetStyleDeclaration(styleDef.getSubject());
-                }
-                else
-                {
-                    //style = StyleManager.getStyleDeclaration(".${styleDef.typeName}");
-                    expressionStatement = generateGetStyleDeclaration("." + styleDef.getSubject());
-                }
-
-                initFunctionStatementList = nodeFactory.statementList(initFunctionStatementList, expressionStatement);
-
-            Node nullStyleDeclarationIfStatement = generateIfNullStyleDeclaration(styleDef);
-            initFunctionStatementList = nodeFactory.statementList(initFunctionStatementList,
-                                                                  nullStyleDeclarationIfStatement);
-
-            if (styleDef.getStyles().size() > 0)
-            {
-                    Node nullStyleFactoryIfStatement =
-                        generateIfNullStyleFactory(styleDef, null);
-                initFunctionStatementList = nodeFactory.statementList(initFunctionStatementList,
-                                                                      nullStyleFactoryIfStatement);
-            }
-
-            if (styleDef.getEffectStyles().size() > 0)
-            {
-                    initFunctionStatementList =
-                        nodeFactory.statementList(initFunctionStatementList, generateEffectsInitializer());
-
-                    generateIfNullEffectsAndPushes(styleDef, null,
-                                                   initFunctionStatementList);
-            }
-        }
-        }
-
-        if (mxmlDocument.getIsFlexApplication())
-        {
-            ExpressionStatementNode expressionStatement = generateInitProtoChainRoots();
-            initFunctionStatementList = nodeFactory.statementList(initFunctionStatementList, expressionStatement);
-        }
-
-        FunctionCommonNode functionCommon = nodeFactory.functionCommon(context, null, functionSignature,
-                                                                       initFunctionStatementList);
-        functionCommon.setUserDefinedBody(true);
-
-        AttributeListNode attributeList = generateMxInternalAttribute();
-        String className = mxmlDocument.getClassName();
-        IdentifierNode stylesInitIdentifier = nodeFactory.identifier("_" + className + "_StylesInit");
-        FunctionNameNode functionName = nodeFactory.functionName(Tokens.EMPTY_TOKEN, stylesInitIdentifier);
-
-        FunctionDefinitionNode functionDefinition = nodeFactory.functionDefinition(context, attributeList,
-                                                                                   functionName, functionCommon);
-        result = nodeFactory.statementList(result, functionDefinition);
-
-        return result;
-    }
-
-    private Node generateStylesInitDoneIfStatement()
-    {
-        String className = mxmlDocument.getClassName();
-        String stylesInitDone = ("_" + className + "_StylesInit_done").intern();
-        MemberExpressionNode testGetterSelector =
-            generateMxInternalGetterSelector(stylesInitDone, false);
-        ListNode testList = nodeFactory.list(null, testGetterSelector);
-
-        ReturnStatementNode returnStatement = nodeFactory.returnStatement(null);
-        StatementListNode thenStatementList = nodeFactory.statementList(null, returnStatement);
-        MemberExpressionNode qualifier =
-            AbstractSyntaxTreeUtil.generateResolvedGetterSelector(nodeFactory, standardDefs.getCorePackage(), MX_INTERNAL);
-        QualifiedIdentifierNode qualifiedIdentifier = nodeFactory.qualifiedIdentifier(qualifier, stylesInitDone);
-        LiteralBooleanNode literalBoolean = nodeFactory.literalBoolean(true);
-        ArgumentListNode argumentList = nodeFactory.argumentList(null, literalBoolean);
-        SetExpressionNode setExpression = nodeFactory.setExpression(qualifiedIdentifier, argumentList, false);
-        MemberExpressionNode memberExpression = nodeFactory.memberExpression(null, setExpression);
-        ListNode elseList = nodeFactory.list(null, memberExpression);
-        ExpressionStatementNode expressionStatement = nodeFactory.expressionStatement(elseList);
-        StatementListNode elseStatementList = nodeFactory.statementList(null, expressionStatement);
-        return nodeFactory.ifStatement(testList, thenStatementList, elseStatementList);
-    }
-
-    private VariableDefinitionNode generateStylesInitVariable()
-    {
-        AttributeListNode attributeList = generateMxInternalAttributeList();
-        int kind = Tokens.VAR_TOKEN;
-
-        String className = mxmlDocument.getClassName();
-        QualifiedIdentifierNode qualifiedIdentifier =
-            generateMxInternalQualifiedIdentifier("_" + className + "_StylesInit_done", true);
-        MemberExpressionNode memberExpression =
-            AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, BOOLEAN, false);
-        TypeExpressionNode typeExpression = nodeFactory.typeExpression(memberExpression, true, false, -1);
-        TypedIdentifierNode typedIdentifier = nodeFactory.typedIdentifier(qualifiedIdentifier, typeExpression);
-        LiteralBooleanNode literalBoolean = nodeFactory.literalBoolean(false);
-        VariableBindingNode variableBinding = nodeFactory.variableBinding(attributeList, kind, typedIdentifier,
-                                                                          literalBoolean);
-        ListNode list = nodeFactory.list(null, variableBinding);
-        return (VariableDefinitionNode) nodeFactory.variableDefinition(attributeList, kind, list);
     }
 
     private Node generateTargetVariable()

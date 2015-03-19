@@ -41,7 +41,6 @@ import flex2.compiler.swc.SwcAPI;
 import flex2.compiler.swc.SwcComponent;
 import flex2.compiler.swc.SwcCache;
 import flex2.compiler.common.CompilerConfiguration;
-import flex2.compiler.css.CssCompiler;
 import flex2.compiler.fxg.FXGCompiler;
 import flex2.compiler.i18n.I18nCompiler;
 import flex2.compiler.i18n.I18nUtils;
@@ -310,7 +309,6 @@ public class AsDocAPI
 		swcContext.load( compilerConfig.getLibraryPath(),
 		                 compilerConfig.getExternalLibraryPath(),
 		                 null,
-		                 null,
 						 mappings,
 						 I18nUtils.getTranslationFormat(compilerConfig),
 						 cache );
@@ -383,10 +381,7 @@ public class AsDocAPI
 		// support i18n (.properties)
 		I18nCompiler prop = new I18nCompiler(compilerConfig, transcoders);
 
-		// support CSS
-		CssCompiler css = new CssCompiler(compilerConfig, transcoders, mappings);
-
-		return new SubCompiler[]{asc, mxmlc, abc, fxg, prop, css};
+		return new SubCompiler[]{asc, mxmlc, abc, fxg, prop};
 	}
 
 	/**

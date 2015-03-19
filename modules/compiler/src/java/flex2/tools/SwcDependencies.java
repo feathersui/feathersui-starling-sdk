@@ -101,23 +101,6 @@ public class SwcDependencies extends Tool
             if (moreFiles != null)
                 virtualFiles = (VirtualFile[])CompilerConfiguration.merge(virtualFiles, moreFiles, VirtualFile.class);
 
-            moreFiles = compilerConfig.getThemeFiles();
-            if (moreFiles != null)
-            {
-                // remove the css files and keep the swcs
-                List<VirtualFile> themeSwcs = new ArrayList<VirtualFile>(moreFiles.length); 
-                for (int i = 0; i < moreFiles.length; i++)
-                {
-                    if (moreFiles[i].getName().endsWith(".swc"))
-                        themeSwcs.add(moreFiles[i]);
-                }
-                
-                if (themeSwcs.size() > 0)
-                    virtualFiles = (VirtualFile[])CompilerConfiguration.merge(virtualFiles, 
-                                                          themeSwcs.toArray(new VirtualFile[themeSwcs.size()]), 
-                                                          VirtualFile.class);
-            }
-
             moreFiles = compilerConfig.getIncludeLibraries();
             if (moreFiles != null)
                 virtualFiles = (VirtualFile[])CompilerConfiguration.merge(virtualFiles, moreFiles, VirtualFile.class);

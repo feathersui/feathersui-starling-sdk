@@ -242,26 +242,6 @@ public class DocumentBuilder extends ComponentBuilder implements MXMLNamespaces
 		}
 	}
 
-	public void analyze(StyleNode node)
-	{
-		if (node.getStyleSheet() != null)
-		{
-			try
-			{
-				document.getStylesContainer().extractStyles(node.getStyleSheet(), true);
-			}
-			catch (Exception exception)
-			{
-				String message = exception.getLocalizedMessage();
-				if (message == null)
-				{
-					message = exception.getClass().getName();
-				}
-				logError(node, message);
-			}
-		}
-	}
-
 	public void analyze(WebServiceNode node)
 	{
 		WebServiceBuilder builder = new WebServiceBuilder(unit, typeTable, mxmlConfiguration, document);
@@ -478,7 +458,6 @@ public class DocumentBuilder extends ComponentBuilder implements MXMLNamespaces
 		Class<? extends Node> nodeClass = node.getClass();
 		return super.isLegalLanguageNode(node) ||
 				nodeClass == MetaDataNode.class ||
-				nodeClass == StyleNode.class ||
 				nodeClass == BindingNode.class ||
 				isServiceNode(node);
 	}

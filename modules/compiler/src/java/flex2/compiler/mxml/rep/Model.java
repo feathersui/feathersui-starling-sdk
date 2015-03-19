@@ -381,9 +381,7 @@ public class Model implements LineNumberMapped
      */
     public boolean hasBindings()
     {
-        return bindingsOnly(getProperties().values().iterator()).hasNext() ||
-                bindingsOnly(getStyles().values().iterator()).hasNext() ||
-                bindingsOnly(getEffects().values().iterator()).hasNext();
+        return bindingsOnly(getProperties().values().iterator()).hasNext();
     }
 
     /**
@@ -396,29 +394,11 @@ public class Model implements LineNumberMapped
     }
     
     /**
-     * Returns true if the specified style is the target of a binding.
-     */
-    public boolean hasDataBoundStyle(String name) 
-    {
-        Initializer initializer = (Initializer) getStyles().get(name);
-        return initializer != null ? initializer.isBinding() : false;
-    }
-    
-    /**
      * Returns true if the specified event property is the target of a binding.
      */
     public boolean hasDataBoundEvent(String name) 
     {
         Initializer initializer = (Initializer) getEvents().get(name);
-        return initializer != null ? initializer.isBinding() : false;
-    }
-    
-    /**
-     * Returns true if the specified effect property is the target of a binding.
-     */
-    public boolean hasDataBoundEffect(String name) 
-    {
-        Initializer initializer = (Initializer) getEffects().get(name);
         return initializer != null ? initializer.isBinding() : false;
     }
     
@@ -463,127 +443,6 @@ public class Model implements LineNumberMapped
     {
         ValueInitializer initializer = (ValueInitializer)getProperties().get(name);
         return initializer != null ? initializer.getValue() : null;
-    }
-
-    /**
-     *
-     */
-    public final void setStyle(String name, Object value, int line)
-    {
-        Style style = type.getStyle(name);
-        assert style != null : "style '" + name + "' not defined on type '" + type.getName() + "'";
-        setStyle(style,value, line);
-    }
-    
-    /**
-     *
-     */
-    public final void setStyle(Style style, Object value, int line)
-    {
-        StyleInitializer styleInitializer = new StyleInitializer(style, value, line, standardDefs);
-        
-        // Register this style and value as pertaining only to a specific state, otherwise
-        // assign to this instance (base state).
-        if (style.isStateSpecific())
-        {
-            document.registerStateSpecificStyle(this, style.getName(), styleInitializer, style.getStateName());
-        }
-        else
-        {
-            (styles != null ? styles : (styles = new LinkedHashMap<String, Initializer>())).put(style.getName(), styleInitializer);
-        }
-    }
-
-    public final Iterator<Initializer> getStyleInitializerIterator()
-    {
-        return excludeBindings(getStyles().values().iterator());
-    }
-
-    public final boolean hasStyle(String name)
-    {
-        return getStyles().containsKey(name);
-    }
-
-    private Map<String, Initializer> getStyles()
-    {
-        return styles != null ? styles : Collections.<String, Initializer>emptyMap();
-    }
-
-    /**
-     * Note: this is a little irregular; effect rvalues are either class names or bindings.
-     */
-    public final void setEffect(String name, Object value, Type effectType, int line)
-    {
-        Effect effect = type.getEffect(name);
-        setEffect(effect, value, effectType, line);
-    }
-    
-    /**
-     * Note: this is a little irregular; effect rvalues are either class names or bindings.
-     */
-    public final void setEffect(Effect effect, Object value, Type effectType, int line)
-    {
-        EffectInitializer effectInitializer = new EffectInitializer(effect, value, effectType, line, standardDefs);
-        
-        // Register this effect and value as pertaining only to a specific state, otherwise
-        // assign to this instance (base state).
-        if (effect.isStateSpecific())
-        {
-            document.registerStateSpecificStyle(this, effect.getName(), effectInitializer, effect.getStateName());
-        }
-        else
-        {
-            (effects != null ? effects : (effects = new LinkedHashMap<String, Initializer>())).put(effect.getName(), effectInitializer);
-        }
-    }
-
-    public final Iterator<Initializer> getEffectInitializerIterator()
-    {
-        return excludeBindings(getEffects().values().iterator());
-    }
-
-    public final boolean hasEffect(String name)
-    {
-        return getEffects().containsKey(name);
-    }
-
-    public final Map<String, Initializer> getEffects()
-    {
-        return effects != null ? effects : Collections.<String, Initializer>emptyMap();
-    }
-
-    public String getEffectNames()
-    {
-        Iterator eventNameIter = new TransformIterator(getEffectInitializerIterator(), new Transformer()
-        {
-            public Object transform(Object object)
-            {
-                return TextGen.quoteWord(((EffectInitializer)object).getName());
-            }
-        });
-
-        return TextGen.toCommaList(eventNameIter);
-    }
-
-    public String getEffectEventNames()
-    {
-        Iterator eventNameIter = new TransformIterator(getEffectInitializerIterator(), new Transformer()
-        {
-            public Object transform(Object object)
-            {
-                return TextGen.quoteWord(((EffectInitializer)object).getEventName());
-            }
-        });
-
-        return TextGen.toCommaList(eventNameIter);
-    }
-
-    /**
-     *
-     */
-    public Iterator getStyleAndEffectInitializerIterator()
-    {
-        return new IteratorChain(getStyleInitializerIterator(), getEffectInitializerIterator());
     }
 
     /**
@@ -649,8 +508,6 @@ public class Model implements LineNumberMapped
         IteratorList iterList = new IteratorList();
 
         addDefinitionIterators(iterList, getPropertyInitializerIterator());
-        addDefinitionIterators(iterList, getStyleInitializerIterator());
-        addDefinitionIterators(iterList, getEffectInitializerIterator());
         addDefinitionIterators(iterList, getEventInitializerIterator());
 
         return iterList.toIterator();
@@ -675,8 +532,6 @@ public class Model implements LineNumberMapped
 		IteratorList iterList = new IteratorList();
 
 		iterList.add(getPropertyInitializerIterator());
-		iterList.add(getStyleInitializerIterator());
-		iterList.add(getEffectInitializerIterator());
 		iterList.add(getEventInitializerIterator());
 
 		return iterList.toIterator();

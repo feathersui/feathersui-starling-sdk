@@ -60,11 +60,6 @@ public abstract class AnalyzerAdapter implements Analyzer
 		traverse(node);
 	}
 
-	public void analyze(StyleNode node)
-	{
-		traverse(node);
-	}
-
 	public void analyze(ScriptNode node)
 	{
 		traverse(node);

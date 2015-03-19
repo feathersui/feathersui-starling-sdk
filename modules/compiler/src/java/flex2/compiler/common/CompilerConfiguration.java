@@ -2094,48 +2094,10 @@ public class CompilerConfiguration implements As3Configuration,
     // 'compiler.theme' option
     //
 
-    private VirtualFile[] themeFiles;
-
-    public VirtualFile[] getThemeFiles()
-    {
-        // Swap in the default Flex 3 theme of Halo.
-        if ((mxmlConfig.getCompatibilityVersion() <= MxmlConfiguration.VERSION_3_0) &&
-            ((themeFiles != null) && ((themeFiles.length == 1))))
-        {
-            File file = new File("/themes/Spark/spark.css");
-
-            if (themeFiles[0].getName().endsWith(file.getPath()))
-            {
-                String name = themeFiles[0].getName();
-                int index = name.indexOf(file.getPath());
-                themeFiles[0] = new LocalFile(new File(name.substring(0, index) + "/themes/Halo/halo.swc"));
-                themeNames.remove("spark");
-                themeNames.add("halo");
-            }
-        }
-
-        return themeFiles;
-    }
-
     public void cfgTheme( ConfigurationValue cv, List paths ) throws ConfigurationException
     {
-        VirtualFile[] vfa = new VirtualFile[paths.size()];
-
-        int i = 0;
-        for (Iterator it = paths.iterator(); it.hasNext();)
-        {
-            String path = (String) it.next();
-            addThemeName(path);
-            VirtualFile theme = ConfigurationPathResolver.getVirtualFile( path,
-                                                                          configResolver,
-                                                                          cv );
-            if (theme == null)
-            {
-                throw new ConfigurationException.ConfigurationIOError( path, cv.getVar(), cv.getSource(), cv.getLine() );
-            }
-            vfa[i++] = theme;
-        }
-        themeFiles = (VirtualFile[])merge( themeFiles, vfa, VirtualFile.class );
+        // Feathers: we ignore the theme option, but keep it around for
+        // compatibility with existing Flex IDEs that expect it.
     }
 
     public static ConfigurationInfo getThemeInfo()
@@ -2149,100 +2111,17 @@ public class CompilerConfiguration implements As3Configuration,
 
             public boolean doChecksum()
             {
-            	return false;
+                return false;
             }
         };
     }
 
-    private Set<String> themeNames = new HashSet<String>();
-    
-    private void addThemeName(String path)
-    {
-        File file = new File(path);
-        String fileName = file.getName();
-        int end = fileName.indexOf("-");
-
-        if (end == -1)
-        {
-            end = fileName.lastIndexOf(".");
-        }
-
-        if (end != -1)
-        {
-            String themeName = fileName.substring(0, end);
-            themeNames.add(themeName);
-        }
-    }
-
-    public Set<String> getThemeNames()
-    {
-        return themeNames;
-    }
-    
-    //
-    // 'compiler.defaults-css-files' option
-    //
-    
-    /*
-     * This allows you to insert CSS files into compilation the same way that a per-SWC
-     * defaults.css file works, but without having to re-zip the SWC to test each change.
-     * 
-     * These CSS files have a higher precedence than those already in existing SWCs (e.g. specifying
-     * this option will override definitions in framework.swc$defaults.css), however, they have the
-     * same overall precedence as SWCs.
-     * 
-     * This takes one-or-more files, the CSS precedence is left-to-right, then SWCs.
-     * 
-     * NOTE: This does NOT actually insert the CSS file into the SWC, it simulates it. When you are
-     * done developing the CSS, you should rebuild the SWC with the new CSS integrated.
-     */
-    
-    /**
-     * Location of defaults style stylesheets (css only).
-     * 
-     * Contract: -defaults-css-files=A,B,C
-     *    'A' should have precedence over 'B', then 'C', then SWCs
-     *    defaultsCssFiles should have the order: SWCS, C, B, A
-     */
-    private List<VirtualFile> defaultsCssFiles = new LinkedList<VirtualFile>();
-    
-    public List<VirtualFile> getDefaultsCssFiles()
-    {
-        return defaultsCssFiles;
-    }
-
-    public void addDefaultsCssFiles( Collection<VirtualFile> files )
-    {
-        // this list works backwards, the first CSS has lowest precedence
-        // so each add should insert at the front
-        // (see the javadoc for defaultsCssFiles)
-        defaultsCssFiles.addAll( 0, files );
-    }
-
     public void cfgDefaultsCssFiles( ConfigurationValue cv, List paths )
-        throws ConfigurationException
+            throws ConfigurationException
     {
-        final int defaultsCssFilesLastIndex = defaultsCssFiles.size();
-        
-        // verify and add the paths given
-        for (Iterator it = paths.iterator(); it.hasNext();)
-        {
-            final String path = (String) it.next();
-            VirtualFile css = ConfigurationPathResolver.getVirtualFile(path,
-                                                                       configResolver,
-                                                                       cv);
-            if (css == null)
-            {
-                throw new ConfigurationException.ConfigurationIOError(path,
-                                                                      cv.getVar(),
-                                                                      cv.getSource(),
-                                                                      cv.getLine());
-            }
 
-            // I start from defaultsCssFilesLastIndex so that the paths are in the correct
-            // precedence order (see the javadoc for defaultsCssFiles)
-            defaultsCssFiles.add(defaultsCssFilesLastIndex, css);
-        }
+        // Feathers: we ignore the defaults-css-files option, but keep it around
+        // for compatibility with existing Flex IDEs that expect it.
     }
 
     public static ConfigurationInfo getDefaultsCssFilesInfo()
@@ -2253,21 +2132,6 @@ public class CompilerConfiguration implements As3Configuration,
             public boolean isAdvanced()    { return true;  }
             public boolean doChecksum()    { return false; }
         };
-    }
-    
-    /**
-     * Location of theme style stylesheets (css only, configured via themefiles above).
-     */
-    private List<VirtualFile> themeCssFiles = new LinkedList<VirtualFile>();
-
-    public List<VirtualFile> getThemeCssFiles()
-    {
-        return themeCssFiles;
-    }
-
-    public void addThemeCssFiles( List<VirtualFile> files )
-    {
-        themeCssFiles.addAll( files );
     }
 
     //

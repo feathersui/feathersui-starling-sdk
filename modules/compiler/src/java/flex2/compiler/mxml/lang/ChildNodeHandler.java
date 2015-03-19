@@ -216,18 +216,6 @@ public abstract class ChildNodeHandler extends DeclarationHandler
             ChildNodeHandler.this.property(property);
         }
 
-        protected void effect(Effect effect)
-        {
-            transition(INPUT_NON_DP_CHILD);
-            ChildNodeHandler.this.effect(effect);
-        }
-
-        protected void style(Style style)
-        {
-            transition(INPUT_NON_DP_CHILD);
-            ChildNodeHandler.this.style(style);
-        }
-
         protected void dynamicProperty(String name, String state)
         {
             transition(INPUT_NON_DP_CHILD);
