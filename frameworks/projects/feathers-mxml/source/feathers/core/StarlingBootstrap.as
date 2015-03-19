@@ -74,9 +74,11 @@ package feathers.core
 		/**
 		 * @private
 		 */
-		protected function createStarling(rootClass:Class = null):Starling
+		protected function createStarling():Starling
 		{
-			return new Starling(null, this.stage, null, null, Context3DRenderMode.AUTO, Context3DProfile.BASELINE_CONSTRAINED);
+			var starling:Starling = new Starling(null, this.stage, null, null, Context3DRenderMode.AUTO, Context3DProfile.BASELINE_CONSTRAINED);
+			starling.supportHighResolutions = this.stage.contentsScaleFactor > 1;
+			return starling;
 		}
 
 		/**
