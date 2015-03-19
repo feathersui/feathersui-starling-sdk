@@ -42,6 +42,8 @@
     
     <property name="projects.dir" value="${FLEX_HOME}/frameworks/projects"/>
 
+    <property name="starling.dir" value="${projects.dir}/starling"/>
+    <property name="feathers.dir" value="${projects.dir}/feathers"/>
     <property name="feathers-mxml.dir" value="${projects.dir}/feathers-mxml"/>
     <property name="authoringsupport.dir" value="${projects.dir}/authoringsupport"/>
     <property name="core.dir" value="${projects.dir}/core"/>
@@ -51,7 +53,7 @@
     
     <taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar;${FLEX_HOME}/lib/flexTasks.jar"/>
 
-    <target name="main" depends="check-compile-env,clean,thirdparty-downloads,prepare,framework,core,authoringsupport,feathers-mxml,bundles"/>
+    <target name="main" depends="check-compile-env,clean,thirdparty-downloads,prepare,framework,core,authoringsupport,starling,feathers,feathers-mxml,bundles"/>
 
     <target name="bundles" depends="framework_rb"/>
 
@@ -110,9 +112,6 @@
             locale="${locale}" accessible="true"
             resource-bundle-list="${authoringsupport.dir}/bundles.properties">
             <source-path path-element="${authoringsupport.dir}/src"/>
-            <library-path dir="${authoringsupport.dir}/libs">
-                <include name="FlexContentHolderThumbnail.swc"/>
-            </library-path>
             <external-library-path dir="${playerglobal.dir}" includes="playerglobal.swc"/>
             <external-library-path dir="${basedir}/libs">
                 <include name="framework.swc"/>
@@ -124,9 +123,9 @@
     <target name="starling" description="Builds starling.swc">
         <compc static-link-runtime-shared-libraries="true" fork="true" 
             output="${basedir}/libs/starling.swc"
-            include-sources="${starling.dir}/Starling-Framework/starling/src"
             locale="${locale}" accessible="true">
             <source-path path-element="${starling.dir}/Starling-Framework/starling/src"/>
+            <include-sources dir="${starling.dir}/Starling-Framework/starling/src" includes="*"/>
             <external-library-path dir="${playerglobal.dir}" includes="playerglobal.swc"/>
             <jvmarg line="${compc.jvm.args}"/>
         </compc>
@@ -135,10 +134,10 @@
     <target name="feathers" description="Builds feathers.swc">
         <compc static-link-runtime-shared-libraries="true" fork="true" 
             output="${basedir}/libs/feathers.swc"
-            include-sources="${feathers.dir}/feathers/source"
             locale="${locale}" accessible="true"
             resource-bundle-list="${feathers.dir}/bundles.properties">
             <source-path path-element="${feathers.dir}/feathers/source"/>
+            <include-sources dir="${feathers.dir}/feathers/source" includes="*"/>
             <external-library-path dir="${playerglobal.dir}" includes="playerglobal.swc"/>
             <external-library-path dir="${basedir}/libs">
                 <include name="starling.swc"/>
@@ -151,10 +150,10 @@
     <target name="feathers-mxml" description="Builds feathers-mxml.swc">
         <compc static-link-runtime-shared-libraries="true" fork="true" 
             output="${basedir}/libs/feathers-mxml.swc"
-            include-sources="${feathers-mxml.dir}/source"
             locale="${locale}" accessible="true"
             resource-bundle-list="${feathers-mxml.dir}/bundles.properties">
             <source-path path-element="${feathers-mxml.dir}/source"/>
+            <include-sources dir="${feathers-mxml.dir}/source" includes="*"/>
             <external-library-path dir="${playerglobal.dir}" includes="playerglobal.swc"/>
             <external-library-path dir="${basedir}/libs">
                 <include name="framework.swc"/>
@@ -251,6 +250,8 @@
                 <include name="framework.swc"/>
                 <include name="core.swc"/>
                 <include name="authoringsupport.swc"/>
+                <include name="starling.swc"/>
+                <include name="feathers.swc"/>
                 <include name="feathers-mxml.swc"/>
             </fileset>
         </delete>
