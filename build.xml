@@ -95,8 +95,8 @@
         description="Build and package the asdocs for the framework clases and the javadocs."/>
                 
     <target name="additional-packages"
-        depends="ja-locale-samples,antTasks-package" 
-        description="Package locale-samples and antTasks."/>
+        depends="antTasks-package" 
+        description="Package antTasks."/>
 
     <target name="help">
         <echo message="run ant -projecthelp to see the available targets"/>
@@ -233,11 +233,6 @@ the version of Apache Flex that this SDK was forked from --&gt;
         
         <delete file="${basedir}/flex-sdk-description.xml" failonerror="false"/>
         <delete file="${basedir}/rat*.report" failonerror="false"/>
-        
-        <delete dir="${basedir}/samples/themes" failonerror="false">
-            <include name="**/*.swc"/>
-            <include name="**/*.swf"/>
-        </delete>
 
         <!-- These directory would exist if the AIR SDK was merged in. -->
         <delete dir="${basedir}/lib" failonerror="false" includeEmptyDirs="true">
@@ -418,17 +413,6 @@ the version of Apache Flex that this SDK was forked from --&gt;
             </fileset>
         </copy>
         
-        <!-- samples -->
-        <copy todir="${basedir}/temp/samples">
-            <fileset dir="${basedir}/samples" >
-                <exclude name="**/*.swc"/>
-                <exclude name="**/*.swf"/>
-                <!-- zen theme is missing assets.  Don't package it
-                 because FB will fail when it can't find the swc -->
-                <exclude name="themes/zen/**"/>
-            </fileset>
-        </copy>
-        
         <!-- templates -->
         <copy todir="${basedir}/temp/templates">
             <fileset dir="${basedir}/templates" >
@@ -469,7 +453,7 @@ the version of Apache Flex that this SDK was forked from --&gt;
     </target>
 
     <!-- frameworks -->
-    <!-- javascript and test directories follow -->
+    <!-- test directories follow -->
     <target name="stage-frameworks">
         <copy todir="${basedir}/temp/frameworks" includeEmptyDirs="false">
             <fileset dir="${basedir}/frameworks">
@@ -480,7 +464,6 @@ the version of Apache Flex that this SDK was forked from --&gt;
                 <exclude name="**/*.swf"/>
                 <exclude name="**/*.mxp"/>
                 <exclude name="test*/**"/>
-                <exclude name="javascript/**"/>
                 <exclude name="projects/air/**"/>
                 <exclude name="projects/spark/manifest.xml"/>
                 <exclude name="projects/*/bundles.properties"/>
@@ -664,18 +647,6 @@ the version of Apache Flex that this SDK was forked from --&gt;
         <copy todir="${basedir}/temp/ide">
             <fileset dir="${basedir}/ide" >
                 <include name="flashbuilder/config"/>
-            </fileset>
-        </copy>
-        
-        <!-- sample themes -->
-        <copy todir="${basedir}/temp/samples">
-            <fileset dir="${basedir}/samples" >
-                <include name="**/build.xml"/>
-                <include name="**/*.swc"/>
-                <include name="**/*.swf"/>
-                <!-- don't package zen theme as it is missing
-                 some assets and FB fails looking for the swc -->
-                <exclude name="themes/zen/**"/>
             </fileset>
         </copy>
 
@@ -905,20 +876,6 @@ the version of Apache Flex that this SDK was forked from --&gt;
                 <include name="xercesImpl_zh_TW.jar"/>
             </fileset>
         </copy>
-    </target>
-
-    <target name="ja-locale-samples" if="build.additional-packages">
-        <antcall target="clean-temp"/>
-        <!--
-        <copy todir="${basedir}/temp/samples_ja">
-            <fileset dir="${basedir}/samples/ja_JP">
-                <include name="README_ja.txt"/>
-                <include name="explorer/**"/>
-            </fileset>
-        </copy>
-        <mkdir dir="${basedir}/out"/>
-        <zip file="${basedir}/out/${kit.prefix}-locales.zip" basedir="${basedir}/temp" includes="**"/>
-        -->
     </target>
  
     <target name="antTasks-package" if="build.additional-packages">
