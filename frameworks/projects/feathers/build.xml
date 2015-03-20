@@ -78,7 +78,6 @@
 			</external-library-path>
 			<external-library-path dir="${FLEX_HOME}/frameworks/libs">
 				<include name="starling.swc"/>
-				<include name="feathers.swc"/>
 			</external-library-path>
 			<jvmarg line="${asdoc.jvm.args}"/>
 		</asdoc>
