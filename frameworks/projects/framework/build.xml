@@ -152,7 +152,7 @@
         <bundler locale="el_GR"/><!-- Greek Language  resources -->
     </target>
     
-    <target name="clean" depends="bundles-clean, assets-clean">
+    <target name="clean" depends="bundles-clean">
         <delete failonerror="false">
             <fileset dir="${basedir}" >
                 <include name="bundles.properties"/>
@@ -173,82 +173,8 @@
             </fileset>
         </delete>
     </target>
-    
-    <target name="pixelbender-clean">
-        <delete failonerror="false">
-            <fileset dir="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses">
-                <include name="**/*.pbj"/>
-            </fileset>
-        </delete>
-    </target>
-
-    <target name="assets-clean">
-        <delete failonerror="false">
-            <fileset dir="${FLEX_HOME}/frameworks/projects/framework/assets">
-                <include name="**/*.swf"/>
-            </fileset>
-        </delete>
-    </target>
-
-    <target name="pixelbender-compile" unless="isLinux">
-        <!-- diagnose GPU and OpenGL -->
-        <exec executable="${env.PIXELBENDER_HOME}/sniffer_gpu.exe" os="windows"/>
-        <exec executable="${env.PIXELBENDER_HOME}/pbutil">
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/Color.pbk" />
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/Color.pbj" />
-        </exec>
-        <exec executable="${env.PIXELBENDER_HOME}/pbutil">
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/ColorBurn.pbk" />
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/ColorBurn.pbj" />
-        </exec>
-        <exec executable="${env.PIXELBENDER_HOME}/pbutil">
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/ColorDodge.pbk" />
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/ColorDodge.pbj" />
-        </exec>
-        <exec executable="${env.PIXELBENDER_HOME}/pbutil">
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/Exclusion.pbk" />
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/Exclusion.pbj" />
-        </exec>
-        <exec executable="${env.PIXELBENDER_HOME}/pbutil">
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/Hue.pbk" />
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/Hue.pbj" />
-        </exec>
-        <exec executable="${env.PIXELBENDER_HOME}/pbutil">
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/Luminosity.pbk" />
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/Luminosity.pbj" />
-        </exec>
-        <exec executable="${env.PIXELBENDER_HOME}/pbutil">
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/LuminosityMaskFilter.pbk" />
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/LuminosityMaskFilter.pbj" />
-        </exec>
-        <exec executable="${env.PIXELBENDER_HOME}/pbutil">
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/Saturation.pbk" />
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/Saturation.pbj" />
-        </exec>
-        <exec executable="${env.PIXELBENDER_HOME}/pbutil">
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/SoftLight.pbk" />
-            <arg value="${FLEX_HOME}/frameworks/projects/framework/src/mx/graphics/shaderClasses/SoftLight.pbj" />
-        </exec>
-    </target>
-
-    <target name="assets-compile">
-        <!-- Load the <compc> task. We can't do this at the <project> level -->
-        <!-- because targets that run before flexTasks.jar gets built would fail. -->
-        <taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar;${FLEX_HOME}/lib/flexTasks.jar"/>
-        <mxmlc fork="true"
-               file="${FLEX_HOME}/frameworks/projects/framework/assets/Assets.as"
-               output="${FLEX_HOME}/frameworks/projects/framework/assets/Assets.swf"
-               >
-            <jvmarg line="${compc.jvm.args}"/>
-            <target-player>${playerglobal.version}</target-player>
-            <library-path/>
-            <external-library-path dir="${env.PLAYERGLOBAL_HOME}">
-                <include name="${playerglobal.version}/playerglobal.swc"/>
-            </external-library-path>
-        </mxmlc>
-    </target>
         
-    <target name="compile" depends="assets-compile" description="Compiles framework.swc">
+    <target name="compile" description="Compiles framework.swc">
         <echo message="Compiling frameworks/libs/framework.swc"/>
         <!-- Load the <compc> task. We can't do this at the <project> level -->
         <!-- because targets that run before flexTasks.jar gets built would fail. -->
@@ -261,7 +187,6 @@
             because these aren't referenced by the manifest classes.
             Keep the standard metadata when compiling.
             Link in accessibility support.
-            Include the appropriate CSS files and assets in the SWC.
             Don't include any resources in the SWC.
             Write a bundle list of referenced resource bundles
             into the file bundles.properties in this directory.
@@ -301,8 +226,6 @@
             <load-config filename="${FLEX_HOME}/frameworks/flex-config.xml"/>
             <load-config filename="framework-config.xml"/>
             <doc-classes class="FrameworkClasses"/>
-            <doc-namespaces uri="http://www.adobe.com/2006/mxml"/>
-            <namespace uri="http://www.adobe.com/2006/mxml" manifest="${basedir}/manifest.xml"/>
             <jvmarg line="${asdoc.jvm.args}"/>
         </asdoc>
 

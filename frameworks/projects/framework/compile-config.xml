@@ -7,7 +7,7 @@
   (the "License"); you may not use this file except in compliance with
   the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+	  http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -17,68 +17,37 @@
 
 -->
 <flex-config>
+	<compiler>
+		<accessible>true</accessible>
+		
+		<external-library-path>
+			<path-element>${env.PLAYERGLOBAL_HOME}/${playerglobal.version}/playerglobal.swc</path-element>
+		</external-library-path>
+		
+		<keep-as3-metadata>
+			<name>Bindable</name>
+			<name>Managed</name>
+			<name>ChangeEvent</name>
+			<name>NonCommittingChangeEvent</name>
+			<name>Transient</name>
+		</keep-as3-metadata>
+		
+		<locale/>
+		
+		<library-path/>
 
-    <compiler>
-        <accessible>true</accessible>
-        
-        <external-library-path>
-            <path-element>${env.PLAYERGLOBAL_HOME}/${playerglobal.version}/playerglobal.swc</path-element>
-        </external-library-path>
-        
-        <keep-as3-metadata>
-            <name>Bindable</name>
-            <name>Managed</name>
-            <name>ChangeEvent</name>
-            <name>NonCommittingChangeEvent</name>
-            <name>Transient</name>
-        </keep-as3-metadata>
-        
-        <locale/>
-        
-        <library-path/>
-
-        <namespaces>
-            <namespace>
-                <uri>library://ns.adobe.com/flex/mx</uri>
-                <manifest>manifest.xml</manifest>
-            </namespace>
-            <namespace>
-                <uri>http://www.adobe.com/2006/mxml</uri>
-                <manifest>manifest.xml</manifest>
-            </namespace>
-        </namespaces>
-        
-        <source-path>
-            <path-element>src</path-element>
-        </source-path>
-    </compiler>
-    
-    <include-classes>
-        <class>FrameworkClasses</class>
-    </include-classes>
-    
-    <include-file>
-        <name>defaults.css</name>
-        <path>defaults.css</path>
-    </include-file>
-    <include-file>
-        <name>defaults-3.0.0.css</name>
-        <path>defaults-3.0.0.css</path>
-    </include-file>
-    <include-file>
-        <name>Assets.swf</name>
-        <path>assets/Assets.swf</path>
-    </include-file>
-    <include-file>
-        <name>assets/CalendarIcon.png</name>
-        <path>assets/CalendarIcon.png</path>
-    </include-file>
-    
-    <include-namespaces>
-        <uri>library://ns.adobe.com/flex/mx</uri>
-    </include-namespaces>  
-    
-    <resource-bundle-list>bundles.properties</resource-bundle-list>
-    
-    <target-player>11.1</target-player>
+		<namespaces/>
+		
+		<source-path>
+			<path-element>src</path-element>
+		</source-path>
+	</compiler>
+	
+	<include-classes>
+		<class>FrameworkClasses</class>
+	</include-classes>  
+	
+	<resource-bundle-list>bundles.properties</resource-bundle-list>
+	
+	<target-player>11.5</target-player>
 </flex-config>

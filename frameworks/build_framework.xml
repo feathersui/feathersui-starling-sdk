@@ -187,18 +187,11 @@
         <compc static-link-runtime-shared-libraries="true" fork="true" include-classes="FrameworkClasses" 
             output="${basedir}/libs/framework.swc" locale="${locale}" accessible="true"
             resource-bundle-list="${framework.dir}/bundles.properties">
-            <namespace uri="library://ns.adobe.com/flex/mx" manifest="${framework.dir}/manifest.xml"/>
-            <namespace uri="http://www.adobe.com/2006/mxml" manifest="${framework.dir}/manifest.xml"/>
-            <include-namespaces uri="library://ns.adobe.com/flex/mx"/>
             <source-path path-element="${framework.dir}/src"/>
             <external-library-path dir="${playerglobal.dir}" includes="playerglobal.swc"/>
             <load-config filename="${basedir}/flex-config.xml"/>
             <load-config filename="${framework.dir}/framework-config.xml"/>
             <library-path/>
-            <include-file name="defaults.css" path="${framework.dir}/defaults.css"/>
-            <include-file name="defaults-3.0.0.css" path="${framework.dir}/defaults-3.0.0.css"/>
-            <include-file name="Assets.swf" path="${framework.dir}/assets/Assets.swf"/>
-            <include-file name="assets/CalendarIcon.png" path="${framework.dir}/assets/CalendarIcon.png"/>
             <keep-as3-metadata name="Bindable" />
             <keep-as3-metadata name="Managed" />
             <keep-as3-metadata name="ChangeEvent" />
