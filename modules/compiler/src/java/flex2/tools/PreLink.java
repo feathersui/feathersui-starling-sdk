@@ -938,11 +938,7 @@ public class PreLink implements flex2.compiler.PreLink
         	return preloader.length() == 0 ? null : preloader;
         }
 
-        int version = configuration.getCompatibilityVersion();
-        if (version < MxmlConfiguration.VERSION_4_0)
-            return "mx.preloaders.DownloadProgressBar";
-        else
-            return "mx.preloaders.SparkDownloadProgressBar";
+        return null;
     }
 
     private static String codegenEmbeddedApplicaitonAttributes(Map<String, Object> rootAttributeEmbedVars)
