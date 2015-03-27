@@ -99,6 +99,9 @@ public abstract class StandardDefs
     //--------------------------------------------------------------------------    
 
     public static final String PACKAGE___AS3___VEC = "__AS3__.vec";
+    
+    // feathers.*
+    public static final String PACKAGE_FEATHERS_BINDING = "feathers.binding";
 
     // starling.*
     public static final String PACKAGE_STARLING_ANIMATION = "starling.animation";
@@ -909,7 +912,7 @@ public abstract class StandardDefs
 
         public String getBindingPackage()
         {
-            return PACKAGE_MX_BINDING;
+            return PACKAGE_FEATHERS_BINDING;
         }
 
         public String getContainerPackage()

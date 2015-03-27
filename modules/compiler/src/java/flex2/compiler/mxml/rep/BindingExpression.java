@@ -248,7 +248,7 @@ public class BindingExpression implements Comparable<BindingExpression>
 
         if (!((isDestinationXMLAttribute || isDestinationXMLNode)))
         {
-            base = generateDestinationPathRoot(nodeFactory, false);
+            base = generateDestinationPathRoot(nodeFactory);
         }
 
         IdentifierNode identifier = null;
@@ -339,7 +339,7 @@ public class BindingExpression implements Comparable<BindingExpression>
         
         if (!(doXML && (isDestinationXMLAttribute || isDestinationXMLNode)))
         {
-            buffer.append( getDestinationPathRoot(false) );
+            buffer.append( getDestinationPathRoot() );
         }
 
         if ((destination != null) &&
@@ -376,7 +376,7 @@ public class BindingExpression implements Comparable<BindingExpression>
         return buffer.toString();
     }
 
-    public String getDestinationPathRoot(boolean doRepeatable)
+    public String getDestinationPathRoot()
     {        
         if (destination == null)
         {
@@ -389,8 +389,6 @@ public class BindingExpression implements Comparable<BindingExpression>
 
         Model model = destinationStack.peek();
         ensureHighestLevelModelDeclared(model);
-
-        boolean writeRepeaterIndices = doRepeatable;
 
         while (!destinationStack.isEmpty())
         {
@@ -425,17 +423,6 @@ public class BindingExpression implements Comparable<BindingExpression>
                 }
             }
 
-            if (writeRepeaterIndices && isRepeatable())
-            {
-                for (int i = 0; i < model.getRepeaterLevel(); ++i)
-                {
-                    destinationRoot.append("[instanceIndices[");
-                    destinationRoot.append(i);
-                    destinationRoot.append("]]");
-                }
-                writeRepeaterIndices = false;
-            }
-
             if (!destinationStack.isEmpty())
             {
                 Model child = destinationStack.peek();
@@ -450,7 +437,7 @@ public class BindingExpression implements Comparable<BindingExpression>
         return destinationRoot.toString();
     }
 
-    public Node generateDestinationPathRoot(NodeFactory nodeFactory, boolean doRepeatable)
+    public Node generateDestinationPathRoot(NodeFactory nodeFactory)
     {
         Node result = null;
 
@@ -459,8 +446,6 @@ public class BindingExpression implements Comparable<BindingExpression>
             Stack<Model> destinationStack = generateDestinationStack();
             Model model = destinationStack.peek();
             ensureHighestLevelModelDeclared(model);
-
-            boolean writeRepeaterIndices = doRepeatable;
 
             while (!destinationStack.isEmpty())
             {
@@ -503,18 +488,6 @@ public class BindingExpression implements Comparable<BindingExpression>
                             }
                         }
                     }
-                }
-
-                if (writeRepeaterIndices && isRepeatable())
-                {
-                    for (int i = 0; i < model.getRepeaterLevel(); ++i)
-                    {
-                        //destinationRoot.append("[instanceIndices[");
-                        //destinationRoot.append(i);
-                        //destinationRoot.append("]]");
-                        assert false;
-                    }
-                    writeRepeaterIndices = false;
                 }
 
                 if (!destinationStack.isEmpty())
@@ -579,40 +552,6 @@ public class BindingExpression implements Comparable<BindingExpression>
     public int getId()
     {
         return id;
-    }
-
-    public String getRepeatableSourceExpression()
-    {
-        String repeatableSourceExpression = sourceExpression;
-        List repeaterParents = destination.getRepeaterParents();
-        Iterator iterator = repeaterParents.iterator();
-
-        while ( iterator.hasNext() )
-        {
-            Model repeater = (Model) iterator.next();
-            int repeaterLevel = repeater.getRepeaterLevel();
-            StringBuilder buffer = new StringBuilder();
-            int i;
-
-            for (i = 0; i < repeaterLevel; i++)
-            {
-                buffer.append("[instanceIndices[");
-                buffer.append(i);
-                buffer.append("]]");
-            }
-
-            buffer.append(".mx_internal::getItemAt(repeaterIndices[");
-            buffer.append(i);
-            buffer.append("])");
-
-            repeatableSourceExpression = repeatableSourceExpression.replaceAll(repeater.getId() + "\\.currentItem",
-                                                                               repeater.getId() + buffer.toString());
-
-            repeatableSourceExpression = repeatableSourceExpression.replaceAll(repeater.getId() + "\\.currentIndex",
-                                                                               "repeaterIndices[" + i + "]");
-        }
-
-        return repeatableSourceExpression;
     }
 
     public String getSourceExpression()
@@ -698,45 +637,6 @@ public class BindingExpression implements Comparable<BindingExpression>
 	        // C: The destination xml line number may not be as accurate as the binding expression's original number...
 	        this.xmlLineNumber = destination.getXmlLineNumber();
         }
-    }
-
-    public boolean isRepeatable()
-    {
-        return ((destination != null) && (destination.getRepeaterLevel() > 0));
-    }
-
-    public int getRepeaterLevel(String var)
-    {
-        if (var.indexOf("[repeaterIndices") > -1)
-        {
-            var = var.substring(0, var.indexOf("["));
-        }
-        
-        int repeaterLevel = -1;
-
-        if (destination != null)
-        {
-            List repeaters = destination.getRepeaterParents();
-
-            repeaterLevel = repeaters.size() - 1;
-
-            for (; repeaterLevel >= 0; --repeaterLevel)
-            {
-                Model r = (Model) repeaters.get(repeaterLevel);
-                if (var.equals(r.getId()))
-                {
-                    break;
-                }
-            }
-        }
-
-        return repeaterLevel;
-    }
-
-    public String getRepeaterId(int level)
-    {
-        Model repeater = (Model) destination.getRepeaterParents().get(level);
-        return repeater.getId();
     }
 
     public BindingExpression getTwoWayCounterpart()

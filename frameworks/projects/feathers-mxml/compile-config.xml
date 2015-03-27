@@ -25,6 +25,7 @@
 			<path-element>${env.PLAYERGLOBAL_HOME}/${playerglobal.version}/playerglobal.swc</path-element>
 			<path-element>../../libs/feathers.swc</path-element>
 			<path-element>../../libs/starling.swc</path-element>
+			<path-element>../../libs/framework.swc</path-element>
 		</external-library-path>
 		
 		<locale/>

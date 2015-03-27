@@ -45,14 +45,14 @@
 #end
 
 #macro (writeXMLWatcher $watcher)
-        watchers[${watcher.id}] = new mx.binding.XMLWatcher("${watcher.property}",
+        watchers[${watcher.id}] = new feathers.binding.XMLWatcher("${watcher.property}",
 #writeWatcherListeners($watcher)
         );
 #end
 
 #macro (writeArrayElementWatcher $watcher)
 #if ($watcher.shouldWriteChildren() && $watcher.shouldWriteSelf())
-        watchers[${watcher.id}] = new mx.binding.ArrayElementWatcher(target,
+        watchers[${watcher.id}] = new feathers.binding.ArrayElementWatcher(target,
                                                                      function():* { return ${watcher.evaluationPart}; },
                                                                      [bindings[${watcher.bindingExpression.id}]]);
 #end
@@ -106,7 +106,7 @@
 #end ## macro
 
 #macro (writeFunctionReturnWatcher $watcher)
-        watchers[$watcher.id] = new mx.binding.FunctionReturnWatcher("${watcher.functionName}",
+        watchers[$watcher.id] = new feathers.binding.FunctionReturnWatcher("${watcher.functionName}",
                                                                      target,
                                                                      function():Array { return [ ${watcher.evaluationPart} ]; },
                                                                      #writeWatcherChangeEvents($watcher),
@@ -116,17 +116,14 @@
 #else
                                                                      propertyGetter
 #end
-#if ($watcher.isStyleWatcher())
-                                                                     , true
-#end
 );
 #end
 
 #macro (writePropertyWatcher $watcher)
 #if ($watcher.staticProperty)
-        watchers[${watcher.id}] = new mx.binding.StaticPropertyWatcher("${watcher.property}",
+        watchers[${watcher.id}] = new feathers.binding.StaticPropertyWatcher("${watcher.property}",
 #else
-        watchers[${watcher.id}] = new mx.binding.PropertyWatcher("${watcher.property}",
+        watchers[${watcher.id}] = new feathers.binding.PropertyWatcher("${watcher.property}",
 #end
                                                                  #writeWatcherChangeEvents($watcher),
                                                                  #writeWatcherListeners($watcher),
@@ -142,24 +139,11 @@
 );
 #end
 
-#macro (writeRepeaterComponentWatcher $watcher)
-        watchers[${watcher.id}] = new mx.binding.RepeaterComponentWatcher("${watcher.property}",
-#writeWatcherChangeEvents($watcher), #writeWatcherListeners($watcher), propertyGetter);
-#end
-
-#macro (writeRepeaterItemWatcher $watcher)
-        watchers[${watcher.id}] = new mx.binding.RepeaterItemWatcher(watchers[${watcher.parent.id}]);
-#end
-
 #macro (writeWatcher $watcher)
         // writeWatcher id=$watcher.id shouldWriteSelf=$watcher.shouldWriteSelf() class=$watcher.getClass().getName() shouldWriteChildren=$watcher.shouldWriteChildren()
 #if ($watcher.shouldWriteSelf())
 #if ($watcher.getClass().getName().equals("flex2.compiler.as3.binding.ArrayElementWatcher"))
 #writeArrayElementWatcher($watcher)
-#elseif ($watcher.getClass().getName().equals("flex2.compiler.as3.binding.RepeaterComponentWatcher"))
-#writeRepeaterComponentWatcher($watcher)
-#elseif ($watcher.getClass().getName().equals("flex2.compiler.as3.binding.RepeaterItemWatcher"))
-#writeRepeaterItemWatcher($watcher)
 #elseif ($watcher.getClass().getName().equals("flex2.compiler.as3.binding.PropertyWatcher"))
 #writePropertyWatcher($watcher)
 #elseif ($watcher.getClass().getName().equals("flex2.compiler.as3.binding.XMLWatcher"))
@@ -185,27 +169,24 @@
 
 package
 {
-import mx.core.IFlexModuleFactory;
-import mx.binding.ArrayElementWatcher;
-import mx.binding.FunctionReturnWatcher;
-import mx.binding.IWatcherSetupUtil2;
-import mx.binding.PropertyWatcher;
-import mx.binding.RepeaterComponentWatcher;
-import mx.binding.RepeaterItemWatcher;
-import mx.binding.StaticPropertyWatcher;
-import mx.binding.XMLWatcher;
-import mx.binding.Watcher;
+import feathers.binding.ArrayElementWatcher;
+import feathers.binding.FunctionReturnWatcher;
+import feathers.binding.IWatcherSetupUtil;
+import feathers.binding.PropertyWatcher;
+import feathers.binding.StaticPropertyWatcher;
+import feathers.binding.XMLWatcher;
+import feathers.binding.Watcher;
 
 [ExcludeClass]
 public class ${dataBindingInfo.watcherSetupUtilClassName}
-    implements mx.binding.IWatcherSetupUtil2
+    implements feathers.binding.IWatcherSetupUtil
 {
     public function ${dataBindingInfo.watcherSetupUtilClassName}()
     {
         super();
     }
 
-    public static function init(fbs:IFlexModuleFactory):void
+    public static function init():void
     {
         import ${dataBindingInfo.className};
         (${dataBindingInfo.className}).watcherSetupUtil = new ${dataBindingInfo.watcherSetupUtilClassName}();

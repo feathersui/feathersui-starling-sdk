@@ -55,23 +55,6 @@ internal class FrameworkClasses
 	import mx.resources.ResourceBundle; ResourceBundle;
 	import mx.resources.ResourceManager; ResourceManager;
 
-	//binding classes
-	import mx.binding.ArrayElementWatcher; ArrayElementWatcher;
-	import mx.binding.BindabilityInfo; BindabilityInfo;
-	import mx.binding.EvalBindingResponder; EvalBindingResponder;
-	import mx.binding.FunctionReturnWatcher; FunctionReturnWatcher;
-	import mx.binding.IBindingClient; IBindingClient;
-	import mx.binding.IWatcherSetupUtil; IWatcherSetupUtil;
-	import mx.binding.IWatcherSetupUtil2; IWatcherSetupUtil2;
-	import mx.binding.PropertyWatcher; PropertyWatcher;
-	import mx.binding.RepeatableBinding; RepeatableBinding;
-	import mx.binding.RepeaterComponentWatcher; RepeaterComponentWatcher;
-	import mx.binding.RepeaterItemWatcher; RepeaterItemWatcher;
-	import mx.binding.StaticPropertyWatcher; StaticPropertyWatcher;
-	import mx.binding.XMLWatcher; XMLWatcher;
-	import mx.binding.utils.BindingUtils; BindingUtils;
-	import mx.binding.utils.ChangeWatcher; ChangeWatcher;
-
     //framework classes
     import mx.core.ClassFactory; ClassFactory;
     import mx.core.DeferredInstanceFromClass; DeferredInstanceFromClass;
@@ -80,6 +63,7 @@ internal class FrameworkClasses
     import mx.core.IFactory; IFactory;
     import mx.core.IPropertyChangeNotifier; IPropertyChangeNotifier;
     import mx.core.mx_internal; mx_internal;
+	import mx.events.PropertyChangeEvent; PropertyChangeEvent;
 }
 
 }

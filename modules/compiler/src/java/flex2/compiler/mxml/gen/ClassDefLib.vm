@@ -142,7 +142,7 @@ $str
         if (_watcherSetupUtil == null)
         {
             var watcherSetupUtilClass:Object = getDefinitionByName("${doc.watcherSetupUtilClassName}");
-            watcherSetupUtilClass["init"](null);
+            watcherSetupUtilClass["init"]();
         }
 
         _watcherSetupUtil.setup(this,
@@ -236,33 +236,7 @@ $str
         var result:Array = [];
 
 #foreach ($bindingExpression in $doc.bindingExpressions)
-#if ($bindingExpression.isRepeatable())
-        result[${bindingExpression.id}] = new mx.binding.RepeatableBinding(this,
-            function(instanceIndices:Array,
-                     repeaterIndices:Array):${bindingExpression.getDestinationTypeName()}
-            {
-#if (${bindingExpression.getDestinationTypeName()} == "String")
-#embedText("                var result:* = $bindingExpression.repeatableSourceExpression;" $bindingExpression.xmlLineNumber)
-                return (result == undefined ? null : String(result));
-#elseif (${bindingExpression.getDestinationTypeName()} == "Array")
-#embedText("                var result:* = $bindingExpression.sourceExpression;" $bindingExpression.xmlLineNumber)
-                return ((result == null) || (result is Array) || (result is flash.utils.Proxy) ? result : [result]);
-#else
-#embedText("                return $bindingExpression.repeatableSourceExpression;" $bindingExpression.xmlLineNumber)
-#end
-            },
-            function(_sourceFunctionReturnValue:${bindingExpression.getDestinationTypeName()},
-                     instanceIndices:Array):void
-            {
-#if ($bindingExpression.isDestinationObjectProxy())
-                ${bindingExpression.getDestinationPathRoot(true)}.${bindingExpression.destinationLValue} = new mx.utils.ObjectProxy(_sourceFunctionReturnValue);
-#else
-                ${bindingExpression.getDestinationPathRoot(true)}.${bindingExpression.destinationLValue} = _sourceFunctionReturnValue;
-#end
-            },
-            "${bindingExpression.getDestinationPath(false)}");
-#else
-        result[${bindingExpression.id}] = new mx.binding.Binding(this,
+        result[${bindingExpression.id}] = new feathers.binding.Binding(this,
 #if (${bindingExpression.isSourcePublicProperty()} && ${bindingExpression.getDestinationTypeName()} != "Array")
 #embedText("            null,"$bindingExpression.xmlLineNumber)
 #else
@@ -315,7 +289,6 @@ $str
         result[${bindingExpression.twoWayCounterpart.id}].twoWayCounterpart = result[${bindingExpression.id}];
 #end
 #end
-#end
 
         return result;
     }
@@ -339,12 +312,12 @@ $str
     /**
      * @private
      **/
-    public static function set watcherSetupUtil(watcherSetupUtil:IWatcherSetupUtil2):void
+    public static function set watcherSetupUtil(watcherSetupUtil:IWatcherSetupUtil):void
     {
         (${doc.className})._watcherSetupUtil = watcherSetupUtil;
     }
 
-    private static var _watcherSetupUtil:IWatcherSetupUtil2;
+    private static var _watcherSetupUtil:IWatcherSetupUtil;
 #end
 
 #**

@@ -33,7 +33,6 @@ import macromedia.asc.parser.ArgumentListNode;
 public class FunctionReturnWatcher extends EvaluationWatcher
 {
     private String functionName;
-    private boolean isStyleWatcher;
 
     public FunctionReturnWatcher(int id, BindingExpression bindingExpression,
                                  String functionName, ArgumentListNode args)
@@ -44,21 +43,11 @@ public class FunctionReturnWatcher extends EvaluationWatcher
 
     public boolean shouldWriteSelf()
     {
-        return (super.shouldWriteSelf() || !getChangeEvents().isEmpty() || isStyleWatcher);
+        return (super.shouldWriteSelf() || !getChangeEvents().isEmpty());
     }
 
     public String getFunctionName()
     {
         return functionName;
-    }
-
-    public boolean isStyleWatcher()
-    {
-        return isStyleWatcher;
-    }
-
-    public void setStyleWatcher(boolean isStyleWatcher)
-    {
-        this.isStyleWatcher = isStyleWatcher;
     }
 }

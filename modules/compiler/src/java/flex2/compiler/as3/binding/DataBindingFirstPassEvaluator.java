@@ -81,7 +81,6 @@ public class DataBindingFirstPassEvaluator extends EvaluatorAdapter
     private Set<ArgumentListNode> skipInitSet;
     private Set<ArgumentListNode> resetSet;
     private MemberExpressionNode xmlMember = null;
-    private boolean insideRepeaterExpression = false;
     private boolean insideXMLExpression = false;
     private boolean insideBindingsSetupFunction = false;
     private Stack<CallExpressionNode> callExpressionStack;
@@ -137,29 +136,18 @@ public class DataBindingFirstPassEvaluator extends EvaluatorAdapter
             {
                 MetaData metaData = (MetaData) bindablesIterator.next();
 
-                if ("true".equals(metaData.getValue(STYLE)))
+                String event = getEventName(metaData);
+
+                if (event != null)
                 {
-                    if (watcher instanceof FunctionReturnWatcher)
-                    {
-                        ((FunctionReturnWatcher) watcher).setStyleWatcher(true);
-                        addedBindable = true;
-                    }
+                    watcher.addChangeEvent(event);
                 }
                 else
                 {
-                    String event = getEventName(metaData);
-
-                    if (event != null)
-                    {
-                        watcher.addChangeEvent(event);
-                    }
-                    else
-                    {
-                        watcher.addChangeEvent(StandardDefs.MDPARAM_PROPERTY_CHANGE);
-                    }
-
-                    addedBindable = true;
+                    watcher.addChangeEvent(StandardDefs.MDPARAM_PROPERTY_CHANGE);
                 }
+
+                addedBindable = true;
             }
         }
 
@@ -308,52 +296,42 @@ public class DataBindingFirstPassEvaluator extends EvaluatorAdapter
     {
         if (insideBindingsSetupFunction && (node.expr != null))
         {
-            if (insideRepeaterExpression &&
-                (node.expr instanceof IdentifierNode) &&
-                ((IdentifierNode) node.expr).name.equals("getItemAt"))
-            {
-                skipInitSet.add((ArgumentListNode) node.args);
-                node.args.evaluate(context, this);
-            }
-            else
-            {
-                argumentListStack.push(node.args);
+            argumentListStack.push(node.args);
 
-                if (node.expr instanceof IdentifierNode)
+            if (node.expr instanceof IdentifierNode)
+            {
+                IdentifierNode identifier = (IdentifierNode) node.expr;
+
+                // If expr.name is the same as the ref.type.name.name, then this seems to
+                // be a cast.  There is no need to setup a watcher for a cast, so skip
+                // evaluating expr.
+                if ((identifier.ref != null) &&
+                    (identifier.ref.getType(context) != null) &&
+                    !identifier.name.equals(identifier.ref.getType(context).getName().name))
                 {
-                    IdentifierNode identifier = (IdentifierNode) node.expr;
-
-                    // If expr.name is the same as the ref.type.name.name, then this seems to
-                    // be a cast.  There is no need to setup a watcher for a cast, so skip
-                    // evaluating expr.
-                    if ((identifier.ref != null) &&
-                        (identifier.ref.getType(context) != null) &&
-                        !identifier.name.equals(identifier.ref.getType(context).getName().name))
-                    {
-                        callExpressionStack.push(node);
-                        node.expr.evaluate(context, this);
-                        callExpressionStack.pop();
-                        resetSet.add(node.args);
-                    }
-                    else
-                    {
-                        skipInitSet.add((ArgumentListNode) node.args);
-                    }
+                    callExpressionStack.push(node);
+                    node.expr.evaluate(context, this);
+                    callExpressionStack.pop();
+                    resetSet.add(node.args);
                 }
                 else
                 {
-                    assert false : "Unexpected CallExpressionNode.expr type: " + node.expr.getClass().getName();
+                    skipInitSet.add((ArgumentListNode) node.args);
                 }
-
-                if (node.args != null)
-                {
-                    srcTypeStack.push( srcTypeStack.firstElement() );
-                    node.args.evaluate(context, this);
-                    srcTypeStack.pop();
-                }
-
-                argumentListStack.pop();
             }
+            else
+            {
+                assert false : "Unexpected CallExpressionNode.expr type: " + node.expr.getClass().getName();
+            }
+
+            if (node.args != null)
+            {
+                srcTypeStack.push( srcTypeStack.firstElement() );
+                node.args.evaluate(context, this);
+                srcTypeStack.pop();
+            }
+
+            argumentListStack.pop();
         }
 
         return null;
@@ -540,24 +518,21 @@ public class DataBindingFirstPassEvaluator extends EvaluatorAdapter
             if (node.expr instanceof ArgumentListNode)
             {
                 ArgumentListNode argumentList = (ArgumentListNode) node.expr;
-
-                if (!insideRepeaterExpression)
+                
+                if (!insideXMLExpression && showBindingWarnings)
                 {
-                    if (!insideXMLExpression && showBindingWarnings)
-                    {
-                        context.localizedWarning2(node.pos(), new UnableToDetectSquareBracketChanges());
-                    }
-
-                    if (!insideXMLExpression)
-                    {
-                        argumentListStack.push(argumentList);
-                        watchExpressionArray();
-                        argumentListStack.pop();
-                    }
-
-                    resetSet.add(argumentList);
-                    node.expr.evaluate(context, this);
+                    context.localizedWarning2(node.pos(), new UnableToDetectSquareBracketChanges());
                 }
+
+                if (!insideXMLExpression)
+                {
+                    argumentListStack.push(argumentList);
+                    watchExpressionArray();
+                    argumentListStack.pop();
+                }
+
+                resetSet.add(argumentList);
+                node.expr.evaluate(context, this);
             }
             else
             {
@@ -653,76 +628,59 @@ public class DataBindingFirstPassEvaluator extends EvaluatorAdapter
 
     public Value evaluate(Context context, MemberExpressionNode node)
     {
-        if (insideBindingsSetupFunction && !insideRepeaterExpression && isRepeaterBase(node.base))
+        int pushed = 0;
+        boolean oldArrayExpression = insideArrayExpression;
+        insideArrayExpression = node.isIndexedMemberExpression();
+
+        if (node.base != null)
         {
-            insideRepeaterExpression = true;
             node.base.evaluate(context, this);
-            // Since currentItem wasn't cast, we have no way to know the type.
-            srcTypeStack.push(null);
-            node.selector.evaluate(context, this);
-            srcTypeStack.pop();
-            insideRepeaterExpression = false;
-        }
-        else if (insideBindingsSetupFunction && isRepeaterIndicesBase(node.base))
-        {
-            setupRepeaterWatchers(node);
-        }
-        else
-        {
-            int pushed = 0;
-            boolean oldArrayExpression = insideArrayExpression;
-            insideArrayExpression = node.isIndexedMemberExpression();
 
-            if (node.base != null)
+            if (insideBindingsSetupFunction && (!insideArrayExpression || insideXMLExpression))
             {
-                node.base.evaluate(context, this);
+                ReferenceValue ref = getRef(node);
+                pushSrcType(context, ref, node.base);
+                pushed++;
+            }
+        }
 
-                if (insideBindingsSetupFunction && (!insideArrayExpression || insideXMLExpression))
+        // Figure out if this member expression is a static reference.
+        // If it is, then don't bother evaluating any further, because
+        // we can't watch statics for changes.
+        boolean staticReference = false;
+
+        if (insideBindingsSetupFunction)
+        {
+            ReferenceValue ref = node.ref;
+            if (ref != null)
+            {
+                if (isStaticReference(node.selector, ref))
                 {
-                    ReferenceValue ref = getRef(node);
-                    pushSrcType(context, ref, node.base);
+                    staticReference = true;
+                    srcTypeStack.push(ref.slot.getObjectValue().toString());
                     pushed++;
                 }
-            }
 
-            // Figure out if this member expression is a static reference.
-            // If it is, then don't bother evaluating any further, because
-            // we can't watch statics for changes.
-            boolean staticReference = false;
+                String type = ref.getType(context).getName().toString();
 
-            if (insideBindingsSetupFunction)
-            {
-                ReferenceValue ref = node.ref;
-                if (ref != null)
+                if (type.equals("XML") || type.equals("XMLList"))
                 {
-                    if (isStaticReference(node.selector, ref))
-                    {
-                        staticReference = true;
-                        srcTypeStack.push(ref.slot.getObjectValue().toString());
-                        pushed++;
-                    }
-
-                    String type = ref.getType(context).getName().toString();
-
-                    if (type.equals("XML") || type.equals("XMLList"))
-                    {
-                        xmlMember = node;
-                        insideXMLExpression = true;
-                    }
+                    xmlMember = node;
+                    insideXMLExpression = true;
                 }
             }
+        }
 
-            if ((node.selector != null) && !staticReference)
-            {
-                node.selector.evaluate(context, this);
-            }
+        if ((node.selector != null) && !staticReference)
+        {
+            node.selector.evaluate(context, this);
+        }
 
-            insideArrayExpression = oldArrayExpression;
+        insideArrayExpression = oldArrayExpression;
 
-            for (int i = 0; i < pushed; i++)
-            {
-                srcTypeStack.pop();
-            }
+        for (int i = 0; i < pushed; i++)
+        {
+            srcTypeStack.pop();
         }
 
         return null;
@@ -1101,68 +1059,6 @@ public class DataBindingFirstPassEvaluator extends EvaluatorAdapter
         return ref;
     }
 
-    private boolean isRepeaterBase(Node node)
-    {
-        boolean result = false;
-
-        if ((node != null) && (node instanceof MemberExpressionNode))
-        {
-            MemberExpressionNode memberExpression = (MemberExpressionNode) node;
-
-            if (memberExpression.base != null)
-            {
-                result = isRepeaterBase(memberExpression.base);
-            }
-            else if (memberExpression.selector instanceof GetExpressionNode)
-            {
-                GetExpressionNode getExpression = (GetExpressionNode) memberExpression.selector;
-
-                if (getExpression.expr instanceof IdentifierNode)
-                {
-                    IdentifierNode identifier = (IdentifierNode) getExpression.expr;
-
-                    if (currentBindingExpression.getRepeaterLevel(identifier.name) >= 0)
-                    {
-                        result = true;
-                    }
-                }
-            }
-        }
-
-        return result;
-    }
-
-    private boolean isRepeaterIndicesBase(Node node)
-    {
-        boolean result = false;
-
-        if ((node != null) && (node instanceof MemberExpressionNode))
-        {
-            MemberExpressionNode memberExpression = (MemberExpressionNode) node;
-
-            if (memberExpression.base != null)
-            {
-                result = isRepeaterIndicesBase(memberExpression.base);
-            }
-            else if (memberExpression.selector instanceof GetExpressionNode)
-            {
-                GetExpressionNode getExpression = (GetExpressionNode) memberExpression.selector;
-
-                if (getExpression.expr instanceof IdentifierNode)
-                {
-                    IdentifierNode identifier = (IdentifierNode) getExpression.expr;
-
-                    if (identifier.name.equals("repeaterIndices"))
-                    {
-                        result = true;
-                    }
-                }
-            }
-        }
-
-        return result;
-    }
-
     private boolean isStaticReference(SelectorNode selector, ReferenceValue referenceValue)
     {
         // Note: With a static variable reference, the selector will be a GetExpression
@@ -1242,59 +1138,6 @@ public class DataBindingFirstPassEvaluator extends EvaluatorAdapter
         else
         {
             srcTypeStack.push(null);
-        }
-    }
-
-    private void setupRepeaterWatchers(MemberExpressionNode node)
-    {
-        Watcher repeaterWatcher;
-
-        if (watcherList.isEmpty())
-        {
-            GetExpressionNode getExpression = (GetExpressionNode) node.selector;
-            ArgumentListNode argumentList = (ArgumentListNode) getExpression.expr;
-            LiteralNumberNode literalNumber = (LiteralNumberNode) argumentList.items.get(0);
-            int level = literalNumber.numericValue.intValue();
-            repeaterWatcher = new PropertyWatcher(currentWatcherId++, currentBindingExpression.getRepeaterId(level));
-            watcherList.addLast(repeaterWatcher);
-        }
-        else
-        {
-            repeaterWatcher = watcherList.getLast();
-        }
-
-        PropertyWatcher dataProviderWatcher =
-            (PropertyWatcher) repeaterWatcher.getChild("dataProvider");
-
-        if (dataProviderWatcher == null)
-        {
-            dataProviderWatcher = new PropertyWatcher(currentWatcherId++, "dataProvider");
-            repeaterWatcher.addChild(dataProviderWatcher);
-        }
-
-        watcherList.addLast(dataProviderWatcher);
-        dataProviderWatcher.addBindingExpression(currentBindingExpression);
-        RepeaterItemWatcher repeaterItemWatcher = new RepeaterItemWatcher(currentWatcherId++);
-        repeaterItemWatcher.addBindingExpression(currentBindingExpression);
-        dataProviderWatcher.addChild(repeaterItemWatcher);
-        watcherList.addLast(repeaterItemWatcher);
-
-        if (node.selector instanceof GetExpressionNode)
-        {
-            GetExpressionNode getExpression = (GetExpressionNode) node.selector;
-
-            if (getExpression.expr instanceof ArgumentListNode)
-            {
-                skipInitSet.add((ArgumentListNode) getExpression.expr);
-            }
-            else
-            {
-                assert false : "Unexpected selector for repeaterIndices MemberExpressionNode";
-            }
-        }
-        else
-        {
-            assert false : "Unexpected selector for repeaterIndices MemberExpressionNode";
         }
     }
 
@@ -1549,14 +1392,7 @@ public class DataBindingFirstPassEvaluator extends EvaluatorAdapter
         {
             Model destination = currentBindingExpression.getDestination();
 
-            if ((destination != null) && (destination.getRepeaterLevel() > 1))
-            {
-                result = new RepeaterComponentWatcher(currentWatcherId++, propertyName, destination.getRepeaterLevel());
-            }
-            else
-            {
-                result = new PropertyWatcher(currentWatcherId++, propertyName);
-            }
+            result = new PropertyWatcher(currentWatcherId++, propertyName);
 
             if (className != null)
             {

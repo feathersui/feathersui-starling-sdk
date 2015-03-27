@@ -814,11 +814,6 @@ public final class DataBindingExtension implements Extension
             argumentList = nodeFactory.argumentList(argumentList, propertyGetterMemberExpression);
         }
 
-        if (functionReturnWatcher.isStyleWatcher())
-        {
-            argumentList = nodeFactory.argumentList(argumentList, nodeFactory.literalBoolean(true));
-        }
-
         CallExpressionNode callExpression =
             (CallExpressionNode) nodeFactory.callExpression(qualifiedIdentifier, argumentList);
         callExpression.setRValue(false);

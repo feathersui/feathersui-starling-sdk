@@ -106,9 +106,7 @@ public class ImplementationGenerator extends AbstractGenerator
     private static final String PROPERTIES_FACTORY = "propertiesFactory".intern();
     private static final String PROPERTY_NAME = "propertyName".intern();
     private static final String PUSH = "push".intern();
-    private static final String REMOVE_EVENT_LISTENER = "removeEventListener".intern();    
-    private static final String REPEATABLE_BINDING = "RepeatableBinding".intern();
-    private static final String REPEATER_INDICES = "repeaterIndices".intern();
+    private static final String REMOVE_EVENT_LISTENER = "removeEventListener".intern();
     private static final String RESOURCE_BUNDLE = "ResourceBundle".intern();
     private static final String RESULT = "result".intern();
     private static final String SELECTOR = "selector".intern();
@@ -775,12 +773,6 @@ public class ImplementationGenerator extends AbstractGenerator
         {
             BindingExpression bindingExpression = iterator.next();
 
-            if (bindingExpression.isRepeatable())
-            {
-                ExpressionStatementNode expressionStatement = generateRepeatableBinding(bindingExpression);
-                functionStatementList = nodeFactory.statementList(functionStatementList, expressionStatement);
-            }
-            else
             {
                 ExpressionStatementNode expressionStatement = generateBinding(bindingExpression);
                 functionStatementList = nodeFactory.statementList(functionStatementList, expressionStatement);
@@ -1657,131 +1649,9 @@ public class ImplementationGenerator extends AbstractGenerator
             (CallExpressionNode) nodeFactory.callExpression(identifier, argumentList);
         callExpression.setRValue(false);
         MemberExpressionNode memberExpression = nodeFactory.memberExpression(variableMemberExpression,
-                                                                             callExpression);
+                callExpression);
         ListNode list = nodeFactory.list(null, memberExpression);
         return nodeFactory.expressionStatement(list);
-    }
-
-    private ExpressionStatementNode generateRepeatableBinding(BindingExpression bindingExpression)
-    {
-        // result[${bindingExpression.id}] = new mx.binding.RepeatableBinding(this, ...
-        MemberExpressionNode base = AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, RESULT, false);
-        LiteralNumberNode literalNumber = nodeFactory.literalNumber(bindingExpression.getId());
-        ArgumentListNode literalNumberArgumentList = nodeFactory.argumentList(null, literalNumber);
-
-        QualifiedIdentifierNode qualifiedIdentifier =
-            AbstractSyntaxTreeUtil.generateQualifiedIdentifier(nodeFactory, standardDefs.getBindingPackage(), REPEATABLE_BINDING, false);
-        ThisExpressionNode thisExpression = nodeFactory.thisExpression(-1);
-        ArgumentListNode callArgumentList = nodeFactory.argumentList(null, thisExpression);
-
-        FunctionCommonNode sourceFunctionCommon = generateRepeatableSourceFunction(bindingExpression);
-        callArgumentList = nodeFactory.argumentList(callArgumentList, sourceFunctionCommon);
-
-        FunctionCommonNode destinationFunctionCommon = generateRepeatableDestinationFunction(bindingExpression);
-        callArgumentList = nodeFactory.argumentList(callArgumentList, destinationFunctionCommon);
-
-        LiteralStringNode literalString = nodeFactory.literalString(bindingExpression.getDestinationPath(false));
-        callArgumentList = nodeFactory.argumentList(callArgumentList, literalString);
-
-        CallExpressionNode callExpression = (CallExpressionNode) nodeFactory.callExpression(qualifiedIdentifier,
-                                                                                                callArgumentList);
-        callExpression.is_new = true;
-        callExpression.setRValue(false);
-
-        MemberExpressionNode bindingMemberExpression = nodeFactory.memberExpression(null, callExpression);
-        ArgumentListNode setArgumentList = nodeFactory.argumentList(null, bindingMemberExpression);
-        SetExpressionNode selector = nodeFactory.setExpression(literalNumberArgumentList,
-                                                               setArgumentList, false);
-        selector.setMode(Tokens.LEFTBRACKET_TOKEN);
-        MemberExpressionNode memberExpression = nodeFactory.memberExpression(base, selector);
-        ListNode list = nodeFactory.list(null, memberExpression);
-        return nodeFactory.expressionStatement(list);
-    }
-
-    private FunctionCommonNode generateRepeatableDestinationFunction(BindingExpression bindingExpression)
-    {
-        ParameterNode sourceFunctionReturnValueParameter =
-            AbstractSyntaxTreeUtil.generateParameter(nodeFactory, _SOURCE_FUNCTION_RETURN_VALUE,
-                                                     bindingExpression.getDestinationTypeName(), true);
-        ParameterListNode parameterList =
-            nodeFactory.parameterList(null, sourceFunctionReturnValueParameter);
-        ParameterNode instanceIndicesParameter =
-            AbstractSyntaxTreeUtil.generateParameter(nodeFactory, INSTANCE_INDICES, ARRAY, false);
-        parameterList = nodeFactory.parameterList(parameterList, instanceIndicesParameter);
-        FunctionSignatureNode functionSignature = nodeFactory.functionSignature(parameterList, null);
-        functionSignature.void_anno = true;
-        String text;
-
-        if (bindingExpression.isDestinationObjectProxy())
-        {
-            //${bindingExpression.getDestinationPathRoot(true)}.${bindingExpression.destinationLValue} = new mx.utils.ObjectProxy(_sourceFunctionReturnValue);
-            text = (bindingExpression.getDestinationPathRoot(true) + "." +
-                    bindingExpression.getDestinationLValue() +
-                    " = new " + standardDefs.getUtilsPackage() + ".ObjectProxy(_sourceFunctionReturnValue)");
-        }
-        else
-        {
-            //${bindingExpression.getDestinationPathRoot(true)}.${bindingExpression.destinationLValue} = _sourceFunctionReturnValue;
-            text = (bindingExpression.getDestinationPathRoot(true) + "." +
-                    bindingExpression.getDestinationLValue() + " = _sourceFunctionReturnValue");
-        }
-
-        int xmlLineNumber = bindingExpression.getXmlLineNumber();
-        List<Node> nodeList =
-            AbstractSyntaxTreeUtil.parseExpression(context, configNamespaces, text,
-                                                   xmlLineNumber, generateDocComments);
-        StatementListNode body = null;
-        
-        if (!nodeList.isEmpty())
-        {
-            ExpressionStatementNode expressionStatement = (ExpressionStatementNode) nodeList.get(0);
-            body = nodeFactory.statementList(null, expressionStatement);
-        }
-
-        return nodeFactory.functionCommon(context, null, functionSignature, body);
-    }
-
-    private FunctionCommonNode generateRepeatableSourceFunction(BindingExpression bindingExpression)
-    {
-        ParameterNode instanceIndicesParameter =
-            AbstractSyntaxTreeUtil.generateParameter(nodeFactory, INSTANCE_INDICES, ARRAY, false);
-        ParameterListNode parameterList = nodeFactory.parameterList(null, instanceIndicesParameter);
-        ParameterNode repeaterIndicesParameter =
-            AbstractSyntaxTreeUtil.generateParameter(nodeFactory, REPEATER_INDICES, ARRAY, false);
-        parameterList = nodeFactory.parameterList(parameterList, repeaterIndicesParameter);
-        String destinationTypeName = bindingExpression.getDestinationTypeName();
-        TypeExpressionNode returnType = AbstractSyntaxTreeUtil.generateTypeExpression(nodeFactory,
-                                                                                      destinationTypeName,
-                                                                                      true);
-        FunctionSignatureNode functionSignature = nodeFactory.functionSignature(parameterList, returnType);
-        StatementListNode body = null;
-        String text = bindingExpression.getRepeatableSourceExpression();
-        int xmlLineNumber = bindingExpression.getXmlLineNumber();
-        List<Node> nodeList =
-            AbstractSyntaxTreeUtil.parseExpression(context, configNamespaces, text,
-                                                   xmlLineNumber, generateDocComments);
-        
-        if (!nodeList.isEmpty())
-        {
-            ExpressionStatementNode sourceExpressionStatement = (ExpressionStatementNode) nodeList.get(0);
-            ListNode list = (ListNode) sourceExpressionStatement.expr;
-
-            if (destinationTypeName.equals(STRING))
-            {
-                body = generateSourceFunctionStringConversion(body, destinationTypeName, list.items.get(0));
-            }
-            else if (destinationTypeName.equals(ARRAY))
-            {
-                body = generateSourceFunctionArrayConversion(body, destinationTypeName, list.items.get(0));
-            }
-            else
-            {
-                ReturnStatementNode returnStatement = nodeFactory.returnStatement(list);
-                body = nodeFactory.statementList(body, returnStatement);
-            }
-        }
-
-        return nodeFactory.functionCommon(context, null, functionSignature, body);
     }
 
     private Node generateResultVariable()
