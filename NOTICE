@@ -1,4 +1,4 @@
-Feathers Enterprise SDK
+Feathers SDK
 Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
 
 Apache Flex
@@ -13,10 +13,6 @@ Systems Incorporated (http://www.adobe.com/).
 
 The asc compiler contains code written by Jeff Dyer at: 
     Copyright Mountain View Compiler Company (1998-2003).
-
-The easing equations in the mx tween class are based on code written by Robert
-Penner.
-    Copyright 2001 Robert Penner. All rights reserved.
 
 The Batik SVG toolkit source contains code from the World Wide Web Consortium
 (W3C) for the Document Object Model API (DOM API) and SVG Document Type

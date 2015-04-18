@@ -18,10 +18,10 @@
 
 -->
 <flex-sdk-description>
-<name>Feathers Enterprise 1.0.0-prerelease FP11.5 AIR3.5 en_US</name>
+<name>Feathers SDK 2.2.0-prerelease FP11.5 AIR3.5 en_US</name>
 <!-- for compatibility with Flash Builder, the version element needs to show
 the version of Apache Flex that this SDK was forked from -->
 <version>4.14.0</version>
-<build>20150220</build>
+<build>0</build>
 </flex-sdk-description>
         
