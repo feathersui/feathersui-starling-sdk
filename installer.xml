@@ -60,12 +60,6 @@
 	<property name="swfobject.url.file" value="2.2.zip" />
 	<property name="swfobject.url.md5" value="4723bc29f2a93e9ad9fbeeac6fe63b9e" />
 
-	<property name="osmf.url.server" value="http://downloads.sourceforge.net" />
-	<property name="osmf.url.folder" value="project/osmf.adobe/OSMF%202.0%20Release%20%28final%20source%2C%20ASDocs%2C%20pdf%20guides%20and%20release%20notes%29" />
-	<property name="osmf.url.file" value="OSMF.swc" />
-	<property name="osmf.url.cachefile" value="OSMF.swc" />
-	<property name="osmf.url.md5" value="6385228692ab982630e47422403f6890" />
-
 	<property name="afe.url.server" value="https://sourceforge.net" />
 	<property name="afe.url.folder" value="adobe/flexsdk/code/HEAD/tree/trunk/lib" />
 	<property name="afe.url.file" value="afe.jar?format=raw" />
@@ -122,13 +116,9 @@
 	</condition>
 	<property name="swfobject.donot.ask" value="true" />
 	<property name="do.swfobject.install" value="true" />
-	<property name="osmf.donot.ask" value="true" />
-	<property name="do.osmf.install" value="true" />
 	<condition property="fontswf.donot.ask" value="true">
 		<isset property="installer" />
 	</condition>
-	<property name="ofl.donot.ask" value="true" />
-	<property name="do.ofl.install" value="true" />
 	
 	<condition property="java.home" value="${env.JAVA_HOME}">
 		<and>
@@ -235,7 +225,7 @@
 		</fail>
 	</target>
 	
-	<target name="ask-licenses" depends="ask-air,ask-flash,ask-swfobject,ask-ofl,ask-adobe-osmf,ask-adobe-fontswf" description="Ask about the various licenses">
+	<target name="ask-licenses" depends="ask-air,ask-flash,ask-swfobject,ask-adobe-fontswf" description="Ask about the various licenses">
 	</target>
 	
 	<target name="ask-air" unless="air.donot.ask"
@@ -286,38 +276,6 @@
 		<property name="swfobject.donot.ask" value="set"/>
 	</target>
 
-	<target name="ask-ofl" unless="ofl.donot.ask"
-		description="Prompt the user before downloading OFL Fonts">
-		
-		<input
-		message="${ofl.prompt.text}"
-		validargs="${yes.no.prompts}"
-		defaultvalue="${no}"
-		addproperty="input.ofl.download"/>
-		<condition property="do.ofl.install">
-			<equals arg1="${yes}" arg2="${input.ofl.download}"/>
-		</condition>
-		<fail message="${ERROR_REQUIRED_LICENSE}" unless="do.ofl.install" />
-		<!-- Only ask once per ant run.  -->
-		<property name="ofl.donot.ask" value="set"/>
-	</target>
-
-	<target name="ask-adobe-osmf" unless="osmf.donot.ask"
-		description="Prompt the user before downloading OSMF">
-		
-		<input
-		message="${osmf.prompt.text}"
-		validargs="${yes.no.prompts}"
-		defaultvalue="${no}"
-		addproperty="input.osmf.download"/>
-		<condition property="do.osmf.install">
-			<equals arg1="${yes}" arg2="${input.osmf.download}"/>
-		</condition>
-		<fail message="${ERROR_REQUIRED_LICENSE}" unless="do.osmf.install" />
-		<!-- Only ask once per ant run.  -->
-		<property name="osmf.donot.ask" value="set"/>
-	</target>
-
 	<target name="ask-adobe-fontswf" unless="fontswf.donot.ask"
 		description="Prompt the user before downloading FontSWF">
 		
@@ -333,7 +291,7 @@
 		<property name="fontswf.donot.ask" value="set"/>
 	</target>
 
-	<target name="get-third-party-files" depends="air-download,flash-download,swfobject-download,osmf-download,fontswf-download" />
+	<target name="get-third-party-files" depends="air-download,flash-download,swfobject-download,fontswf-download" />
 	
 	<target name="air-check" description="Checks if AIR SDK has been downloaded.">
 		<available file="${FLEX_HOME}/lib/adt.jar" property="skip.air.install"/>
@@ -646,46 +604,6 @@
 		<mkdir dir="${FLEX_HOME}/frameworks/javascript/fabridge/samples/fabridge/swfobject" />
 		<copy file="${FLEX_HOME}/templates/swfobject/swfobject.js" tofile="${FLEX_HOME}/frameworks/javascript/fabridge/samples/fabridge/swfobject/swfobject.js" />
 	</target>
-	
-	<!-- osmf (Version 2.0) -->
-	<!-- Because this requires a network connection it downloads OSMF only if it doesn't already exist. -->
-	<target name="osmf-check" description="Checks if OSMF has been downloaded.">
-		<available file="${basedir}/frameworks/libs/osmf.swc" property="skip.osmf.install"/>
-		<condition property="skip.osmf.install" value="true">
-			<not>
-				<isset property="do.osmf.install" />
-			</not>
-		</condition>
-	</target>
-	
-	<target name="osmf-download" depends="osmf-check" unless="skip.osmf.install"
-		description="Copies OSMF from Open@Adobe">
-		
-		<echo file="${basedir}/osmf.properties">osmf.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
-		<replace file="${basedir}/osmf.properties" token="{0}" value="${osmf.url.file}" />
-		<replace file="${basedir}/osmf.properties" token="{1}" value="${osmf.url.server}/${osmf.url.folder}" />
-		<property file="${basedir}/osmf.properties" />
-		<delete file="${basedir}/osmf.properties" />
-		<echo>${osmf.echo}</echo>
-
-		<mkdir dir="${basedir}/frameworks/libs/"/>
-		<antcall target="download_using_get" >
-			<param name="srcDomain" value="${osmf.url.server}" />
-			<param name="srcFolder" value="${osmf.url.folder}" />
-			<param name="srcFile" value="${osmf.url.file}" />
-			<param name="cacheFile" value="${osmf.url.cachefile}" />
-			<param name="dest" value="${basedir}/frameworks/libs/osmf.swc" />
-			<param name="failmessage" value="OSMF download failed" />
-			<param name="md5" value="${osmf.url.md5}" />
-		</antcall>
-
-		<unzip src="${basedir}/frameworks/libs/osmf.swc" dest="${download.dir}">
-			<patternset>
-				<include name="library.swf"/>
-			</patternset>
-		</unzip>
-		<copy file="${download.dir}/library.swf" tofile="${FLEX_HOME}/frameworks/rsls/osmf_${flex-sdk-description.version}.${flex-sdk-description.build}.swf" />
-	</target>
 
 	<!-- fontswf -->
 	<!-- Because this requires a network connection it downloads only if it doesn't already exist. -->
@@ -706,7 +624,7 @@
 	</target>
 
 	<target name="fontswf-download" depends="fontswf-check" unless="skip.fontswf.install"
-		description="Copies OSMF from Open@Adobe">
+		description="Copies fontswf from Open@Adobe">
 		
 		<echo file="${basedir}/afe.properties">afe.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
 		<replace file="${basedir}/afe.properties" token="{0}" value="${afe.url.file}" />
