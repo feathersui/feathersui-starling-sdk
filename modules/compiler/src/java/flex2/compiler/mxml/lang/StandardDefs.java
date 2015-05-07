@@ -590,7 +590,7 @@ public abstract class StandardDefs
                 getCorePackage() + ".IFlexModuleFactory",
                 getBindingPackage() + ".ArrayElementWatcher",
                 getBindingPackage() + ".FunctionReturnWatcher",
-                getBindingPackage() + ".IWatcherSetupUtil2",
+                getBindingPackage() + ".IWatcherSetupUtil",
                 getBindingPackage() + ".PropertyWatcher",
                 getBindingPackage() + ".RepeaterComponentWatcher",
                 getBindingPackage() + ".RepeaterItemWatcher",

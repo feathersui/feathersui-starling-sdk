@@ -97,7 +97,7 @@ public class ImplementationGenerator extends AbstractGenerator
     private static final String INSPECTABLE = "Inspectable".intern();
     private static final String INSTANCE_INDICES = "instanceIndices".intern();
     private static final String IS_TWO_WAY_PRIMARY = "isTwoWayPrimary".intern();
-    private static final String IWATCHER_SETUP_UTIL2 = "IWatcherSetupUtil2".intern();
+    private static final String IWATCHER_SETUP_UTIL = "IWatcherSetupUtil".intern();
     private static final String LENGTH = "length".intern();
     private static final String LOWERCASE_BINDING = "binding".intern();
     private static final String MODULE_FACTORY = "moduleFactory".intern();
@@ -751,7 +751,7 @@ public class ImplementationGenerator extends AbstractGenerator
         VariableDefinitionNode variableDefinition =
             AbstractSyntaxTreeUtil.generateVariable(nodeFactory, attributeList,
                                                     qualifiedIdentifier,
-                                                    IWATCHER_SETUP_UTIL2, false, null);
+                                                    IWATCHER_SETUP_UTIL, false, null);
 
         return nodeFactory.statementList(result, variableDefinition);
     }
@@ -1685,7 +1685,7 @@ public class ImplementationGenerator extends AbstractGenerator
 
         ParameterNode parameter =
             AbstractSyntaxTreeUtil.generateParameter(nodeFactory, WATCHER_SETUP_UTIL,
-                                                     IWATCHER_SETUP_UTIL2, false);
+                                                     IWATCHER_SETUP_UTIL, false);
         ParameterListNode parameterList = nodeFactory.parameterList(null, parameter);
         FunctionSignatureNode functionSignature = nodeFactory.functionSignature(parameterList, null);
         functionSignature.void_anno = true;

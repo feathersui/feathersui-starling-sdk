@@ -81,7 +81,7 @@ public final class DataBindingExtension implements Extension
     private static final String FUNCTION_RETURN_WATCHER = "FunctionReturnWatcher".intern();
     private static final String IFLEX_MODULE_FACTORY = "IFlexModuleFactory".intern();
     private static final String INIT = "init".intern();
-    private static final String IWATCHER_SETUP_UTIL2 = "IWatcherSetupUtil2".intern();
+    private static final String IWATCHER_SETUP_UTIL = "IWatcherSetupUtil".intern();
     private static final String OBJECT = "Object".intern();
     private static final String PARENT_WATCHER = "parentWatcher".intern();
     private static final String PROPERTY_GETTER = "propertyGetter".intern();
@@ -324,7 +324,7 @@ public final class DataBindingExtension implements Extension
         NodeFactory nodeFactory = cx.getNodeFactory();
         nodeFactory.StartClassDefs();
         MemberExpressionNode iWatcherSetupUtilMemberExpression =
-            AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, standardDefs.getBindingPackage(), IWATCHER_SETUP_UTIL2, false);
+            AbstractSyntaxTreeUtil.generateGetterSelector(nodeFactory, standardDefs.getBindingPackage(), IWATCHER_SETUP_UTIL, false);
         ListNode interfaces = nodeFactory.list(null, iWatcherSetupUtilMemberExpression);
         InheritanceNode inheritance = nodeFactory.inheritance(null, interfaces);
 
