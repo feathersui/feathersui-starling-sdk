@@ -61,6 +61,7 @@ internal class FrameworkClasses
     import mx.core.DeferredInstanceFromFunction; DeferredInstanceFromFunction;
     import mx.core.IDeferredInstance; IDeferredInstance;
     import mx.core.IFactory; IFactory;
+    import mx.core.IMXMLObject; IMXMLObject;
     import mx.core.IPropertyChangeNotifier; IPropertyChangeNotifier;
     import mx.core.mx_internal; mx_internal;
 	import mx.events.PropertyChangeEvent; PropertyChangeEvent;
