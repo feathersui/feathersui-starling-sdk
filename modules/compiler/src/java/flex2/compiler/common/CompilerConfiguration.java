@@ -2995,7 +2995,7 @@ public class CompilerConfiguration implements As3Configuration,
 	// compiler.generate-abstract-syntax-tree
 	//
 
-	private boolean generateAbstractSyntaxTree = true;
+	private boolean generateAbstractSyntaxTree = false;
 
 	public void cfgGenerateAbstractSyntaxTree(ConfigurationValue cv, boolean b)
 	{
