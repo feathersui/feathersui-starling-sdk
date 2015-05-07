@@ -18,6 +18,10 @@ package feathers.core
 {
 	import feathers.controls.LayoutGroup;
 
+	import flash.errors.IllegalOperationError;
+
+	import starling.core.Starling;
+
 	[Frame(factoryClass="feathers.core.StarlingBootstrap")]
 
 	/**
@@ -25,10 +29,45 @@ package feathers.core
 	 */
 	public class Application extends LayoutGroup
 	{
+		/**
+		 * Constructor.
+		 */
 		public function Application()
 		{
 			super();
 			this.autoSizeMode = LayoutGroup.AUTO_SIZE_MODE_STAGE;
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _context3DProfile:String;
+
+		[Inspectable(type="String",enumeration="baselineConstrained,baseline,baselineExtended,standardConstrained,standard,standardExtended")]
+		/**
+		 * The profile used by Starling when creating its Context3D.
+		 * 
+		 * <p>Must be set in MXML and cannot be set after initialization.</p>.
+		 */
+		public function get context3DProfile():String
+		{
+			if(this._context3DProfile !== null)
+			{
+				return this._context3DProfile;
+			}
+			return Starling.current.profile;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set context3DProfile(value:String):void
+		{
+			if(this._isInitialized)
+			{
+				throw new IllegalOperationError("context3DProfile can only be set before an application has initialized.");
+			}
+			this._context3DProfile = value;
 		}
 	}
 }

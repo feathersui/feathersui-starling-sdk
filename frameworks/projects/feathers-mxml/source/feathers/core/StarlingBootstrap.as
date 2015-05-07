@@ -29,6 +29,7 @@ package feathers.core
 	import starling.display.Stage;
 	import starling.errors.AbstractMethodError;
 	import starling.events.Event;
+	import starling.utils.SystemUtil;
 
 	/**
 	 * @private
@@ -76,7 +77,28 @@ package feathers.core
 		 */
 		protected function createStarling():Starling
 		{
-			var starling:Starling = new Starling(null, this.stage, null, null, Context3DRenderMode.AUTO, Context3DProfile.BASELINE_CONSTRAINED);
+			var info:Object = this.info();
+			var context3DProfile:String;
+			if(info.hasOwnProperty("context3DProfile"))
+			{
+				context3DProfile = info["context3DProfile"] as String;
+			}
+			if(!context3DProfile)
+			{
+				//pick some reasonable defaults
+				if(SystemUtil.isDesktop)
+				{
+					//on desktop, the safest option is baselineConstrained,
+					//due to old GPUs.
+					context3DProfile = Context3DProfile.BASELINE_CONSTRAINED;
+				}
+				else
+				{
+					//on mobile, it's safe to choose baseline
+					context3DProfile = Context3DProfile.BASELINE;
+				}
+			}
+			var starling:Starling = new Starling(null, this.stage, null, null, Context3DRenderMode.AUTO, context3DProfile);
 			starling.supportHighResolutions = this.stage.contentsScaleFactor > 1;
 			return starling;
 		}
@@ -86,7 +108,7 @@ package feathers.core
 		 */
 		protected function createTheme():Object
 		{
-			var themeClassName:String = info()["themeClassName"];
+			var themeClassName:String = info()["themeClassName"] as String;
 			if(!themeClassName)
 			{
 				return null;
@@ -100,7 +122,7 @@ package feathers.core
 		 */
 		protected function setRootClass():void
 		{
-			var rootClassName:String = info()["rootClassName"];
+			var rootClassName:String = info()["rootClassName"] as String;
 			if(rootClassName == null)
 			{
 				var url:String = loaderInfo.loaderURL;
