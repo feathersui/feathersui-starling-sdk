@@ -16,7 +16,7 @@ specific language governing permissions and limitations under the License.
 */
 package feathers.core
 {
-	import feathers.controls.LayoutGroup;
+	import feathers.controls.StackScreenNavigator;
 
 	import flash.errors.IllegalOperationError;
 
@@ -26,17 +26,16 @@ package feathers.core
 
 	/**
 	 * Base class for a Feathers application with a
-	 * <code>LayoutGroup</code> as the root display object.
+	 * <code>StackScreenNavigator</code> as the root display object.
 	 */
-	public class Application extends LayoutGroup implements IApplication
+	public class StackScreenNavigatorApplication extends StackScreenNavigator
 	{
 		/**
 		 * Constructor.
 		 */
-		public function Application()
+		public function StackScreenNavigatorApplication()
 		{
 			super();
-			this.autoSizeMode = LayoutGroup.AUTO_SIZE_MODE_STAGE;
 		}
 
 		/**

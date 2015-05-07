@@ -16,27 +16,26 @@ specific language governing permissions and limitations under the License.
 */
 package feathers.core
 {
-	import feathers.controls.LayoutGroup;
+	import feathers.controls.Drawers;
 
 	import flash.errors.IllegalOperationError;
 
 	import starling.core.Starling;
 
 	[Frame(factoryClass="feathers.core.StarlingBootstrap")]
-
+	
 	/**
 	 * Base class for a Feathers application with a
-	 * <code>LayoutGroup</code> as the root display object.
+	 * <code>Drawers</code> as the root display object.
 	 */
-	public class Application extends LayoutGroup implements IApplication
+	public class DrawersApplication extends Drawers implements IApplication
 	{
 		/**
 		 * Constructor.
 		 */
-		public function Application()
+		public function DrawersApplication()
 		{
 			super();
-			this.autoSizeMode = LayoutGroup.AUTO_SIZE_MODE_STAGE;
 		}
 
 		/**

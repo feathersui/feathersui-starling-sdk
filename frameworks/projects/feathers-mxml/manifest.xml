@@ -1,4 +1,6 @@
 <?xml version="1.0"?>
 <componentPackage>
 	<component id="Application" class="feathers.core.Application"/>
+	<component id="DrawersApplication" class="feathers.core.DrawersApplication"/>
+	<component id="StackScreenNavigatorApplication" class="feathers.core.StackScreenNavigatorApplication"/>
 </componentPackage>
