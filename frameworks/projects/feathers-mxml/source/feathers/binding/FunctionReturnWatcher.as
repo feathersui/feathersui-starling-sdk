@@ -1,5 +1,5 @@
 /*
-Feathers Enterprise SDK
+Feathers SDK
 Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
 
 See the NOTICE file distributed with this work for additional information
