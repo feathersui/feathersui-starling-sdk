@@ -423,7 +423,6 @@ public abstract class StandardDefs
     static
     {
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_STARLING_ANIMATION));
-        implicitImports.add(NameFormatter.toDotStar(PACKAGE_STARLING_DISPLAY));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_STARLING_EVENTS));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_STARLING_FILTERS));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_STARLING_TEXT));
