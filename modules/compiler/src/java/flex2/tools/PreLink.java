@@ -125,6 +125,9 @@ public class PreLink implements flex2.compiler.PreLink
 
         // TODO - factor out the unit iteration / list discovery to a more clear separate step
 
+        // Autogenerate the _MyApp_FlexInit class.
+        processInitClass(units, configuration, extraSources, mixins, fonts, contributingSwcs, swcContext);
+
         // Autogenerate the _MyApp_mx_managers_SystemManager class.
         boolean generatedLoaderClass = processLoaderClass(units, configuration, extraSources, 
                                                           mixins, fonts, contributingSwcs, 
@@ -436,6 +439,95 @@ public class PreLink implements flex2.compiler.PreLink
                 if (externs.contains(unit.topLevelDefinitions.first().toString()))
                 {
                     externalResourceBundleNames.addAll(unit.resourceBundleHistory);
+                }
+            }
+        }
+    }
+
+    private void processInitClass(List units, Configuration configuration,
+                                  List<Source> extraSources, LinkedList<String> mixins,
+                                  LinkedList<DefineTag> fonts,
+                                  Set<String> contributingSwcs,
+                                  CompilerSwcContext swcContext)
+    {
+        Set<String> accessibilityList = null;
+        Map<String, String> remoteClassAliases = new TreeMap<String, String>()
+        {
+            private static final long serialVersionUID = -8015004853369794727L;
+
+            /**
+             *  Override so warning messages can be logged. 
+             */
+            public String put(String key, String value)
+            {
+                // check for duplicate values and log a warning if any remote 
+                // classes try to use the same alias.
+                if (containsValue(value))
+                {
+                    Object existingKey = null;
+                    for (Iterator iter = entrySet().iterator(); iter.hasNext();)
+                    {
+                        Map.Entry entry = (Map.Entry)iter.next();
+                        if (value != null && value.equals(entry.getValue()))
+                        {
+                            existingKey = entry.getKey();
+                            break;
+                        }
+                    }
+                    ThreadLocalToolkit.log(new ClassesMappedToSameRemoteAlias((String)key, (String)existingKey, (String)value));
+                }
+                return super.put(key, value);
+            }
+
+        };
+
+        Set externs = swcContext.getExterns();
+        boolean removeUnusedRSLs = configuration.getRemoveUnusedRsls();
+
+        for (int i = 0, size = units.size(); i < size; i++)
+        {
+            CompilationUnit u = (CompilationUnit) units.get(i);
+
+            if (u.hasAssets())
+            {
+                List<DefineFont> fontList = u.getAssets().getFonts();
+
+                // don't add font assets for definitions that have been externed.
+                if (fontList != null && !fontList.isEmpty() &&
+                        !isCompilationUnitExternal(u, externs) &&
+                        !u.getSource().isInternal())
+                {
+                    fonts.addAll(fontList);    // save for later...
+                }
+            }
+
+            remoteClassAliases.putAll( u.remoteClassAliases );
+
+            mixins.addAll( u.mixins );
+
+            if (configuration.getCompilerConfiguration().accessible())
+            {
+                Set<String> unitAccessibilityList = u.getAccessibilityClasses();
+                if (unitAccessibilityList != null)
+                {
+                    if (accessibilityList == null)
+                    {
+                        accessibilityList = new HashSet<String>();
+                    }
+                    accessibilityList.addAll(unitAccessibilityList);
+                }
+            }
+
+            if (removeUnusedRSLs)
+            {
+                // Record which swcs have contributed the scripts. We will use
+                // this later to figure out which RSLs to load.
+                Source source = u.getSource();
+
+                if (!source.isInternal() && source.isSwcScriptOwner())
+                {
+                    SwcScript script = (SwcScript)source.getOwner();
+                    contributingSwcs.add(script.getSwcLocation());
                 }
             }
         }
