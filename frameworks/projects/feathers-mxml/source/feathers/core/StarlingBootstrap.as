@@ -145,6 +145,46 @@ package feathers.core
 		/**
 		 * @private
 		 */
+		protected function initializeMixins():void
+		{
+			//the mixins property of the info object is populated by the
+			//compiler from classes with [Mixin] metadata.
+			var mixinList:Array = info()["mixins"] as Array;
+			if(mixinList && mixinList.length > 0)
+			{
+				var mixinCount:int = mixinList.length;
+				for(var i:int = 0; i < mixinCount; i++)
+				{
+					var c:Class = Class(getDefinitionByName(mixinList[i]));
+					//we're a little more careful than Flex because we check if
+					//an init member exists and ensure that it's a function
+					//before we call it. we also check the number of arguments
+					//that are accepted.
+					if("init" in c)
+					{
+						var init:Function = c["init"] as Function;
+						if(init != null)
+						{
+							if(init.length === 0)
+							{
+								init();
+							}
+							else if(init.length === 1)
+							{
+								//try to use mixins that are designed for the
+								//Flex compiler
+								init(null);
+							}
+						}
+					}
+				}
+			}
+		}
+		
+
+		/**
+		 * @private
+		 */
 		protected function loaderInfo_completeHandler(event:flash.events.Event):void
 		{
 			this._starling = this.createStarling();
@@ -160,6 +200,9 @@ package feathers.core
 			this._starling.removeEventListener(starling.events.Event.CONTEXT3D_CREATE, starling_context3DCreateHandler);
 			this._starling.addEventListener(starling.events.Event.ROOT_CREATED, starling_rootCreatedHandler);
 			this.nextFrame();
+
+			this.initializeMixins();
+			
 			var theme:Object = this.createTheme();
 			this.setRootClass();
 		}
