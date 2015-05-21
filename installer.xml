@@ -601,8 +601,6 @@
 			tofile="${FLEX_HOME}/templates/swfobject/expressInstall.swf" />
 		<copy file="${download.dir}/swfobject/swfobject-2.2/swfobject/swfobject.js"
 			tofile="${FLEX_HOME}/templates/swfobject/swfobject.js" />
-		<mkdir dir="${FLEX_HOME}/frameworks/javascript/fabridge/samples/fabridge/swfobject" />
-		<copy file="${FLEX_HOME}/templates/swfobject/swfobject.js" tofile="${FLEX_HOME}/frameworks/javascript/fabridge/samples/fabridge/swfobject/swfobject.js" />
 	</target>
 
 	<!-- fontswf -->
