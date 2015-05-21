@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <componentPackage>
+
+	<!-- general components -->
 	<component id="AutoComplete" class="feathers.controls.AutoComplete"/>
 	<component id="Button" class="feathers.controls.Button"/>
 	<component id="ButtonGroup" class="feathers.controls.ButtonGroup"/>
@@ -37,6 +39,19 @@
 	<component id="ToggleSwitch" class="feathers.controls.ToggleSwitch"/>
 	<component id="WebView" class="feathers.controls.WebView"/>
 
+	<!-- media -->
+	<component id="FullScreenToggleButton" class="feathers.media.FullScreenToggleButton"/>
+	<component id="MuteToggleButton" class="feathers.media.MuteToggleButton"/>
+	<component id="PlayPauseToggleButton" class="feathers.media.PlayPauseToggleButton"/>
+	<component id="SeekSlider" class="feathers.media.SeekSlider"/>
+	<component id="SoundChannelPeakVisualizer" class="feathers.media.SoundChannelPeakVisualizer"/>
+	<component id="SoundPlayer" class="feathers.media.SoundPlayer"/>
+	<component id="SpectrumBarGraphVisualizer" class="feathers.media.SpectrumBarGraphVisualizer"/>
+	<component id="TimeLabel" class="feathers.media.TimeLabel"/>
+	<component id="VideoPlayer" class="feathers.media.VideoPlayer"/>
+	<component id="VolumeSlider" class="feathers.media.VolumeSlider"/>
+
+	<!-- item renderers -->
 	<component id="DefaultGroupedListItemRenderer" class="feathers.controls.renderers.DefaultGroupedListItemRenderer"/>
 	<component id="DefaultGroupedListHeaderOrFooterRenderer" class="feathers.controls.renderers.DefaultGroupedListHeaderOrFooterRenderer"/>
 	<component id="DefaultListItemRenderer" class="feathers.controls.renderers.DefaultListItemRenderer"/>
@@ -44,10 +59,12 @@
 	<component id="LayoutGroupGroupedListItemRenderer" class="feathers.controls.renderers.LayoutGroupGroupedListItemRenderer"/>
 	<component id="LayoutGroupGroupedListHeaderOrFooterRenderer" class="feathers.controls.renderers.LayoutGroupGroupedListHeaderOrFooterRenderer"/>
 
+	<!-- pop up content managers -->
 	<component id="CalloutPopUpContentManager" class="feathers.controls.popups.CalloutPopUpContentManager"/>
 	<component id="DropDownPopUpContentManager" class="feathers.controls.popups.DropDownPopUpContentManager"/>
 	<component id="VerticalCenteredPopUpContentManager" class="feathers.controls.popups.VerticalCenteredPopUpContentManager"/>
 
+	<!-- text -->
 	<component id="BitmapFontTextRenderer" class="feathers.controls.text.BitmapFontTextRenderer"/>
 	<component id="TextFieldTextRenderer" class="feathers.controls.text.TextFieldTextRenderer"/>
 	<component id="TextBlockTextRenderer" class="feathers.controls.text.TextBlockTextRenderer"/>
@@ -57,11 +74,16 @@
 	<component id="StageTextTextEditor" class="feathers.controls.text.StageTextTextEditor"/>
 	<component id="TextFieldTextEditorViewPort" class="feathers.controls.text.TextFieldTextEditorViewPort"/>
 
+	<!-- miscellaneous -->
 	<component id="ToggleGroup" class="feathers.core.ToggleGroup"/>
 
+	<!-- collections and data -->
 	<component id="ListCollection" class="feathers.data.ListCollection"/>
 	<component id="HierarchicalCollection" class="feathers.data.HierarchicalCollection"/>
+	<component id="LocalAutoCompleteSource" class="feathers.data.LocalAutoCompleteSource"/>
+	<component id="URLAutoCompleteSource" class="feathers.data.URLAutoCompleteSource"/>
 
+	<!-- layout -->
 	<component id="HorizontalLayout" class="feathers.layout.HorizontalLayout"/>
 	<component id="HorizontalLayoutData" class="feathers.layout.HorizontalLayoutData"/>
 	<component id="VerticalLayout" class="feathers.layout.VerticalLayout"/>
