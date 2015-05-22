@@ -425,6 +425,8 @@ public abstract class ValueInitializer implements Initializer, Cloneable
         Model self = (Model)value;
         Type selfType = self.getType();
         String selfTypeName;
+		Type lvalueType = getLValueType();
+		TypeTable typeTable = lvalueType.getTypeTable();
 
         if (value instanceof Vector)
         {
@@ -443,9 +445,15 @@ public abstract class ValueInitializer implements Initializer, Cloneable
         int line = getLineRef();
 
         CodeFragmentList list = new CodeFragmentList();
+		
+		String returnTypeName = selfTypeName;
+		if (selfType.isAssignableTo(standardDefs.INTERFACE_IFACTORY) && typeTable.functionType.isAssignableTo(lvalueType))
+		{
+			returnTypeName = typeTable.functionType.getName();
+		}
 
         //  function header
-        list.add("private function ", getDefinitionName(), "() : ", selfTypeName, line);
+        list.add("private function ", getDefinitionName(), "() : ", returnTypeName, line);
         list.add("{", line);
 
         //  value creation
@@ -622,10 +630,17 @@ public abstract class ValueInitializer implements Initializer, Cloneable
         }
         
         //  return created value
-        list.add("\treturn ", varName, ";", line);
+		if (selfType.isAssignableTo(standardDefs.INTERFACE_IFACTORY) && typeTable.functionType.isAssignableTo(lvalueType))
+		{
+			// don't call the function. we want a reference to the function.
+			list.add("\treturn ", varName, ".newInstance;", line);
+		}
+		else
+		{
+			list.add("\treturn ", varName, ";", line);
+		}
         list.add("}", line);
         
-        Type lvalueType = getLValueType();
         if (standardDefs.isITransientDeferredInstance(lvalueType) || self.getIsTransient())
         	list = getDestructorBody(list, line);
 

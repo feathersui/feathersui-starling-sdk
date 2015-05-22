@@ -119,6 +119,11 @@ public class TypeCompatibility
 	 */
 	private static boolean checkSingleton(TypeTable typeTable, Type ltype, Type rtype, StandardDefs standardDefs)
 	{
-		return (rtype != null) && (rtype.isAssignableTo(ltype) || (standardDefs.isIFactory(ltype) && rtype.equals(typeTable.classType)));
+		return (rtype != null) &&
+			(rtype.isAssignableTo(ltype) ||
+			(standardDefs.isIFactory(ltype) && rtype.equals(typeTable.classType)) ||
+			// feathers supports assigning the newInstance function of an
+			// IFactory to a property typed as Function
+			(typeTable.functionType.isAssignableTo(ltype) && rtype.isAssignableTo(standardDefs.INTERFACE_IFACTORY)));
 	}
 }
