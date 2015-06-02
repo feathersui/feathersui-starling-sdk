@@ -8,7 +8,7 @@
   (the "License"); you may not use this file except in compliance with
   the License.  You may obtain a copy of the License at
 
-      http://www.apache.org/licenses/LICENSE-2.0
+	  http://www.apache.org/licenses/LICENSE-2.0
 
   Unless required by applicable law or agreed to in writing, software
   distributed under the License is distributed on an "AS IS" BASIS,
@@ -22,27 +22,12 @@
 	<property name="lenient" value="true"/>
 	<property name="flexlib" location="${FLEX_HOME}/frameworks"/>
 
-    <property name="doc_output" location="${FLEX_HOME}/asdoc-output"   />
-    <property name="include_examples" location="${doc_output}/include_examples" />
+	<property name="doc_output" location="${FLEX_HOME}/asdoc-output"   />
+	<property name="include_examples" location="${doc_output}/include_examples" />
 
-    <property file="${FLEX_HOME}/env.properties"/>
-    <property environment="env"/>
+	<property file="${FLEX_HOME}/env.properties"/>
+	<property environment="env"/>
 	<property file="${FLEX_HOME}/build.properties"/>
-
-    <available file="${FLEX_HOME}/../flex-tlf/textLayout"
-            type="dir"
-            property="TLF_HOME"
-            value="${FLEX_HOME}/../flex-tlf" />
-
-    <available file="${FLEX_HOME}/../tlf/textLayout"
-               type="dir"
-               property="TLF_HOME"
-               value="${FLEX_HOME}/../tlf" />
-
-    <available file="${env.TLF_HOME}"
-               type="dir"
-               property="TLF_HOME"
-               value="${env.TLF_HOME}"/>
 
 	<target name="main" depends="clean,copyExamples,doc" description="Clean build of all ASDocs"/>
 
@@ -50,147 +35,70 @@
 		<delete dir="${doc_output}"/>
 	</target>
 
-    <target name="copyExamples" description="Copy all  projects asdocs subdir to singe location">
-        <copy todir="${include_examples}">
-            <fileset dir="${flexlib}/projects/advancedgrids/asdoc/en_US"/>
-            <fileset dir="${flexlib}/projects/airframework/asdoc/en_US"/>
-            <!-- <fileset dir="${flexlib}/projects/apache/asdoc/en_US"/>-->
-            <fileset dir="${flexlib}/projects/charts/asdoc/en_US"/>
-            <!--  <fileset dir="${flexlib}/projects/core/asdoc/en_US"/>-->
-            <!--  <fileset dir="${flexlib}/projects/experimental/asdoc/en_US"/>-->
-            <fileset dir="${flexlib}/projects/framework/asdoc/en_US"/>
-            <fileset dir="${flexlib}/projects/mobilecomponents/asdoc/en_US"/>
-            <fileset dir="${flexlib}/projects/experimental_mobile/asdoc/en_US"/>
-            <!--  <fileset dir="${flexlib}/projects/mx/asdoc/en_US"/>-->
-            <fileset dir="${flexlib}/projects/rpc/asdoc/en_US"/>
-            <fileset dir="${flexlib}/projects/spark/asdoc/en_US"/>
-        </copy>
-    </target>
+	<target name="copyExamples" description="Copy all  projects asdocs subdir to singe location">
+		<copy todir="${include_examples}">
+			<!--  <fileset dir="${flexlib}/projects/core/asdoc/en_US"/>-->
+			<fileset dir="${flexlib}/projects/framework/asdoc/en_US"/>
+		</copy>
+	</target>
 
 	<target name="doc">
 
-	    <condition property="asdoc.jvm.args" value="-Xmx512m">
-	        <os family="windows"/>
-	    </condition>
+		<condition property="asdoc.jvm.args" value="-Xmx512m">
+			<os family="windows"/>
+		</condition>
 
-	    <condition property="asdoc.jvm.args" value="-Xmx1024m">
-	        <os family="mac"/>
-	    </condition>
+		<condition property="asdoc.jvm.args" value="-Xmx1024m">
+			<os family="mac"/>
+		</condition>
 
-	    <condition property="asdoc.jvm.args" value="-Xmx512m">
-	        <os family="unix"/>
-	    </condition>
+		<condition property="asdoc.jvm.args" value="-Xmx512m">
+			<os family="unix"/>
+		</condition>
 
-        <path id="flexTasks.path">
-            <fileset dir="${FLEX_HOME}">
-                <include name="lib/flexTasks.jar" />
-                <include name="ant/lib/flexTasks.jar" />
-            </fileset>
-        </path>
-        <taskdef resource="flexTasks.tasks" classpathref="flexTasks.path"/>
+		<path id="flexTasks.path">
+			<fileset dir="${FLEX_HOME}">
+				<include name="lib/flexTasks.jar" />
+				<include name="ant/lib/flexTasks.jar" />
+			</fileset>
+		</path>
+		<taskdef resource="flexTasks.tasks" classpathref="flexTasks.path"/>
 
 		<!-- Call asdoc to generate dita xml files -->
 		<asdoc output="${doc_output}" lenient="true" failonerror="true" warnings="false" strict="false" locale="en_US" fork="true"
-               window-title="ApacheFlex API Reference"
-               main-title="${release} API Reference "
-               footer="${manifest.Implementation-Vendor}"
-               examples-path="${include_examples}"
-                >
+			   window-title="Feathers SDK API Reference"
+			   main-title="${release} API Reference "
+			   footer="${manifest.Implementation-Vendor}"
+			   examples-path="${include_examples}"
+				>
 
 			<!-- top level class to include in asdoc -->
-		    <doc-classes class="AIRFrameworkClasses"/>
-		    <doc-classes class="AIRSparkClasses"/>
-		    <doc-classes class="CoreClasses"/>
-		    <doc-classes class="SparkClasses"/>
-		    <doc-classes class="FrameworkClasses"/>
-		    <doc-classes class="MxClasses"/>
-		    <doc-classes class="SparkSkinsClasses"/>
-		    <doc-classes class="RPCClasses"/>
-		    <doc-classes class="MobileComponentsClasses"/>		    
-		    <doc-classes class="MobileThemeClasses"/>		    
-		    <doc-classes class="SparkDmvClasses"/>
-		    <doc-classes class="ExperimentalClasses"/>
-		    <doc-classes class="ExperimentalMobileClasses"/>
-	    		    
-			<doc-classes class="flashx.textLayout.CoreClasses"/>
-			<doc-classes class="flashx.textLayout.EditClasses"/>
-			<doc-classes class="flashx.textLayout.ConversionClasses"/>
+			<doc-classes class="CoreClasses"/>
+			<doc-classes class="FrameworkClasses"/>
+			<doc-sources path-element="${flexlib}/projects/feathers/feathers/source"/>
+			<doc-sources path-element="${flexlib}/projects/feathers-mxml/source"/>
 
 			<!-- source path for asdoc -->
-			<compiler.source-path path-element="${flexlib}/projects/airframework/src"/>
-			<compiler.source-path path-element="${flexlib}/projects/airspark/src"/>
 			<compiler.source-path path-element="${flexlib}/projects/core/src"/>
-			<compiler.source-path path-element="${flexlib}/projects/spark/src"/>
 			<compiler.source-path path-element="${flexlib}/projects/framework/src"/>
-			<compiler.source-path path-element="${flexlib}/projects/mx/src"/>
-			<compiler.source-path path-element="${flexlib}/projects/sparkskins/src"/>
-			<compiler.source-path path-element="${flexlib}/projects/rpc/src"/>
-		    <compiler.source-path path-element="${TLF_HOME}/textLayout/src"/>
-			<!--compiler.source-path path-element="${flexlib}/projects/osmf/src"/-->
-			<compiler.source-path path-element="${flexlib}/projects/advancedgrids/src"/>
-			<compiler.source-path path-element="${flexlib}/projects/charts/src"/>
-			<compiler.source-path path-element="${flexlib}/projects/mobilecomponents/src"/>
-			<compiler.source-path path-element="${flexlib}/projects/mobiletheme/src"/>
-			<compiler.source-path path-element="${flexlib}/projects/spark_dmv/src"/>
-            <!--  added for Apache -->
-			<compiler.source-path path-element="${flexlib}/projects/apache/src"/>
-			<compiler.source-path path-element="${flexlib}/projects/experimental/src"/>
-            <compiler.source-path path-element="${flexlib}/projects/experimental_mobile/src"/>
-						
-			<!-- namespaces to include in asdoc -->
-		    <doc-namespaces uri="http://www.adobe.com/2006/airmxml"/>
-		    <doc-namespaces uri="http://www.adobe.com/2006/airspark"/>
-		    <doc-namespaces uri="library://ns.adobe.com/flex/spark"/>
-		    <doc-namespaces uri="http://www.adobe.com/2006/mxml"/>
-		    <doc-namespaces uri="http://www.adobe.com/2006/rpcmxml"/>
- 			<doc-namespaces uri="library://ns.adobe.com/flashx/textLayout"/>
- 			<doc-namespaces uri="http://ns.adobe.com/2009/mx-mxml"/>
- 			<doc-namespaces uri="http://www.adobe.com/2006/advancedgridsmxml"/>
- 			<doc-namespaces uri="http://www.adobe.com/2006/charts"/>
- 			<doc-namespaces uri="library://ns.adobe.com/flex/spark-dmv"/>
-            <!--  added for Apache -->
- 			<doc-namespaces uri="http://flex.apache.org/ns"/>
- 			<doc-namespaces uri="http://flex.apache.org/experimental/ns"/>
- 			
-		    <namespace uri="library://ns.adobe.com/flashx/textLayout" manifest="${TLF_HOME}/textLayout/manifest.xml"/>
-
-			<!-- namespace declaration for asdoc -->
-		    <namespace uri="http://www.adobe.com/2006/airmxml" manifest="${flexlib}/projects/airframework/manifest.xml"/>
-		    <namespace uri="http://www.adobe.com/2006/airspark" manifest="${flexlib}/projects/airspark/manifest.xml"/>
-		    <namespace uri="http://www.adobe.com/2006/rpcmxml" manifest="${flexlib}/projects/rpc/manifest.xml"/>
-		    <namespace uri="http://ns.adobe.com/2009/mx-mxml" manifest="${flexlib}/projects/mx/manifest.xml"/>
-		    <namespace uri="http://www.adobe.com/2006/advancedgridsmxml" manifest="${flexlib}/projects/advancedgrids/manifest_advancedgrids.xml"/>
-		    <namespace uri="http://www.adobe.com/2006/charts" manifest="${flexlib}/projects/charts/manifest_charts.xml"/>
-
-		    <namespace uri="http://www.adobe.com/2006/mxml" manifest="${flexlib}/mxml-manifest.xml"/>
-		    <namespace uri="library://ns.adobe.com/flex/spark" manifest="${flexlib}/projects/spark/manifest.xml"/>
-		    <namespace uri="library://ns.adobe.com/flex/mx" manifest="${flexlib}/mxml-manifest.xml"/>
-			<namespace uri="library://ns.adobe.com/flex/spark" manifest="${flexlib}/projects/mobilecomponents/manifest.xml"/>
-			<namespace uri="library://ns.adobe.com/flex/spark-dmv" manifest="${flexlib}/projects/spark_dmv/manifest_spark_dmv.xml"/>
-
-            <!--  added for Apache -->
-		    <namespace uri="http://flex.apache.org/ns" manifest="${flexlib}/projects/apache/manifest.xml"/>
-		    <namespace uri="http://flex.apache.org/experimental/ns" manifest="${flexlib}/projects/experimental/manifest.xml"/>
-            <namespace uri="http://flex.apache.org/experimental/ns"  manifest="${flexlib}/projects/experimental_mobile/manifest.xml"/>
+			<!--<compiler.source-path path-element="${flexlib}/projects/feathers/feathers/source"/>
+			<compiler.source-path path-element="${flexlib}/projects/feathers-mxml/source"/>-->
 
 			<library-path/>
-            <external-library-path dir="${env.AIR_HOME}/frameworks/libs/air">
-                <include name="airglobal.swc"/>
-            </external-library-path>
+			<external-library-path dir="${env.AIR_HOME}/frameworks/libs/air">
+				<include name="airglobal.swc"/>
+			</external-library-path>
 			<external-library-path dir="${flexlib}/libs">
-		    	<include name="framework.swc" />
-		    	<!-- if no osfm sources -->
-		    	<include name="osmf.swc" />
-		    	<!-- if no textLayout sources -->
-		    	<!--include name="textLayout.swc" /-->
-		    </external-library-path>
+				<include name="framework.swc" />
+				<include name="starling.swc" />
+			</external-library-path>
 
 			<jvmarg line="${asdoc.jvm.args}"/>
 
 			<define name="CONFIG::debug" value="false"/>
 			<define name="CONFIG::release" value="true"/>
 			<define name="CONFIG::FLASH_10_1" value="false"/>
-            <define name="CONFIG::LOGGING" value="false"/>
+			<define name="CONFIG::LOGGING" value="false"/>
 			<define name="CONFIG::performanceInstrumentation" value="false"/>            
 		</asdoc>
 	</target>
