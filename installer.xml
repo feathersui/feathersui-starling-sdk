@@ -142,6 +142,7 @@
 		<tstamp />
 		<property name="ts" value="${DSTAMP}${TSTAMP}" />
 		<property name="xml.properties" value="http://feathersui.com/sdk/installer/sdk-installer-config-1.0.xml?ts=${ts}" />
+		<mkdir dir="${download.dir}"/>
 		<get src="${xml.properties}" dest="${download.dir}/sdk-installer-config-1.0.xml" />
 		<xmlproperty file="${download.dir}/sdk-installer-config-1.0.xml" semanticAttributes="true" collapseAttributes="true"/>
 		<xmlproperty file="${basedir}/flex-sdk-description.xml" semanticAttributes="true" collapseAttributes="true"/>
@@ -305,7 +306,6 @@
 	<target name="air-download" depends="air-check" unless="skip.air.install"
 		description="Downloads AIR SDK and copies to correct locations">
 		
-		<mkdir dir="${download.dir}"/>
 		<antcall target="air-get" />
 
 		<antcall target="air-setup-win" />
