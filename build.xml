@@ -366,7 +366,6 @@ the version of Apache Flex that this SDK was forked from --&gt;
         
         <copy todir="${basedir}/temp" includeEmptyDirs="false">
             <fileset dir="${basedir}">
-                <include name="apache-flex-sdk-installer-config.xml"/>
                 <include name="build.xml"/>
                 <include name="build.properties"/>
 				<include name="env-template.properties"/>
@@ -665,8 +664,7 @@ the version of Apache Flex that this SDK was forked from --&gt;
         <fix-config-file file="${basedir}/temp/frameworks/flex-config.xml" version="${build.version}" />
 
         <antcall target="binary-package-zip"/>
-        <antcall target="binary-package-tgz"/>        
-        <copy todir="${basedir}/out" file="${basedir}/apache-flex-sdk-installer-config.xml" />
+        <antcall target="binary-package-tgz"/>
     </target>
         
     <target name="stage-lib">
