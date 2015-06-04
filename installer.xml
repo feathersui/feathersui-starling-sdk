@@ -47,37 +47,11 @@
 	<property file="${FLEX_HOME}/build.properties"/>
 	<property name="bundle" value="en_US" />
 	
-	<property name="flex.properties.url" value="http://flex.apache.org/installer/properties/sdk/${bundle}.properties" />
-	<get src="${flex.properties.url}" dest="${basedir}/${bundle}.properties" ignoreerrors="true" />
 	<property file="${basedir}/${bundle}.properties"/>
 	
 	<property file="${FLEX_HOME}/installer.properties/${bundle}.properties"/>
 	<property file="${FLEX_HOME}/installer.properties/en_US.properties"/>
 	<property name="download.dir" value="${FLEX_HOME}/in"/>
-
-	<property name="afe.url.server" value="https://sourceforge.net" />
-	<property name="afe.url.folder" value="adobe/flexsdk/code/HEAD/tree/trunk/lib" />
-	<property name="afe.url.file" value="afe.jar?format=raw" />
-	<property name="afe.url.cachefile" value="afe.jar" />
-	<property name="afe.url.md5" value="d1469e163c4fd4c1ef8be82dd6d0f1ee" />
-
-	<property name="agl.url.server" value="https://sourceforge.net" />
-	<property name="agl.url.folder" value="adobe/flexsdk/code/HEAD/tree/trunk/lib" />
-	<property name="agl.url.file" value="aglj40.jar?format=raw" />
-	<property name="agl.url.cachefile" value="aglj40.jar" />
-	<property name="agl.url.md5" value="b9b6b825787489796d9b6bf607a64824" />
-
-	<property name="fontkit.url.server" value="https://sourceforge.net" />
-	<property name="fontkit.url.folder" value="adobe/flexsdk/code/HEAD/tree/trunk/lib" />
-	<property name="fontkit.url.file" value="flex-fontkit.jar?format=raw" />
-	<property name="fontkit.url.cachefile" value="flex-fontkit.jar" />
-	<property name="fontkit.url.md5" value="2abb9f580fa40ad6ef80864f94b6e938" />
-
-	<property name="rideau.url.server" value="https://sourceforge.net" />
-	<property name="rideau.url.folder" value="adobe/flexsdk/code/HEAD/tree/trunk/lib" />
-	<property name="rideau.url.file" value="rideau.jar?format=raw" />
-	<property name="rideau.url.cachefile" value="rideau.jar" />
-	<property name="rideau.url.md5" value="3b3329c1b3de665dc116121b772c5369" />
 
 	<condition property="platform" value="mac">
 		<os family="mac" />
@@ -197,6 +171,26 @@
 				<equals arg1="${flash.sdk.swfversion}" arg2="${flash.sdk.default.swfversion}" />
 			</not>
 		</condition>
+
+		<property name="afe.url.server" refid="afe.url.server" />
+		<property name="afe.url.folder" refid="afe.url.folder" />
+		<property name="afe.url.file" refid="afe.url.file" />
+		<property name="afe.url.cachefile" refid="afe.url.cachefile" />
+
+		<property name="agl.url.server" refid="agl.url.server" />
+		<property name="agl.url.folder" refid="agl.url.folder" />
+		<property name="agl.url.file" refid="agl.url.file" />
+		<property name="agl.url.cachefile" refid="agl.url.cachefile" />
+
+		<property name="fontkit.url.server" refid="fontkit.url.server" />
+		<property name="fontkit.url.folder" refid="fontkit.url.folder" />
+		<property name="fontkit.url.file" refid="fontkit.url.file" />
+		<property name="fontkit.url.cachefile" refid="fontkit.url.cachefile" />
+		
+		<property name="rideau.url.server" refid="rideau.url.server" />
+		<property name="rideau.url.folder" refid="rideau.url.folder" />
+		<property name="rideau.url.file" refid="rideau.url.file" />
+		<property name="rideau.url.cachefile" refid="rideau.url.cachefile" />
 	</target>
 	
 	<target name="install" depends="get-data,get-md5-data,check-binary,ask-licenses,get-third-party-files,fixup-config-files" description="Converts binary package to IDE compatible folder">
@@ -570,7 +564,6 @@
 			<param name="cacheFile" value="${afe.url.cachefile}" />
 			<param name="dest" value="${basedir}/lib/external/optional/afe.jar" />
 			<param name="failmessage" value="afe.jar download failed" />
-			<param name="md5" value="${afe.url.md5}" />
 		</antcall>
 
 		<echo file="${basedir}/agl.properties">agl.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
@@ -587,7 +580,6 @@
 			<param name="cacheFile" value="${agl.url.cachefile}" />
 			<param name="dest" value="${basedir}/lib/external/optional/aglj40.jar" />
 			<param name="failmessage" value="aglj40.jar download failed" />
-			<param name="md5" value="${agl.url.md5}" />
 		</antcall>
 
 		<echo file="${basedir}/fontkit.properties">fontkit.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
@@ -604,7 +596,6 @@
 			<param name="cacheFile" value="${fontkit.url.cachefile}" />
 			<param name="dest" value="${basedir}/lib/external/optional/flex-fontkit.jar" />
 			<param name="failmessage" value="flex-fontkit.jar download failed" />
-			<param name="md5" value="${fontkit.url.md5}" />
 		</antcall>
 
 		<echo file="${basedir}/rideau.properties">rideau.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
@@ -621,7 +612,6 @@
 			<param name="cacheFile" value="${rideau.url.cachefile}" />
 			<param name="dest" value="${basedir}/lib/external/optional/rideau.jar" />
 			<param name="failmessage" value="rideau.jar download failed" />
-			<param name="md5" value="${rideau.url.md5}" />
 		</antcall>
 		
 		<!-- fontkit expects swfutils in the same folder -->
