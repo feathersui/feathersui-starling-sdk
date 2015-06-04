@@ -54,11 +54,6 @@
 	<property file="${FLEX_HOME}/installer.properties/${bundle}.properties"/>
 	<property file="${FLEX_HOME}/installer.properties/en_US.properties"/>
 	<property name="download.dir" value="${FLEX_HOME}/in"/>
-	
-	<property name="swfobject.url.server" value="https://github.com" />
-	<property name="swfobject.url.folder" value="swfobject/swfobject/archive" />
-	<property name="swfobject.url.file" value="2.2.zip" />
-	<property name="swfobject.url.md5" value="4723bc29f2a93e9ad9fbeeac6fe63b9e" />
 
 	<property name="afe.url.server" value="https://sourceforge.net" />
 	<property name="afe.url.folder" value="adobe/flexsdk/code/HEAD/tree/trunk/lib" />
@@ -114,8 +109,6 @@
 	<condition property="flash.donot.ask" value="true">
 		<isset property="installer" />
 	</condition>
-	<property name="swfobject.donot.ask" value="true" />
-	<property name="do.swfobject.install" value="true" />
 	<condition property="fontswf.donot.ask" value="true">
 		<isset property="installer" />
 	</condition>
@@ -226,7 +219,7 @@
 		</fail>
 	</target>
 	
-	<target name="ask-licenses" depends="ask-air,ask-flash,ask-swfobject,ask-adobe-fontswf" description="Ask about the various licenses">
+	<target name="ask-licenses" depends="ask-air,ask-flash,ask-adobe-fontswf" description="Ask about the various licenses">
 	</target>
 	
 	<target name="ask-air" unless="air.donot.ask"
@@ -261,22 +254,6 @@
 		<property name="flash.donot.ask" value="set"/>
 	</target>
 
-	<target name="ask-swfobject" unless="swfobject.donot.ask"
-		description="Prompt the user before downloading SWFObject">
-		
-		<input
-		message="${swfobject.prompt.text}"
-		validargs="${yes.no.prompts}"
-		defaultvalue="${no}"
-		addproperty="input.swfobject.download"/>
-		<condition property="do.swfobject.install">
-			<equals arg1="${yes}" arg2="${input.swfobject.download}"/>
-		</condition>
-		<fail message="${ERROR_REQUIRED_LICENSE}" unless="do.swfobject.install" />
-		<!-- Only ask once per ant run.  -->
-		<property name="swfobject.donot.ask" value="set"/>
-	</target>
-
 	<target name="ask-adobe-fontswf" unless="fontswf.donot.ask"
 		description="Prompt the user before downloading FontSWF">
 		
@@ -292,7 +269,7 @@
 		<property name="fontswf.donot.ask" value="set"/>
 	</target>
 
-	<target name="get-third-party-files" depends="air-download,flash-download,swfobject-download,fontswf-download" />
+	<target name="get-third-party-files" depends="air-download,flash-download,fontswf-download" />
 	
 	<target name="air-check" description="Checks if AIR SDK has been downloaded.">
 		<available file="${FLEX_HOME}/lib/adt.jar" property="skip.air.install"/>
@@ -555,52 +532,6 @@
 			<param name="failmessage" value="Flash SDK download failed" />
 			<param name="md5" value="${flash.sdk.url.md5}" />
 		</antcall>
-	</target>
-	
-	<!-- swfobject.js (Version 2.2) -->
-	<!-- Because this requires a network connection it downloads SWFObject only if it doesn't already exist. -->
-	<target name="swfobject-check" description="Checks if SWFObject has been downloaded.">
-		<available file="${basedir}/../templates/swfobject/swfobject.js" property="skip.swfobject.install"/>
-		<condition property="skip.swfobject.install" value="true">
-			<not>
-				<isset property="do.swfobject.install" />
-			</not>
-		</condition>
-	</target>
-	
-	<target name="swfobject-download" depends="swfobject-check" unless="skip.swfobject.install"
-		description="Copies SWFObject from code.google.com">
-		
-		<echo file="${basedir}/swfobject.properties">swfobject.echo=${INFO_DOWNLOADING_FILE_FROM}</echo>
-		<replace file="${basedir}/swfobject.properties" token="{0}" value="${swfobject.url.file}" />
-		<replace file="${basedir}/swfobject.properties" token="{1}" value="${swfobject.url.server}/${swfobject.url.folder}" />
-		<property file="${basedir}/swfobject.properties" />
-		<delete file="${basedir}/swfobject.properties" />
-		<echo>${swfobject.echo}</echo>
-		
-		<mkdir dir="${download.dir}"/>
-		<antcall target="download_using_get" >
-			<param name="srcDomain" value="${swfobject.url.server}" />
-			<param name="srcFolder" value="${swfobject.url.folder}" />
-			<param name="srcFile" value="${swfobject.url.file}" />
-			<param name="dest" value="${download.dir}/swfobject_2_2.zip" />
-			<param name="failmessage" value="SWFObject download failed" />
-			<param name="md5" value="${swfobject.url.md5}" />
-		</antcall>
-
-		<echo>${INFO_DOWNLOADED}</echo>
-		<mkdir dir="${download.dir}/swfobject"/>
-		<unzip src="${download.dir}/swfobject_2_2.zip" dest="${download.dir}/swfobject">
-			<patternset>
-				<include name="swfobject-2.2/swfobject/expressInstall.swf"/>
-				<include name="swfobject-2.2/swfobject/swfobject.js"/>
-			</patternset>
-		</unzip>
-		<mkdir dir="${FLEX_HOME}/templates/swfobject"/>
-		<copy file="${download.dir}/swfobject/swfobject-2.2/swfobject/expressInstall.swf"
-			tofile="${FLEX_HOME}/templates/swfobject/expressInstall.swf" />
-		<copy file="${download.dir}/swfobject/swfobject-2.2/swfobject/swfobject.js"
-			tofile="${FLEX_HOME}/templates/swfobject/swfobject.js" />
 	</target>
 
 	<!-- fontswf -->

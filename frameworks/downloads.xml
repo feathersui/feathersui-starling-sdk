@@ -54,7 +54,7 @@
        clean does not remove these since they don't change often and the downloads take time.
     -->
     <target name="main" 
-        depends="swfobject-download,optional-downloads"
+        depends="optional-downloads"
         description="Copies third-party and upstream software into place for build">
         <echo message="Use thirdparty-clean or super-clean to remove these."/> 
     </target>
@@ -63,49 +63,15 @@
         depends="font-jars, clean-adobe-flex-sdk"
         description="Downloads, after prompt for each, the optional thirdparty JARs"/>
 
-    <target name="clean" depends="swfobject-clean,clean-adobe-flex-sdk"
+    <target name="clean" depends="clean-adobe-flex-sdk"
         description="Cleans thirdparty downloaded files.">
         <delete includeEmptyDirs="true" failonerror="false">
             <fileset dir="${download.dir}">
                 <include name="${adobe.flex.zip.file}"/>
-                <include name="swfobject*/**"/>
             </fileset>
         </delete>
         <delete dir="${lib.opt.dir}" failonerror="false"/>
      </target>
-        
-    <!-- swfobject.js (Version 2.2) -->
-    <!-- Because this requires a network connection it downloads SWFObject only if it doesn't already exist. -->
-    <target name="swfobject-check" description="Checks if SWFObject has been downloaded.">
-        <available file="${basedir}/../templates/swfobject/swfobject.js" property="swfobject.js.present"/>
-    </target>
-
-    <target name="swfobject-download" depends="swfobject-check" unless="swfobject.js.present"
-        description="Copies SWFObject from code.google.com">
-        
-        <mkdir dir="${download.dir}"/>
-        <get src="http://swfobject.googlecode.com/files/swfobject_2_2.zip" 
-            dest="${download.dir}/swfobject_2_2.zip" 
-            verbose="false"/>
-        
-        <unzip src="${download.dir}/swfobject_2_2.zip" dest="${FLEX_HOME}/templates">
-            <patternset>
-                <include name="swfobject/expressInstall.swf"/>
-                <include name="swfobject/swfobject.js"/>
-            </patternset>
-        </unzip>
-    </target>
-
-    <target name="swfobject-clean" description="Deletes templates swfobject code.">
-        <delete failonerror="false">
-            <fileset dir="${FLEX_HOME}/templates/swfobject">
-                <include name="**/**"/>
-                <exclude name="history/*"/>
-                <exclude name="index.template.html"/>
-            </fileset>
-        </delete>
-    </target>
-
 
     <!--============================================================================= -->
 	<!--      Optional Jars.  Licenses are not compatible with Apache v2 license.     -->

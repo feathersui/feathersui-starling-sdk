@@ -30,7 +30,6 @@ local.properties
 lib/
 libs/
 in/
-swfobject/
 flex2/
 thirdparty/
 META-INF/

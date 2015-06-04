@@ -417,8 +417,6 @@ the version of Apache Flex that this SDK was forked from --&gt;
             <fileset dir="${basedir}/templates" >
                 <include name="automation-runtimeloading-files/**"/>
                 <include name="swfobject/**"/>
-                <exclude name="**/*.swf"/>
-                <exclude name="**/swfobject.js"/>
             </fileset>
         </copy>
         
@@ -651,10 +649,7 @@ the version of Apache Flex that this SDK was forked from --&gt;
 
         <!-- swfobject templates except for downloaded files -->
         <copy todir="${basedir}/temp/templates/swfobject">
-            <fileset dir="${basedir}/templates/swfobject">
-                <exclude name="**/expressInstall.swf"/>
-                <exclude name="**/swfobject.js"/>
-            </fileset>
+            <fileset dir="${basedir}/templates/swfobject"/>
         </copy>
                 
         <!-- now that config xml files are in temp, fix them up for release. -->
