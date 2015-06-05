@@ -44,6 +44,11 @@
 		<warn-no-constructor>false</warn-no-constructor>
 	</compiler>
 	
+	<include-file>
+		<name>design.xml</name>
+		<path>design.xml</path>
+	</include-file>
+	
 	<include-sources>
 		<path-element>source</path-element>
 	</include-sources>

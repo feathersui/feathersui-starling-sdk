@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<design version="2">
+	<namespaces>
+		<!-- this doesn't work in all IDEs, but at least it will in some -->
+		<namespace prefix="f" uri="library://ns.feathersui.com/mxml" />
+	</namespaces>
+</design>
