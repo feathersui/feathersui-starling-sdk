@@ -89,18 +89,6 @@
 				<uri>http://ns.adobe.com/mxml/2009</uri>
 				<manifest>mxml-2009-manifest.xml</manifest>
 			</namespace>
-			<namespace>
-				<uri>library://ns.adobe.com/flex/spark</uri>
-				<manifest>spark-manifest.xml</manifest>
-			</namespace>
-			<namespace>
-				<uri>library://ns.adobe.com/flex/mx</uri>
-				<manifest>mx-manifest.xml</manifest>
-			</namespace>
-			<namespace>
-				<uri>http://www.adobe.com/2006/mxml</uri>
-				<manifest>mxml-manifest.xml</manifest>
-			</namespace>
 		</namespaces>
 		
 		<!-- Enable post-link SWF optimization. -->
