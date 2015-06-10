@@ -86,12 +86,21 @@
     </target>
     
     <target name="compile" description="Builds all SWCs but not their resource bundles" depends="flex-config">
+
+        <!-- libraries -->
         <antcall target="framework"/>
         <antcall target="core"/>
         <antcall target="authoringsupport"/>
         <antcall target="starling"/>
         <antcall target="feathers"/>
         <antcall target="feathers-mxml"/>
+        
+        <!-- themes -->
+        <antcall target="metalworks-mobile-theme"/>
+        <antcall target="metalworks-desktop-theme"/>
+        <antcall target="minimal-mobile-theme"/>
+        <antcall target="minimal-desktop-theme"/>
+        <antcall target="aeon-desktop-theme"/>
     </target>
 	
     <target name="test" description="Runs the tests for all projects that have FlexUnit tests">
@@ -206,13 +215,22 @@
         <delete file="${basedir}/flex-config.xml"/>
         <delete file="${basedir}/air-config.xml"/>
         <delete file="${basedir}/airmobile-config.xml"/>
-        <!-- Delete output from SWC projects -->
+
+        <!-- Delete output from libraries -->
         <ant dir="${basedir}/projects/framework" target="clean"/>
         <ant dir="${basedir}/projects/core" target="clean"/>
         <ant dir="${basedir}/projects/authoringsupport" target="clean"/>
         <ant dir="${basedir}/projects/starling" target="clean"/>
         <ant dir="${basedir}/projects/feathers" target="clean"/>
         <ant dir="${basedir}/projects/feathers-mxml" target="clean"/>
+
+        <!-- delete output from themes -->
+        <ant dir="${basedir}/projects/metalworks-mobile-theme" target="clean"/>
+        <ant dir="${basedir}/projects/metalworks-desktop-theme" target="clean"/>
+        <ant dir="${basedir}/projects/minimal-mobile-theme" target="clean"/>
+        <ant dir="${basedir}/projects/minimal-desktop-theme" target="clean"/>
+        <ant dir="${basedir}/projects/aeon-desktop-theme" target="clean"/>
+
         <!-- delete the FlashBuilder executable directories -->
         <delete includeemptydirs="true" failonerror="false">
             <fileset dir="${basedir}/projects">
@@ -288,5 +306,25 @@
 
     <target name="feathers-mxml" description="Clean build of feathers-mxml.swc">
         <ant dir="${basedir}/projects/feathers-mxml"/>
+    </target>
+
+    <target name="minimal-mobile-theme" description="Clean build of MinimalMobileTheme.swc">
+        <ant dir="${basedir}/projects/minimal-mobile-theme"/>
+    </target>
+
+    <target name="minimal-desktop-theme" description="Clean build of MinimalDesktopTheme.swc">
+        <ant dir="${basedir}/projects/minimal-desktop-theme"/>
+    </target>
+
+    <target name="aeon-desktop-theme" description="Clean build of AeonDesktopTheme.swc">
+        <ant dir="${basedir}/projects/aeon-desktop-theme"/>
+    </target>
+
+    <target name="metalworks-mobile-theme" description="Clean build of MetalWorksDesktopTheme.swc">
+        <ant dir="${basedir}/projects/metalworks-mobile-theme"/>
+    </target>
+
+    <target name="metalworks-desktop-theme" description="Clean build of MetalWorksDesktopTheme.swc">
+        <ant dir="${basedir}/projects/metalworks-desktop-theme"/>
     </target>
 </project>

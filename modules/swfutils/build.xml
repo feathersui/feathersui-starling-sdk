@@ -79,6 +79,9 @@
                 <attribute name="Class-Path" value="asc.jar swfutils.jar"/>
             </manifest>
         </jar>
+        
+        <!-- fontkit expects swfutils in the same folder -->
+        <copy file="${lib.dir}/swfutils.jar" tofile="${lib.dir}/external/optional/swfutils.jar" />
 
     </target>
 
