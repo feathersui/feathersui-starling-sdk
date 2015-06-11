@@ -41,24 +41,13 @@
 		<!-- because targets that run before flexTasks.jar gets built would fail. -->
 		<taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar;${FLEX_HOME}/lib/flexTasks.jar"/>
 		
-		<java jar="${FLEX_HOME}/lib/compc.jar" fork="true">
-			<jvmarg line="${compc.jvm.args}"/>
-			<arg value="+flexlib"/>
-			<arg value="${FLEX_HOME}/frameworks"/>
-			<arg value="-load-config"/>
-			<arg value="compile-config.xml" />
-			<arg value="-output" />
-			<arg value="${FLEX_HOME}/frameworks/themes/MetalWorksDesktopTheme/MetalWorksDesktopTheme.swc"/>
-			<arg value="+playerglobal.version=${playerglobal.version}" />
-			<arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
-		</java>
-		<!--<compc fork="true"
+		<compc fork="true"
 			   output="${FLEX_HOME}/frameworks/themes/MetalWorksDesktopTheme/MetalWorksDesktopTheme.swc">
 			<jvmarg line="${compc.jvm.args}"/>
 			<load-config filename="compile-config.xml" />
 			<arg value="+playerglobal.version=${playerglobal.version}" />
 			<arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
-		</compc>-->
+		</compc>
 	</target>
 
 </project>
