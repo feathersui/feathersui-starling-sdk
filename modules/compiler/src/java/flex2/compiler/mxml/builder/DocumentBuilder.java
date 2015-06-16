@@ -1228,10 +1228,6 @@ public class DocumentBuilder extends ComponentBuilder implements MXMLNamespaces
    		{
    			generateLoaderInfo(node);
    		}
-		else
-		{
-			document.addMetadata( new Script( "[Frame(extraClass=\"FlexInit\")]\n" ) );
-		}
 	}
 
 	/**
