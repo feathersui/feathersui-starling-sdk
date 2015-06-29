@@ -1,6 +1,6 @@
 /*
 Feathers SDK
-Copyright 2012-2015 Joshua Tynjala. All Rights Reserved.
+Copyright 2012-2015 Bowler Hat LLC
 
 See the NOTICE file distributed with this work for additional information
 regarding copyright ownership. The author licenses this file to You under the

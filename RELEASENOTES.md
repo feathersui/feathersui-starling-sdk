@@ -2,6 +2,6 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](http://feathersui.com/sdk).
 
-## 2.2.0-alpha
+## 2.2.0-beta
 
-Initial alpha build.
+Initial beta build.
