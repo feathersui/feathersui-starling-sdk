@@ -41,20 +41,11 @@ internal class CoreClasses
 	import mx.core.IFlexModule; IFlexModule;
 	import mx.core.MovieClipAsset; MovieClipAsset;
 	import mx.core.MovieClipLoaderAsset; MovieClipLoaderAsset;
-	import mx.core.SimpleApplication; SimpleApplication;
 	import mx.core.SoundAsset; SoundAsset;
 	import mx.core.SpriteAsset; SpriteAsset;
 	import mx.core.TextFieldAsset; TextFieldAsset;
-	import mx.events.ModuleEvent; ModuleEvent;
-	import mx.modules.IModuleInfo; IModuleInfo;
-	import mx.modules.ModuleBase; ModuleBase;
-	import mx.modules.ModuleManager; ModuleManager;
 	import mx.resources.IResourceBundle; IResourceBundle;
-	import mx.resources.IResourceManager; IResourceManager;
-	import mx.resources.IResourceModule; IResourceModule;
-	import mx.resources.Locale; Locale;
 	import mx.resources.ResourceBundle; ResourceBundle;
-	import mx.resources.ResourceManager; ResourceManager;
 	// Maintain alphabetical order
 }
 
