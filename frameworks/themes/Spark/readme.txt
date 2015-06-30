@@ -1,0 +1,1 @@
+This directory exists because some IDEs expect it.
