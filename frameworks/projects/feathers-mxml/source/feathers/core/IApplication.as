@@ -22,9 +22,35 @@ package feathers.core
 	public interface IApplication
 	{
 		/**
+		 * The fully-qualified class name of the application's theme, to be
+		 * instantiated by Feathers once Starling has created its context, but
+		 * before the application root class is created.
+		 *
+		 * <p>Must be set in MXML and cannot be set after initialization.</p>.
+		 * 
+		 * <p>Warning: When using <a href="http://feathersui.com/help/sdk/custom-starling-initialization.html">
+		 * <code>[Frame]</code> metadata</a> to customize the initialization of
+		 * Starling, this property will be ignored. You will need to instantiate
+		 * the theme manually in your custom bootstrap class.</p>
+		 */
+		function get theme():String;
+
+		/**
+		 * @private
+		 */
+		function set theme(value:String):void;
+		
+		/**
 		 * The profile used by Starling when creating its Context3D.
 		 *
 		 * <p>Must be set in MXML and cannot be set after initialization.</p>.
+		 *
+		 * <p>Warning: When using <a href="http://feathersui.com/help/sdk/custom-starling-initialization.html">
+		 * <code>[Frame]</code> metadata</a> to customize the initialization of
+		 * Starling, this property will be ignored. You will need to pass in
+		 * the Context3D profile manually in your custom bootstrap class.</p>
+		 * 
+		 * @see http://help.adobe.com/en_US/FlashPlatform/reference/actionscript/3/flash/display3D/Context3DProfile.html flash.display3D.Context3DProfile
 		 */
 		function get context3DProfile():String;
 

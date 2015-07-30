@@ -42,6 +42,31 @@ package feathers.core
 		/**
 		 * @private
 		 */
+		protected var _theme:String;
+
+		/**
+		 * @copy feathers.core.IApplication#theme
+		 */
+		public function get theme():String
+		{
+			return this._theme;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set theme(value:String):void
+		{
+			if(this._isInitialized)
+			{
+				throw new IllegalOperationError("theme can only be set in MXML before an application has initialized.");
+			}
+			this._theme = value;
+		}
+
+		/**
+		 * @private
+		 */
 		protected var _context3DProfile:String;
 
 		[Inspectable(type="String",enumeration="baselineConstrained,baseline,baselineExtended,standardConstrained,standard,standardExtended")]
@@ -64,7 +89,7 @@ package feathers.core
 		{
 			if(this._isInitialized)
 			{
-				throw new IllegalOperationError("context3DProfile can only be set before an application has initialized.");
+				throw new IllegalOperationError("context3DProfile can only be set in MXML before an application has initialized.");
 			}
 			this._context3DProfile = value;
 		}
