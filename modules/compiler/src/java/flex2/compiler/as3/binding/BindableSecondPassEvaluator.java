@@ -216,7 +216,28 @@ public class BindableSecondPassEvaluator extends GenerativeSecondPassEvaluator
 			if (bindableInfo != null)
 			{
 				ClassInfo classInfo = bindableInfo.getClassInfo();
-				if (!classInfo.extendsClass(standardDefs.CLASS_STARLING_EVENTDISPATCHER) &&
+                boolean extendsStarlingEventDispatcher = false;
+                
+                //classInfo.extendsClass() may not work here because the entire
+                //inheritance chain may not have been analyzed. instead, we
+                //should crawl up the chain manually and analyze as needed.
+                ClassInfo currentClassInfo = classInfo;
+                while (currentClassInfo.getBaseClassName() != null)
+                {
+                    ClassInfo baseClassInfo = currentClassInfo.getBaseClassInfo();
+                    if (baseClassInfo == null)
+                    {
+                        baseClassInfo = typeAnalyzer.analyzeClass(context, currentClassInfo.getBaseClassMultiName());
+                    }
+                    currentClassInfo = baseClassInfo;
+                    if (currentClassInfo != null && 
+                        currentClassInfo.getClassName().equals(standardDefs.CLASS_STARLING_EVENTDISPATCHER))
+                    {
+                        extendsStarlingEventDispatcher = true;
+                        break;
+                    }
+                }
+				if (!extendsStarlingEventDispatcher &&
                     !classInfo.implementsInterface(standardDefs.PACKAGE_FLASH_EVENTS, GenerativeExtension.IEVENT_DISPATCHER))
                 {
                     //until we figure out how to automatically force a class to
