@@ -1,4 +1,4 @@
-# Feathers SDK
+# Feathers SDK 2.3.0-prerelease
 
 ---
 
