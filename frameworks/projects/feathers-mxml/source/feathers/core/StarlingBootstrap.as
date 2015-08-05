@@ -16,6 +16,8 @@ specific language governing permissions and limitations under the License.
 */
 package feathers.core
 {
+	import feathers.themes.IThemeWithAssetManager;
+
 	import flash.display.MovieClip;
 	import flash.display.StageAlign;
 	import flash.display.StageScaleMode;
@@ -204,7 +206,22 @@ package feathers.core
 			this.initializeMixins();
 			
 			var theme:Object = this.createTheme();
-			this.setRootClass();
+			if(theme is IThemeWithAssetManager)
+			{
+				var assetManagerTheme:IThemeWithAssetManager = IThemeWithAssetManager(theme);
+				if(assetManagerTheme.isCompleteForStarling(this._starling))
+				{
+					this.setRootClass();
+				}
+				else
+				{
+					assetManagerTheme.addEventListener(starling.events.Event.COMPLETE, theme_completeHandler);
+				}
+			}
+			else
+			{
+				this.setRootClass();
+			}
 		}
 
 		/**
@@ -229,6 +246,18 @@ package feathers.core
 			var viewPort:Rectangle = this._starling.viewPort;
 			viewPort.width = stageWidth;
 			viewPort.height = stageHeight;
+		}
+
+		/**
+		 * @private
+		 */
+		protected function theme_completeHandler(event:starling.events.Event, starling:Starling):void
+		{
+			if(this._starling !== starling)
+			{
+				return;
+			}
+			this.setRootClass();
 		}
 	}
 }
