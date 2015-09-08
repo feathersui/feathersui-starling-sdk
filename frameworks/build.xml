@@ -101,6 +101,7 @@
         <antcall target="minimal-mobile-theme"/>
         <antcall target="minimal-desktop-theme"/>
         <antcall target="aeon-desktop-theme"/>
+        <antcall target="topcoat-light-mobile-theme"/>
     </target>
 	
     <target name="test" description="Runs the tests for all projects that have FlexUnit tests">
@@ -230,6 +231,7 @@
         <ant dir="${basedir}/projects/minimal-mobile-theme" target="clean"/>
         <ant dir="${basedir}/projects/minimal-desktop-theme" target="clean"/>
         <ant dir="${basedir}/projects/aeon-desktop-theme" target="clean"/>
+        <ant dir="${basedir}/projects/topcoat-light-mobile-theme" target="clean"/>
 
         <!-- delete the FlashBuilder executable directories -->
         <delete includeemptydirs="true" failonerror="false">
@@ -326,5 +328,9 @@
 
     <target name="metalworks-desktop-theme" description="Clean build of MetalWorksDesktopTheme.swc">
         <ant dir="${basedir}/projects/metalworks-desktop-theme"/>
+    </target>
+
+    <target name="topcoat-light-mobile-theme" description="Clean build of TopcoatLightMobileTheme.swc">
+        <ant dir="${basedir}/projects/topcoat-light-mobile-theme"/>
     </target>
 </project>
