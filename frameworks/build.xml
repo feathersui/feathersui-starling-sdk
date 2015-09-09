@@ -107,7 +107,8 @@
     <target name="test" description="Runs the tests for all projects that have FlexUnit tests">
         <delete dir="${FLEX_HOME}/test-reports"/>
 
-        <antcall target="apache-test"/>
+        <antcall target="starling-test"/>
+        <antcall target="feathersui-test"/>
     </target>
 
 	<target name="flex-config" depends="playerglobal-setswfversion" description="Copy the flex/air/airmobile config templates to flex/air/airmobile-config.xml and inject version numbers">
@@ -332,5 +333,13 @@
 
     <target name="topcoat-light-mobile-theme" description="Clean build of TopcoatLightMobileTheme.swc">
         <ant dir="${basedir}/projects/topcoat-light-mobile-theme"/>
+    </target>
+
+    <target name="starling-test" description="Tests for Starling Framework">
+        <ant dir="${basedir}/projects/starling" target="test"/>
+    </target>
+
+    <target name="feathersui-test" description="Tests for Feathers UI">
+        <ant dir="${basedir}/projects/feathers" target="test"/>
     </target>
 </project>

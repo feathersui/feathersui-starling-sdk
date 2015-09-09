@@ -24,6 +24,8 @@
 	<property environment="env"/>
 	<property file="${FLEX_HOME}/build.properties"/>
 
+    <property name="tests.bin" location="${basedir}/bin-tests"/>
+
 	<target name="main" depends="clean,compile" description="Clean build of feathers.swc"/>
 
 	<target name="clean">
@@ -49,6 +51,43 @@
 			<arg value="+playerglobal.version=${playerglobal.version}" />
 			<arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
 		</compc>
+	</target>
+
+	<target name="test" description="Runs the FlexUnit tests for this project">
+
+		<taskdef resource="flexUnitTasks.tasks">
+			<classpath>
+				<fileset dir="${env.FLEXUNIT_HOME}/FlexUnit4AntTasks/target">
+					<include name="flexUnitTasks*.jar"/>
+				</fileset>
+			</classpath>
+		</taskdef>
+		<taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar;${FLEX_HOME}/lib/flexTasks.jar"/>
+
+		<echo message="Unit tests for '${basedir}'"/>
+
+		<mkdir dir="${tests.bin}"/>
+
+		<mxmlc file="${basedir}/feathers/test/source/TestFeathers.as" fork="true" failonerror="true">
+			<load-config filename="flexunit-config.xml" />
+			<arg value="+playerglobal.version=${playerglobal.version}" />
+			<arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
+			<library-path dir="${env.FLEXUNIT_HOME}" append="true">
+				<include name="FlexUnit4/target/*.swc"/>
+				<include name="FlexUnit4CIListener/target/*.swc"/>
+			</library-path>
+			<output>${tests.bin}/TestFeathers.swf</output>
+		</mxmlc>
+
+		<flexunit
+			player="flash"
+			workingDir="${tests.bin}" 
+			swf="${tests.bin}/TestFeathers.swf"
+			haltonfailure="true"
+			verbose="true"
+			toDir="${tests.bin}"/>
+
+		<delete dir="${tests.bin}"/>
 	</target>
 
 	<target name="doc" depends="clean-temp-docs" description="updates feathers.swc with asdoc xml">

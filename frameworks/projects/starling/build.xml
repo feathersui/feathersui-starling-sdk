@@ -24,6 +24,8 @@
 	<property environment="env"/>
 	<property file="${FLEX_HOME}/build.properties"/>
 
+    <property name="tests.bin" location="${basedir}/bin-tests"/>
+
 	<target name="main" depends="clean,compile" description="Clean build of starling.swc"/>
 
 	<target name="clean">
@@ -49,6 +51,48 @@
 			<arg value="+playerglobal.version=${playerglobal.version}" />
 			<arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
 		</compc>
+	</target>
+
+	<target name="test" description="Runs the FlexUnit tests for this project">
+
+		<taskdef resource="flexUnitTasks.tasks">
+			<classpath>
+				<fileset dir="${env.FLEXUNIT_HOME}/FlexUnit4AntTasks/target">
+					<include name="flexUnitTasks*.jar"/>
+				</fileset>
+			</classpath>
+		</taskdef>
+		<taskdef resource="flexTasks.tasks" classpath="${FLEX_HOME}/ant/lib/flexTasks.jar;${FLEX_HOME}/lib/flexTasks.jar"/>
+
+		<echo message="Unit tests for '${basedir}'"/>
+
+		<mkdir dir="${tests.bin}"/>
+
+		<copy todir="${tests.bin}/fixtures">
+			<fileset dir="${basedir}/Starling-Framework/tests/fixtures"/>
+		</copy>
+
+		<mxmlc file="${basedir}/Starling-Framework/tests/src/FlexUnitRunner.as" fork="true" failonerror="true">
+			<load-config filename="flexunit-config.xml" />
+			<arg value="+playerglobal.version=${playerglobal.version}" />
+			<arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
+			<library-path dir="${env.FLEXUNIT_HOME}" append="true">
+				<include name="FlexUnit4/libs/*.swc"/>
+				<include name="FlexUnit4/target/*.swc"/>
+				<include name="FlexUnit4CIListener/target/*.swc"/>
+			</library-path>
+			<output>${tests.bin}/swf/TestStarling.swf</output>
+		</mxmlc>
+
+		<flexunit
+			player="flash"
+			workingDir="${tests.bin}" 
+			swf="${tests.bin}/swf/TestStarling.swf"
+			haltonfailure="true"
+			verbose="true"
+			toDir="${tests.bin}"/>
+
+		<delete dir="${tests.bin}"/>
 	</target>
 
 	<target name="doc" depends="clean-temp-docs" description="updates starling.swc with asdoc xml">
