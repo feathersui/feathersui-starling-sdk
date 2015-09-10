@@ -24,7 +24,7 @@
 	<property environment="env"/>
 	<property file="${FLEX_HOME}/build.properties"/>
 
-	<target name="main" depends="clean,compile" description="Clean build of MetalWorksDesktopTheme.swc"/>
+	<target name="main" depends="clean,compile,copy-assets" description="Clean build of MetalWorksDesktopTheme.swc"/>
 
 	<target name="clean">
 		<delete failonerror="false">
@@ -48,6 +48,16 @@
 			<arg value="+playerglobal.version=${playerglobal.version}" />
 			<arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
 		</compc>
+	</target>
+
+	<target name="copy-assets">
+		<mkdir dir="${FLEX_HOME}/frameworks/themes/MetalWorksDesktopTheme/images"/>
+		<copy todir="${FLEX_HOME}/frameworks/themes/MetalWorksDesktopTheme/images">
+			<fileset dir="${basedir}/../feathers/feathers/themes/MetalWorksDesktopTheme/assets/images">
+				<include name="metalworks_desktop.png"/>
+				<include name="metalworks_desktop.xml"/>
+			</fileset>
+		</copy>
 	</target>
 
 </project>

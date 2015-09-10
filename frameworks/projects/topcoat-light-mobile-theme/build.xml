@@ -24,7 +24,7 @@
 	<property environment="env"/>
 	<property file="${FLEX_HOME}/build.properties"/>
 
-	<target name="main" depends="clean,compile" description="Clean build of TopcoatLightMobileTheme.swc"/>
+	<target name="main" depends="clean,compile,copy-assets" description="Clean build of TopcoatLightMobileTheme.swc"/>
 
 	<target name="clean">
 		<delete failonerror="false">
@@ -48,6 +48,16 @@
 			<arg value="+playerglobal.version=${playerglobal.version}" />
 			<arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
 		</compc>
+	</target>
+
+	<target name="copy-assets">
+		<mkdir dir="${FLEX_HOME}/frameworks/themes/TopcoatLightMobileTheme/images"/>
+		<copy todir="${FLEX_HOME}/frameworks/themes/TopcoatLightMobileTheme/images">
+			<fileset dir="${basedir}/../feathers/feathers/themes/TopcoatLightMobileTheme/assets/images">
+				<include name="topcoat_light_mobile.png"/>
+				<include name="topcoat_light_mobile.xml"/>
+			</fileset>
+		</copy>
 	</target>
 
 </project>
