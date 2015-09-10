@@ -102,6 +102,7 @@ public abstract class StandardDefs
     
     // feathers.*
     public static final String PACKAGE_FEATHERS_BINDING = "feathers.binding";
+    public static final String PACKAGE_FEATHERS_CORE = "feathers.core";
 
     // starling.*
     public static final String PACKAGE_STARLING_ANIMATION = "starling.animation";
@@ -188,9 +189,14 @@ public abstract class StandardDefs
     public final String INTERFACE_IBINDINGCLIENT_DOT = NameFormatter.toDot(getBindingPackage(), "IBindingClient");
 
     // Interface name with colon
+    
+    // feathers
+    public final String INTERFACE_IFEATHERSCONTROL = NameFormatter.toColon(PACKAGE_FEATHERS_CORE, "IFeathersControl");
+    
     // flashx.textLayout
     public static final String INTERFACE_FLASH_TEXTLAYOUT_ISWFCONTEXT = NameFormatter.toColon(PACKAGE_FLASH_TEXTLAYOUT_COMPOSE, "ISWFContext");
     
+    // mx
     public final String INTERFACE_ICHILDLIST = NameFormatter.toColon(getCorePackage(), "IChildList");
     public final String INTERFACE_ICONTAINER = NameFormatter.toColon(getCorePackage(), "IContainer");
     public final String INTERFACE_IDEFERREDINSTANCE = NameFormatter.toColon(getCorePackage(), "IDeferredInstance");
@@ -774,6 +780,15 @@ public abstract class StandardDefs
     {
         assert type != null;
         return type.isAssignableTo(INTERFACE_IUICOMPONENT);
+    }
+
+    /**
+     * 
+     */
+    public boolean isIFeathersControl(Type type)
+    {
+        assert type != null;
+        return type.isAssignableTo(INTERFACE_IFEATHERSCONTROL);
     }
 
     /**

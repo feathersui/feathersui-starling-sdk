@@ -505,7 +505,7 @@ public abstract class ValueInitializer implements Initializer, Cloneable
         addAssignExprs(list, self.getEventInitializerIterator(), varName);
 
         //  post-init actions for values that are being assigned to properties (via id attribution)
-        if (isDeclared && standardDefs.isIUIComponentWithIdProperty(selfType))
+        if (isDeclared && standardDefs.isIFeathersControl(selfType))
         {
             //  set id on IUIComponents that carry an id prop
             list.add("\t", varName, ".id = \"", id, "\";", line);
