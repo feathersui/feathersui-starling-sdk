@@ -151,7 +151,8 @@ public class DocumentBuilder extends ComponentBuilder implements MXMLNamespaces
 	{
 		super(unit, typeTable, mxmlConfiguration, document, null, null, null, false, null);
 
-		//	NOTE: override already-initialized childNodeHandler
+		//	NOTE: override already-initialized attributeHandler and childNodeHandler
+        this.attributeHandler = new DocumentAttributeHandler();
 		this.childNodeHandler = new DocumentChildNodeHandler(typeTable);
 
 		this.rootAttributeParser = new RootAttributeParser(typeTable);
@@ -571,13 +572,20 @@ public class DocumentBuilder extends ComponentBuilder implements MXMLNamespaces
 	 */
 	protected class DocumentAttributeHandler extends ComponentBuilder.ComponentAttributeHandler
 	{
-		/**
-		 * even if our supertype is dynamic, we (an MXML document) never define a dynamic class.
-		 */
-		protected void dynamicProperty(String name, String state)
-		{
-			unknownAttributeError("", name, line);
-		}
+        protected void special(Type type, String namespace, String localPart)
+        {
+            //theme is also defined as a property that can be accessed at
+            //runtime on a Feathers application, so its value should be set.
+            if(localPart.equals(specialAttrTheme))
+            {
+                Property property = type.getProperty(localPart);
+                if (property != null)
+                {
+                    processPropertyText(property, text, AbstractBuilder.TextOrigin.FROM_ATTRIBUTE, line, component);
+                }
+            }
+            super.special(type, namespace, localPart);
+        }
 	}
 
 	/**
