@@ -41,12 +41,12 @@ package feathers.core
 		/**
 		 * @private
 		 */
-		protected var _theme:String;
+		protected var _theme:Class;
 
 		/**
 		 * @copy feathers.core.IApplication#theme
 		 */
-		public function get theme():String
+		public function get theme():Class
 		{
 			return this._theme;
 		}
@@ -54,7 +54,7 @@ package feathers.core
 		/**
 		 * @private
 		 */
-		public function set theme(value:String):void
+		public function set theme(value:Class):void
 		{
 			if(this._isInitialized)
 			{

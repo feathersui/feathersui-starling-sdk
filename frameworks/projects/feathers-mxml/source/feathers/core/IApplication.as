@@ -33,12 +33,12 @@ package feathers.core
 		 * Starling, this property will be ignored. You will need to instantiate
 		 * the theme manually in your custom bootstrap class.</p>
 		 */
-		function get theme():String;
+		function get theme():Class;
 
 		/**
 		 * @private
 		 */
-		function set theme(value:String):void;
+		function set theme(value:Class):void;
 		
 		/**
 		 * The profile used by Starling when creating its Context3D.
