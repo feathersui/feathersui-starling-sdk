@@ -5,7 +5,9 @@
 	<component id="AutoComplete" class="feathers.controls.AutoComplete"/>
 	<component id="Button" class="feathers.controls.Button"/>
 	<component id="ButtonGroup" class="feathers.controls.ButtonGroup"/>
+	<component id="Callout" class="feathers.controls.Callout"/>
 	<component id="Check" class="feathers.controls.Check"/>
+	<component id="DateTimeSpinner" class="feathers.controls.DateTimeSpinner"/>
 	<component id="Drawers" class="feathers.controls.Drawers"/>
 	<component id="GroupedList" class="feathers.controls.GroupedList"/>
 	<component id="Header" class="feathers.controls.Header"/>
@@ -60,6 +62,7 @@
 	<component id="LayoutGroupGroupedListHeaderOrFooterRenderer" class="feathers.controls.renderers.LayoutGroupGroupedListHeaderOrFooterRenderer"/>
 
 	<!-- pop up content managers -->
+	<component id="BottomDrawerPopUpContentManager" class="feathers.controls.popups.BottomDrawerPopUpContentManager"/>
 	<component id="CalloutPopUpContentManager" class="feathers.controls.popups.CalloutPopUpContentManager"/>
 	<component id="DropDownPopUpContentManager" class="feathers.controls.popups.DropDownPopUpContentManager"/>
 	<component id="VerticalCenteredPopUpContentManager" class="feathers.controls.popups.VerticalCenteredPopUpContentManager"/>
@@ -72,6 +75,7 @@
 	<component id="TextBlockTextEditor" class="feathers.controls.text.TextBlockTextEditor"/>
 	<component id="TextFieldTextEditor" class="feathers.controls.text.TextFieldTextEditor"/>
 	<component id="StageTextTextEditor" class="feathers.controls.text.StageTextTextEditor"/>
+	<component id="StageTextTextEditorViewPort" class="feathers.controls.text.StageTextTextEditorViewPort"/>
 	<component id="TextFieldTextEditorViewPort" class="feathers.controls.text.TextFieldTextEditorViewPort"/>
 
 	<!-- miscellaneous -->
@@ -95,4 +99,5 @@
 	<component id="FlowLayout" class="feathers.layout.FlowLayout"/>
 	<component id="WaterfallLayout" class="feathers.layout.WaterfallLayout"/>
 	<component id="VerticalSpinnerLayout" class="feathers.layout.VerticalSpinnerLayout"/>
+	<component id="HorizontalSpinnerLayout" class="feathers.layout.HorizontalSpinnerLayout"/>
 </componentPackage>
