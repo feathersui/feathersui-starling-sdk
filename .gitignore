@@ -140,3 +140,7 @@ visualcomps
 #FlexUnit tests
 test-reports
 FlexUnitCompilerApplication.mxml
+
+#Themes
+frameworks/themes/**/images/
+frameworks/themes/**/fonts/
