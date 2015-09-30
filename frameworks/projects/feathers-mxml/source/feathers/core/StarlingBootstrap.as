@@ -16,7 +16,7 @@ specific language governing permissions and limitations under the License.
 */
 package feathers.core
 {
-	import feathers.themes.IThemeWithAssetManager;
+	import feathers.themes.IAsyncTheme;
 
 	import flash.display.MovieClip;
 	import flash.display.StageAlign;
@@ -206,9 +206,9 @@ package feathers.core
 			this.initializeMixins();
 			
 			var theme:Object = this.createTheme();
-			if(theme is IThemeWithAssetManager)
+			if(theme is IAsyncTheme)
 			{
-				var assetManagerTheme:IThemeWithAssetManager = IThemeWithAssetManager(theme);
+				var assetManagerTheme:IAsyncTheme = IAsyncTheme(theme);
 				if(assetManagerTheme.isCompleteForStarling(this._starling))
 				{
 					this.setRootClass();
