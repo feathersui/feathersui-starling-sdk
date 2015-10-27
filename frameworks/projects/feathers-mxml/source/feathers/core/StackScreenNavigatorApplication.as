@@ -17,10 +17,14 @@ specific language governing permissions and limitations under the License.
 package feathers.core
 {
 	import feathers.controls.StackScreenNavigator;
+	import feathers.utils.display.stageToStarling;
+
+	import flash.display.Stage;
 
 	import flash.errors.IllegalOperationError;
 
 	import starling.core.Starling;
+	import starling.events.Event;
 
 	[Frame(factoryClass="feathers.core.StarlingBootstrap")]
 
@@ -36,6 +40,7 @@ package feathers.core
 		public function StackScreenNavigatorApplication()
 		{
 			super();
+			this.addEventListener(Event.ADDED_TO_STAGE, application_addedToStageHandler);
 		}
 
 		/**
@@ -91,6 +96,22 @@ package feathers.core
 				throw new IllegalOperationError("context3DProfile can only be set before an application has initialized.");
 			}
 			this._context3DProfile = value;
+		}
+
+		/**
+		 * @private
+		 */
+		protected function application_addedToStageHandler(event:Event):void
+		{
+			//Flash Builder sets the visible element in the AIR application
+			//descriptor to false for Flex projects. Flex dynamically sets it to
+			//true, so we need to do the same.
+			var starling:Starling = stageToStarling(this.stage);
+			var nativeStage:Stage = starling.nativeStage;
+			if("nativeWindow" in nativeStage)
+			{
+				nativeStage["nativeWindow"].visible = true;
+			}
 		}
 	}
 }
