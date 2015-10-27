@@ -79,6 +79,10 @@
 			<output>${tests.bin}/TestFeathers.swf</output>
 		</mxmlc>
 
+		<copy todir="${tests.bin}/fixtures">
+			<fileset dir="${basedir}/feathers/test/fixtures"/>
+		</copy>
+
 		<flexunit
 			player="flash"
 			workingDir="${tests.bin}" 
