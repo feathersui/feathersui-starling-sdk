@@ -110,7 +110,11 @@ package feathers.core
 			var nativeStage:Stage = starling.nativeStage;
 			if("nativeWindow" in nativeStage)
 			{
-				nativeStage["nativeWindow"].visible = true;
+				var nativeWindow:Object = nativeStage["nativeWindow"];
+				if(nativeWindow)
+				{
+					nativeWindow.visible = true;
+				}
 			}
 		}
 	}
