@@ -17,6 +17,7 @@
 
 -->
 <flex-config>
+	<swf-version>30</swf-version>
 
 	<compiler>
 		<accessible>true</accessible>
