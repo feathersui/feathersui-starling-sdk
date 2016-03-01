@@ -123,8 +123,8 @@ public class DefaultsConfigurator
 	{
         // specified in case people are using older flex-config.xml
         // also specified in flex-config.xml
-        set( cfgbuf, "target-player", "11.5" );
-        set( cfgbuf, "swf-version", "18");
+        set( cfgbuf, "target-player", "19.0" );
+        set( cfgbuf, "swf-version", "30");
 
 	    set( cfgbuf,
 	         new String[]

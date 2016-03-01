@@ -1691,8 +1691,8 @@ public class Configuration implements LinkerConfiguration, Cloneable
     }
     
 	// targeted player version (also set in DefaultsConfigurator)
-	private int majorVersionTarget = 11;
-	private int minorVersionTarget = 1;
+	private int majorVersionTarget = 19;
+	private int minorVersionTarget = 0;
 	private int revisionTarget = 0;
 	
 	/**
@@ -1800,7 +1800,7 @@ public class Configuration implements LinkerConfiguration, Cloneable
 	// 'swf-version' option
 	//
 	
-	private int swfVersion = 14;
+	private int swfVersion = 30;
 	
 	public int getSwfVersion()
 	{
