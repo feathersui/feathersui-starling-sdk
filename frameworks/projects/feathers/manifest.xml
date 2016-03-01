@@ -80,6 +80,11 @@
 
 	<!-- miscellaneous -->
 	<component id="ToggleGroup" class="feathers.core.ToggleGroup"/>
+	<component id="TapToSelect" class="feathers.utils.touch.TapToSelect"/>
+	<component id="TapToTrigger" class="feathers.utils.touch.TapToTrigger"/>
+	<component id="LongPress" class="feathers.utils.touch.LongPress"/>
+	<component id="KeyToSelect" class="feathers.utils.keyboard.KeyToSelect"/>
+	<component id="KeyToTrigger" class="feathers.utils.keyboard.KeyToTrigger"/>
 
 	<!-- collections and data -->
 	<component id="ListCollection" class="feathers.data.ListCollection"/>
