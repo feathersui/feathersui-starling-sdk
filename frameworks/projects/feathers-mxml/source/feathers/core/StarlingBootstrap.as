@@ -17,6 +17,7 @@ specific language governing permissions and limitations under the License.
 package feathers.core
 {
 	import feathers.themes.IAsyncTheme;
+	import feathers.utils.ScreenDensityScaleFactorManager;
 
 	import flash.display.MovieClip;
 	import flash.display.StageAlign;
@@ -24,11 +25,9 @@ package feathers.core
 	import flash.display3D.Context3DProfile;
 	import flash.display3D.Context3DRenderMode;
 	import flash.events.Event;
-	import flash.geom.Rectangle;
 	import flash.utils.getDefinitionByName;
 
 	import starling.core.Starling;
-	import starling.display.Stage;
 	import starling.errors.AbstractMethodError;
 	import starling.events.Event;
 	import starling.utils.SystemUtil;
@@ -64,6 +63,11 @@ package feathers.core
 		{
 			return this._starling;
 		}
+
+		/**
+		 * @private
+		 */
+		protected var _scaler:ScreenDensityScaleFactorManager;
 		
 		/**
 		 * @private
@@ -141,7 +145,7 @@ package feathers.core
 		 */
 		protected function setupScaling():void
 		{
-			this.stage.addEventListener(flash.events.Event.RESIZE, stage_resizeHandler, false, 0, true);
+			this._scaler = new ScreenDensityScaleFactorManager(this._starling);
 		}
 
 		/**
@@ -230,22 +234,6 @@ package feathers.core
 		protected function starling_rootCreatedHandler(event:starling.events.Event):void
 		{
 			this._starling.start();
-		}
-
-		/**
-		 * @private
-		 */
-		protected function stage_resizeHandler(event:flash.events.Event):void
-		{
-			var stageWidth:Number = this.stage.stageWidth;
-			var stageHeight:Number = this.stage.stageHeight;
-			var starlingStage:Stage = this._starling.stage;
-			starlingStage.stageWidth = stageWidth;
-			starlingStage.stageHeight = stageHeight;
-			
-			var viewPort:Rectangle = this._starling.viewPort;
-			viewPort.width = stageWidth;
-			viewPort.height = stageHeight;
 		}
 
 		/**
