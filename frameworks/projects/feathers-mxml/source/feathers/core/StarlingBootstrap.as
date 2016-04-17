@@ -104,8 +104,10 @@ package feathers.core
 					context3DProfile = Context3DProfile.BASELINE;
 				}
 			}
+			Starling.multitouchEnabled = true;
 			var starling:Starling = new Starling(null, this.stage, null, null, Context3DRenderMode.AUTO, context3DProfile);
 			starling.supportHighResolutions = this.stage.contentsScaleFactor > 1;
+			starling.skipUnchangedFrames = true;
 			return starling;
 		}
 
