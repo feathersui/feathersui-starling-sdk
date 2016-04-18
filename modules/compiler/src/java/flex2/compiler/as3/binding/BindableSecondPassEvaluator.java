@@ -33,6 +33,7 @@ import flex2.compiler.as3.reflect.NodeMagic;
 import flex2.compiler.mxml.lang.StandardDefs;
 import flex2.compiler.util.CompilerMessage;
 import flex2.compiler.util.MultiName;
+import flex2.compiler.util.NameFormatter;
 import flex2.compiler.util.QName;
 import macromedia.asc.parser.ArgumentListNode;
 import macromedia.asc.parser.AttributeListNode;
@@ -237,14 +238,20 @@ public class BindableSecondPassEvaluator extends GenerativeSecondPassEvaluator
                         break;
                     }
                 }
+                boolean implementsFlashEventDispatcher = classInfo.implementsInterface(standardDefs.PACKAGE_FLASH_EVENTS, GenerativeExtension.IEVENT_DISPATCHER);
 				if (!extendsStarlingEventDispatcher &&
-                    !classInfo.implementsInterface(standardDefs.PACKAGE_FLASH_EVENTS, GenerativeExtension.IEVENT_DISPATCHER))
+                    !implementsFlashEventDispatcher)
                 {
                     //until we figure out how to automatically force a class to
                     //extend EventDispatcher, we need to use a compiler error
                     //instead.
                     context.localizedError2(node.pos(), new BindableClassDoesNotExtendEventDispatcher(classInfo.getClassName()));
 				}
+                
+                if(implementsFlashEventDispatcher)
+                {
+                    NodeMagic.addImport(context, node, NameFormatter.toDot(standardDefs.INTERFACE_IEVENTDISPATCHER));
+                }
 
 				if (bindableInfo.getRequiresStaticEventDispatcher() &&
 					(!classInfo.definesVariable(STATIC_EVENT_DISPATCHER) &&

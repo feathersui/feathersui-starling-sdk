@@ -249,20 +249,6 @@ public class BindableFirstPassEvaluator extends GenerativeFirstPassEvaluator
 				{
 					bindableInfo.setClassName(NodeMagic.getUnqualifiedClassName(node));
 					classMap.put(NodeMagic.getClassName(node), bindableInfo);
-                    //for some reason, bindableInfo.getClassInfo() returns null
-                    //at this point, so we need to get it a different way.
-                    ClassInfo classInfo = typeTable.getSymbolTable().getTypeAnalyzer().analyzeClass(context, new MultiName(NameFormatter.toColon(NodeMagic.getClassName(node))));
-                    if(classInfo.implementsInterface(standardDefs.PACKAGE_FLASH_EVENTS, GenerativeExtension.IEVENT_DISPATCHER))
-                    {
-                        NodeMagic.addImport(context, node, NameFormatter.toDot(standardDefs.CLASS_EVENT));
-                        NodeMagic.addImport(context, node, NameFormatter.toDot(standardDefs.CLASS_EVENTDISPATCHER));
-                        NodeMagic.addImport(context, node, NameFormatter.toDot(standardDefs.INTERFACE_IEVENTDISPATCHER));
-                    }
-                    else
-                    {
-                        NodeMagic.addImport(context, node, NameFormatter.toDot(standardDefs.CLASS_STARLING_EVENT));
-                        NodeMagic.addImport(context, node, NameFormatter.toDot(standardDefs.CLASS_STARLING_EVENTDISPATCHER));
-                    }
 					NodeMagic.addImport(context, node, NameFormatter.toDot(standardDefs.CLASS_BINDINGMANAGER));
 				}
             }
@@ -486,20 +472,6 @@ public class BindableFirstPassEvaluator extends GenerativeFirstPassEvaluator
 			bInfo = new BindableInfo(context, typeTable.getSymbolTable());
 			bInfo.setClassName(NodeMagic.getUnqualifiedClassName(classNode));
 			classMap.put(NodeMagic.getClassName(classNode), bInfo);
-            
-            ClassInfo classInfo = bInfo.getClassInfo();
-            if(classInfo.implementsInterface(StandardDefs.PACKAGE_FLASH_EVENTS,
-                    GenerativeExtension.IEVENT_DISPATCHER))
-            {
-                NodeMagic.addImport(context, classNode, NameFormatter.toDot(standardDefs.CLASS_EVENT));
-                NodeMagic.addImport(context, classNode, NameFormatter.toDot(standardDefs.CLASS_EVENTDISPATCHER));
-                NodeMagic.addImport(context, classNode, NameFormatter.toDot(standardDefs.INTERFACE_IEVENTDISPATCHER));
-            }
-            else
-            {
-                NodeMagic.addImport(context, classNode, NameFormatter.toDot(standardDefs.CLASS_STARLING_EVENT));
-                NodeMagic.addImport(context, classNode, NameFormatter.toDot(standardDefs.CLASS_STARLING_EVENTDISPATCHER));
-            }
 			NodeMagic.addImport(context, classNode, NameFormatter.toDot(standardDefs.CLASS_BINDINGMANAGER));
 		}
 		
