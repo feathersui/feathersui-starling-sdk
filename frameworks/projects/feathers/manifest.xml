@@ -3,6 +3,7 @@
 
 	<!-- general components -->
 	<component id="AutoComplete" class="feathers.controls.AutoComplete"/>
+	<component id="BasicButton" class="feathers.controls.BasicButton"/>
 	<component id="Button" class="feathers.controls.Button"/>
 	<component id="ButtonGroup" class="feathers.controls.ButtonGroup"/>
 	<component id="Callout" class="feathers.controls.Callout"/>
