@@ -252,6 +252,10 @@ public class BindableSecondPassEvaluator extends GenerativeSecondPassEvaluator
                 {
                     NodeMagic.addImport(context, node, NameFormatter.toDot(standardDefs.INTERFACE_IEVENTDISPATCHER));
                 }
+                if(extendsStarlingEventDispatcher)
+                {
+                    NodeMagic.addImport(context, node, NameFormatter.toDot(standardDefs.CLASS_STARLING_EVENTDISPATCHER));
+                }
 
 				if (bindableInfo.getRequiresStaticEventDispatcher() &&
 					(!classInfo.definesVariable(STATIC_EVENT_DISPATCHER) &&
