@@ -82,6 +82,9 @@ package feathers.core
 		/**
 		 * When enabled, Starling will skip rendering the stage if it hasn't
 		 * changed since the last frame.
+		 * 
+		 * <p>This property defaults to <code>true</code>, and it may need to
+		 * be disabled if using video or render textures.</p>
 		 *
 		 * <p>Warning: When using <a href="http://feathersui.com/help/sdk/custom-starling-initialization.html">
 		 * <code>[Frame]</code> metadata</a> to customize the initialization of
