@@ -73,7 +73,7 @@ package feathers.core
 		 */
 		protected var _context3DProfile:String;
 
-		[Inspectable(type="String",enumeration="baselineConstrained,baseline,baselineExtended,standardConstrained,standard,standardExtended")]
+		[Inspectable(type="String",enumeration="auto,baselineConstrained,baseline,baselineExtended,standardConstrained,standard,standardExtended")]
 		/**
 		 * @copy feathers.core.IApplication#context3DProfile
 		 */
