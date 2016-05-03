@@ -58,5 +58,61 @@ package feathers.core
 		 * @private
 		 */
 		function set context3DProfile(value:String):void;
+
+		/**
+		 * Indicates if another Starling instance (or another Stage3D framework
+		 * altogether) uses the same render context.
+		 *
+		 * <p>Must be set in MXML and cannot be set after initialization.</p>.
+		 *
+		 * <p>Warning: When using <a href="http://feathersui.com/help/sdk/custom-starling-initialization.html">
+		 * <code>[Frame]</code> metadata</a> to customize the initialization of
+		 * Starling, this property will be ignored. You will need to set the
+		 * shareContext property manually in your custom bootstrap class.</p>
+		 *
+		 * @see http://doc.starling-framework.org/current/starling/core/Starling.html#shareContext starling.core.Starling.shareContext
+		 */
+		function get shareContext():Boolean;
+
+		/**
+		 * @private
+		 */
+		function set shareContext(value:Boolean):void;
+
+		/**
+		 * When enabled, Starling will skip rendering the stage if it hasn't
+		 * changed since the last frame.
+		 *
+		 * <p>Warning: When using <a href="http://feathersui.com/help/sdk/custom-starling-initialization.html">
+		 * <code>[Frame]</code> metadata</a> to customize the initialization of
+		 * Starling, this property will be ignored. You will need to set the
+		 * skipUnchangedFrames property manually in your custom bootstrap class.</p>
+		 *
+		 * @see http://doc.starling-framework.org/current/starling/core/Starling.html#skipUnchangedFrames starling.core.Starling.skipUnchangedFrames
+		 */
+		function get skipUnchangedFrames():Boolean;
+
+		/**
+		 * @private
+		 */
+		function set skipUnchangedFrames(value:Boolean):void;
+
+		/**
+		 * Indicates if a small statistics box (with FPS, memory usage and draw
+		 * count) is displayed.
+		 *
+		 * <p>Warning: When using <a href="http://feathersui.com/help/sdk/custom-starling-initialization.html">
+		 * <code>[Frame]</code> metadata</a> to customize the initialization of
+		 * Starling, this property will be ignored. You will need to set the
+		 * showStats property manually in your custom bootstrap class.</p>
+		 *
+		 * @see http://doc.starling-framework.org/current/starling/core/Starling.html#showStats starling.core.Starling.showStats
+		 */
+		function get showStats():Boolean;
+
+		/**
+		 * @private
+		 */
+		function set showStats(value:Boolean):void;
 	}
 }

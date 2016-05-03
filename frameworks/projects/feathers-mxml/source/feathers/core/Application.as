@@ -101,6 +101,83 @@ package feathers.core
 		/**
 		 * @private
 		 */
+		protected var _shareContext:Boolean = false;
+
+		/**
+		 * @copy feathers.core.IApplication#shareContext
+		 */
+		public function get shareContext():Boolean
+		{
+			return this._shareContext;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set shareContext(value:Boolean):void
+		{
+			if(this._isInitialized)
+			{
+				throw new IllegalOperationError("shareContext can only be set in MXML before an application has initialized.");
+			}
+			this._shareContext = value;
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _skipUnchangedFrames:Boolean = true;
+
+		/**
+		 * @copy feathers.core.IApplication#skipUnchangedFrames
+		 */
+		public function get skipUnchangedFrames():Boolean
+		{
+			return this._skipUnchangedFrames;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set skipUnchangedFrames(value:Boolean):void
+		{
+			this._skipUnchangedFrames = value;
+			var starling:Starling = stageToStarling(this.stage);
+			if(starling !== null)
+			{
+				starling.skipUnchangedFrames = value;
+			}
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _showStats:Boolean = false;
+
+		/**
+		 * @copy feathers.core.IApplication#showStats
+		 */
+		public function get showStats():Boolean
+		{
+			return this._showStats;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set showStats(value:Boolean):void
+		{
+			this._showStats = value;
+			var starling:Starling = stageToStarling(this.stage);
+			if(starling !== null)
+			{
+				starling.showStats = value;
+			}
+		}
+
+		/**
+		 * @private
+		 */
 		protected function application_addedToStageHandler(event:Event):void
 		{
 			//Flash Builder sets the visible element in the AIR application

@@ -104,10 +104,27 @@ package feathers.core
 					context3DProfile = Context3DProfile.BASELINE;
 				}
 			}
+			var skipUnchangedFrames:Boolean = true;
+			if(info.hasOwnProperty("skipUnchangedFrames"))
+			{
+				skipUnchangedFrames = info["skipUnchangedFrames"] as Boolean;
+			}
+			var shareContext:Boolean = false;
+			if(info.hasOwnProperty("shareContext"))
+			{
+				shareContext = info["shareContext"] as Boolean;
+			}
+			var showStats:Boolean = false;
+			if(info.hasOwnProperty("showStats"))
+			{
+				showStats = info["showStats"] as Boolean;
+			}
 			Starling.multitouchEnabled = true;
 			var starling:Starling = new Starling(null, this.stage, null, null, Context3DRenderMode.AUTO, context3DProfile);
 			starling.supportHighResolutions = this.stage.contentsScaleFactor > 1;
-			starling.skipUnchangedFrames = true;
+			starling.shareContext = shareContext;
+			starling.skipUnchangedFrames = skipUnchangedFrames;
+			starling.showStats = showStats;
 			return starling;
 		}
 
