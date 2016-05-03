@@ -107,17 +107,17 @@ package feathers.core
 			var skipUnchangedFrames:Boolean = true;
 			if(info.hasOwnProperty("skipUnchangedFrames"))
 			{
-				skipUnchangedFrames = info["skipUnchangedFrames"] as Boolean;
+				skipUnchangedFrames = info["skipUnchangedFrames"] === "true";
 			}
 			var shareContext:Boolean = false;
 			if(info.hasOwnProperty("shareContext"))
 			{
-				shareContext = info["shareContext"] as Boolean;
+				shareContext = info["shareContext"] === "true";
 			}
 			var showStats:Boolean = false;
 			if(info.hasOwnProperty("showStats"))
 			{
-				showStats = info["showStats"] as Boolean;
+				showStats = info["showStats"] === "true";
 			}
 			Starling.multitouchEnabled = true;
 			var starling:Starling = new Starling(null, this.stage, null, null, Context3DRenderMode.AUTO, context3DProfile);
