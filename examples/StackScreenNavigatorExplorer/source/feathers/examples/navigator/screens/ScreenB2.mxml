@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<f:PanelScreen xmlns:f="library://ns.feathersui.com/mxml"
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	title="Screen B2">
+
+	<fx:Metadata>
+		[Event(name="cancel",type="starling.events.Event")]
+	</fx:Metadata>
+
+	<f:layout>
+		<f:VerticalLayout gap="10" padding="10"
+			horizontalAlign="center" verticalAlign="middle"/>
+	</f:layout>
+
+	<f:Button label="Pop to Screen A"
+		triggered="popToAButton_triggeredHandler(event)"/>
+
+	<fx:Script><![CDATA[
+
+		private function popToAButton_triggeredHandler(event:Event):void
+		{
+			this.dispatchEventWith(Event.CANCEL);
+		}
+
+		]]></fx:Script>
+</f:PanelScreen>

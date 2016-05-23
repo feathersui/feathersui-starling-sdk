@@ -1,0 +1,136 @@
+<?xml version="1.0"?>
+<f:Application xmlns:f="library://ns.feathersui.com/mxml"
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	theme="feathers.themes.MinimalMobileTheme"
+	initialize="application_initializeHandler(event)">
+
+	<f:layout>
+		<!-- this is the list's parent's layout -->
+		<f:VerticalLayout/>
+	</f:layout>
+
+	<f:List id="list" snapToPages="true" scrollBarDisplayMode="none"
+		horizontalScrollPolicy="on" verticalScrollPolicy="off">
+		<f:layoutData>
+			<!-- this is used by the list's parent's layout -->
+			<f:VerticalLayoutData percentWidth="100" percentHeight="100"/>
+		</f:layoutData>
+		<f:layout>
+			<!-- this is the list's internal layout -->
+			<f:TiledRowsLayout paging="horizontal"
+				horizontalAlign="center" verticalAlign="top"
+				tileHorizontalAlign="justify" tileVerticalAlign="justify"/>
+		</f:layout>
+		<f:itemRendererFactory>
+			<fx:Component>
+				<f:DefaultListItemRenderer labelField="label" iconSourceField="texture"
+					initialize="itemRenderer_initializeHandler(event)">
+					<fx:Script><![CDATA[
+						import feathers.layout.HorizontalAlign;
+						import feathers.layout.RelativePosition;
+						import feathers.layout.VerticalAlign;
+						import feathers.skins.AddOnFunctionStyleProvider;
+
+						private function setStyles(itemRenderer:DefaultListItemRenderer):void
+						{
+							itemRenderer.iconPosition = RelativePosition.TOP;
+
+							itemRenderer.horizontalAlign = HorizontalAlign.CENTER;
+							itemRenderer.verticalAlign = VerticalAlign.BOTTOM;
+
+							itemRenderer.maxWidth = 80;
+						}
+
+						private function itemRenderer_initializeHandler(event:Event):void
+						{
+							this.styleProvider = new AddOnFunctionStyleProvider(this.styleProvider, this.setStyles);
+						}
+					]]></fx:Script>
+				</f:DefaultListItemRenderer>
+			</fx:Component>
+		</f:itemRendererFactory>
+	</f:List>
+
+	<f:PageIndicator id="pages" selectedIndex="{list.horizontalPageIndex}"
+		pageCount="{list.horizontalPageCount}" change="pages_changeHandler(event)">
+		<f:layoutData>
+			<f:VerticalLayoutData percentWidth="100"/>
+		</f:layoutData>
+	</f:PageIndicator>
+
+	<fx:Script><![CDATA[
+		import feathers.data.ListCollection;
+
+		import starling.textures.TextureAtlas;
+		import starling.utils.AssetManager;
+
+		private var _assetManager:AssetManager;
+
+		override public function dispose():void
+		{
+			//don't forget to clean up textures and things!
+			if(this._assetManager)
+			{
+				this._assetManager.dispose();
+				this._assetManager = null;
+			}
+			super.dispose();
+		}
+
+		private function pages_changeHandler(event:Event):void
+		{
+			//to scroll with animation when the PageIndicator's selectedIndex
+			//changes, call scrollToPageIndex() on the List.
+			list.scrollToPageIndex(pages.selectedIndex, list.verticalPageIndex);
+		}
+
+		private function application_initializeHandler(event:Event):void
+		{
+			this._assetManager = new AssetManager(2);
+			this._assetManager.enqueue("images/atlas@2x.png");
+			this._assetManager.enqueue("images/atlas@2x.xml");
+			this._assetManager.loadQueue(assetManager_onProgress);
+		}
+
+		private function assetManager_onProgress(ratio:Number):void
+		{
+			if(ratio < 1)
+			{
+				return;
+			}
+
+			//get the texture atlas from the asset manager
+			var atlas:TextureAtlas = this._assetManager.getTextureAtlas("atlas@2x");
+
+			//populate the list using the textures
+			this.list.dataProvider = new ListCollection(
+			[
+				{ label: "Behance", texture: atlas.getTexture("behance") },
+				{ label: "Blogger", texture: atlas.getTexture("blogger") },
+				{ label: "Delicious", texture: atlas.getTexture("delicious") },
+				{ label: "DeviantArt", texture: atlas.getTexture("deviantart") },
+				{ label: "Digg", texture: atlas.getTexture("digg") },
+				{ label: "Dribbble", texture: atlas.getTexture("dribbble") },
+				{ label: "Facebook", texture: atlas.getTexture("facebook") },
+				{ label: "Flickr", texture: atlas.getTexture("flickr") },
+				{ label: "Github", texture: atlas.getTexture("github") },
+				{ label: "Google", texture: atlas.getTexture("google") },
+				{ label: "Instagram", texture: atlas.getTexture("instagram") },
+				{ label: "LinkedIn", texture: atlas.getTexture("linkedin") },
+				{ label: "Pinterest", texture: atlas.getTexture("pinterest") },
+				{ label: "Snapchat", texture: atlas.getTexture("snapchat") },
+				{ label: "SoundCloud", texture: atlas.getTexture("soundcloud") },
+				{ label: "StackOverflow", texture: atlas.getTexture("stackoverflow") },
+				{ label: "StumbleUpon", texture: atlas.getTexture("stumbleupon") },
+				{ label: "Tumblr", texture: atlas.getTexture("tumblr") },
+				{ label: "Twitter", texture: atlas.getTexture("twitter") },
+				{ label: "Vimeo", texture: atlas.getTexture("vimeo") },
+				{ label: "Vine", texture: atlas.getTexture("vine") },
+				{ label: "WordPress", texture: atlas.getTexture("wordpress") },
+				{ label: "Yahoo!", texture: atlas.getTexture("yahoo") },
+				{ label: "Yelp", texture: atlas.getTexture("yelp") },
+				{ label: "YouTube", texture: atlas.getTexture("youtube") },
+			]);
+		}
+	]]></fx:Script>
+</f:Application>

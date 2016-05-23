@@ -1,0 +1,42 @@
+<?xml version="1.0"?>
+<f:PanelScreen xmlns:f="library://ns.feathersui.com/mxml"
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	title="Screen B1">
+
+	<fx:Metadata>
+		[Event(name="cancel",type="starling.events.Event")]
+		[Event(name="change",type="starling.events.Event")]
+		[Event(name="complete",type="starling.events.Event")]
+	</fx:Metadata>
+
+	<f:layout>
+		<f:VerticalLayout gap="10" padding="10"
+			horizontalAlign="center" verticalAlign="middle"/>
+	</f:layout>
+
+	<f:Button label="Pop to Screen A"
+		triggered="popToAButton_triggeredHandler(event)"/>
+	<f:Button label="Push Screen C"
+		triggered="pushCButton_triggeredHandler(event)"/>
+	<f:Button label="Replace with Screen B2"
+		triggered="replaceWithB2Button_triggeredHandler(event)"/>
+
+	<fx:Script><![CDATA[
+
+		private function popToAButton_triggeredHandler(event:Event):void
+		{
+			this.dispatchEventWith(Event.CANCEL);
+		}
+
+		private function pushCButton_triggeredHandler(event:Event):void
+		{
+			this.dispatchEventWith(Event.COMPLETE);
+		}
+
+		private function replaceWithB2Button_triggeredHandler(event:Event):void
+		{
+			this.dispatchEventWith(Event.CHANGE);
+		}
+
+		]]></fx:Script>
+</f:PanelScreen>

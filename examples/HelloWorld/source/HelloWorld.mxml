@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<f:Application xmlns:f="library://ns.feathersui.com/mxml"
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	theme="feathers.themes.MetalWorksMobileTheme">
+
+	<f:layout>
+		<f:AnchorLayout/>
+	</f:layout>
+
+	<f:Button id="button" label="Click Me"
+		triggered="button_triggeredHandler(event)">
+		<f:layoutData>
+			<f:AnchorLayoutData horizontalCenter="0" verticalCenter="0"/>
+		</f:layoutData>
+	</f:Button>
+
+	<fx:Script><![CDATA[
+		import feathers.controls.TextCallout;
+
+		private function button_triggeredHandler( event:Event ):void
+		{
+			TextCallout.show( "Hi, I'm Feathers!\nHave a nice day.", this.button );
+		}
+	]]></fx:Script>
+</f:Application>

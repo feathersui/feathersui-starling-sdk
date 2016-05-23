@@ -1,0 +1,63 @@
+<?xml version="1.0"?>
+<f:StackScreenNavigatorApplication xmlns:f="library://ns.feathersui.com/mxml"
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	theme="feathers.themes.MetalWorksMobileTheme" rootScreenID="{SCREEN_A}"
+	pushTransition="{Slide.createSlideLeftTransition()}"
+	popTransition="{Slide.createSlideRightTransition()}">
+
+	<f:StackScreenNavigatorItem id="a">
+		<f:screen>
+			<fx:Class>feathers.examples.navigator.screens.ScreenA</fx:Class>
+		</f:screen>
+		<f:pushEvents>
+			<fx:Object complete="{SCREEN_B1}"/>
+		</f:pushEvents>
+	</f:StackScreenNavigatorItem>
+
+	<f:StackScreenNavigatorItem id="b1">
+		<f:screen>
+			<fx:Class>feathers.examples.navigator.screens.ScreenB1</fx:Class>
+		</f:screen>
+		<f:pushEvents>
+			<fx:Object complete="{SCREEN_C}"/>
+		</f:pushEvents>
+		<f:popEvents>
+			<fx:String>{Event.CANCEL}</fx:String>
+		</f:popEvents>
+		<f:replaceEvents>
+			<fx:Object change="{SCREEN_B2}"/>
+		</f:replaceEvents>
+	</f:StackScreenNavigatorItem>
+
+	<f:StackScreenNavigatorItem id="b2"
+		pushTransition="{Fade.createFadeInTransition()}">
+		<f:screen>
+			<fx:Class>feathers.examples.navigator.screens.ScreenB2</fx:Class>
+		</f:screen>
+		<f:popEvents>
+			<fx:String>{Event.CANCEL}</fx:String>
+		</f:popEvents>
+	</f:StackScreenNavigatorItem>
+
+	<f:StackScreenNavigatorItem id="c">
+		<f:screen>
+			<fx:Class>feathers.examples.navigator.screens.ScreenC</fx:Class>
+		</f:screen>
+		<f:popToRootEvents>
+			<fx:String>{Event.CLOSE}</fx:String>
+		</f:popToRootEvents>
+		<f:popEvents>
+			<fx:String>{Event.CANCEL}</fx:String>
+		</f:popEvents>
+	</f:StackScreenNavigatorItem>
+
+	<fx:Script><![CDATA[
+		import feathers.motion.Fade;
+		import feathers.motion.Slide;
+
+		private static const SCREEN_A:String = "a";
+		private static const SCREEN_B1:String = "b1";
+		private static const SCREEN_B2:String = "b2";
+		private static const SCREEN_C:String = "c";
+	]]></fx:Script>
+</f:StackScreenNavigatorApplication>

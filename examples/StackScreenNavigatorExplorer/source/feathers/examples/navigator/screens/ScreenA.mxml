@@ -1,0 +1,26 @@
+<?xml version="1.0"?>
+<f:PanelScreen xmlns:f="library://ns.feathersui.com/mxml"
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	title="Screen A">
+
+	<fx:Metadata>
+		[Event(name="complete",type="starling.events.Event")]
+	</fx:Metadata>
+
+	<f:layout>
+		<f:VerticalLayout gap="10" padding="10"
+			horizontalAlign="center" verticalAlign="middle"/>
+	</f:layout>
+
+	<f:Button label="Push Screen B1"
+		triggered="pushB1Button_triggeredHandler(event)"/>
+
+	<fx:Script><![CDATA[
+
+		private function pushB1Button_triggeredHandler(event:Event):void
+		{
+			this.dispatchEventWith(Event.COMPLETE);
+		}
+
+	]]></fx:Script>
+</f:PanelScreen>

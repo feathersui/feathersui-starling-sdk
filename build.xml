@@ -395,6 +395,9 @@ the version of Apache Flex that this SDK was forked from --&gt;
 
         <!-- modules -->
         <antcall target="stage-modules"/>
+
+        <!-- examples -->
+        <antcall target="stage-examples"/>
         
         <!-- asdoc -->
         <copy todir="${basedir}/temp/asdoc" includeEmptyDirs="false">
@@ -447,6 +450,25 @@ the version of Apache Flex that this SDK was forked from --&gt;
             <include name="**.sh"/>
             <exclude name="bin/**"/>
         </fixcrlf>
+    </target>
+
+    <!-- examples -->
+    <target name="stage-examples">
+        <copy todir="${basedir}/temp/examples" includeEmptyDirs="false">
+            <fileset dir="${basedir}/examples">
+                <include name="**"/>
+                <exclude name="**/libs/**"/>
+                <exclude name="**/*.swc"/>
+                <exclude name="**/*.swf"/>
+                <exclude name="**/out/**"/>
+                <exclude name="**/bin/**"/>
+                <exclude name="**/bin-debug/**"/>
+                <exclude name="**/bin-release/**"/>
+                <exclude name="**/.idea/**"/>
+                <exclude name="**/.settings/**"/>
+                <exclude name="**/*.iml"/>
+            </fileset>
+        </copy>
     </target>
 
     <!-- frameworks -->
