@@ -2,7 +2,7 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](http://feathersui.com/sdk).
 
-## 3.0.0-beta2 - May 2016
+## 3.0.0 - June 2016
 
 * Fixed issue where `[Bindable]` metadata without an event caused a compiler error in library projects.
 * `StarlingBootstrap` sets static `Starling.multitouchEnabled` to `true` by default.
@@ -10,6 +10,7 @@ Noteworthy changes in official, stable releases of the [Feathers SDK](http://fea
 * `StarlingBootstrap` now scales using `ScreenDensityScaleFactorManager`.
 * `IApplication` interface exposes `shareContext`, `showStats`, and `skipUnchangedFrames` properties to be set in MXML.
 * `IApplication`: `auto` included in available values for `context3DProfile` in MXML.
+* Includes a few examples in the `examples` directory.
 
 ## 2.3.0 - December 2015
 
