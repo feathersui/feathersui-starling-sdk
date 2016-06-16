@@ -2,6 +2,10 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](http://feathersui.com/sdk).
 
+## 3.0.1 - June 2016
+
+* Bug fixes from Feathers UI 3.0.1.
+
 ## 3.0.0 - June 2016
 
 * Fixed issue where `[Bindable]` metadata without an event caused a compiler error in library projects.
