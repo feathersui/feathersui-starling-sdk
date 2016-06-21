@@ -8,10 +8,12 @@
 	<component id="ButtonGroup" class="feathers.controls.ButtonGroup"/>
 	<component id="Callout" class="feathers.controls.Callout"/>
 	<component id="Check" class="feathers.controls.Check"/>
+	<component id="ColorPicker" class="feathers.controls.color.ColorPicker"/>
 	<component id="DateTimeSpinner" class="feathers.controls.DateTimeSpinner"/>
 	<component id="Drawers" class="feathers.controls.Drawers"/>
 	<component id="GroupedList" class="feathers.controls.GroupedList"/>
 	<component id="Header" class="feathers.controls.Header"/>
+	<component id="HexColorInput" class="feathers.controls.color.HexColorInput"/>
 	<component id="ImageLoader" class="feathers.controls.ImageLoader"/>
 	<component id="Label" class="feathers.controls.Label"/>
 	<component id="LayoutGroup" class="feathers.controls.LayoutGroup"/>
@@ -36,6 +38,8 @@
 	<component id="StackScreenNavigator" class="feathers.controls.StackScreenNavigator"/>
 	<component id="StackScreenNavigatorItem" class="feathers.controls.StackScreenNavigatorItem"/>
 	<component id="TabBar" class="feathers.controls.TabBar"/>
+	<component id="TabNavigator" class="feathers.controls.TabNavigator"/>
+	<component id="TabNavigatorItem" class="feathers.controls.TabNavigatorItem"/>
 	<component id="TextArea" class="feathers.controls.TextArea"/>
 	<component id="TextInput" class="feathers.controls.TextInput"/>
 	<component id="ToggleButton" class="feathers.controls.ToggleButton"/>
