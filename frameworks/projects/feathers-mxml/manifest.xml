@@ -3,4 +3,5 @@
 	<component id="Application" class="feathers.core.Application"/>
 	<component id="DrawersApplication" class="feathers.core.DrawersApplication"/>
 	<component id="StackScreenNavigatorApplication" class="feathers.core.StackScreenNavigatorApplication"/>
+	<component id="TabNavigatorApplication" class="feathers.core.TabNavigatorApplication"/>
 </componentPackage>
