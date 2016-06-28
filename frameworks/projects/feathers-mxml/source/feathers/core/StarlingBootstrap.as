@@ -205,7 +205,22 @@ package feathers.core
 				}
 			}
 		}
-		
+
+		/**
+		 * @private
+		 */
+		protected function deactivateHandler(event:flash.events.Event):void
+		{
+			this._starling.stop(true);
+		}
+
+		/**
+		 * @private
+		 */
+		protected function activateHandler(event:flash.events.Event):void
+		{
+			this._starling.start();
+		}
 
 		/**
 		 * @private
@@ -215,6 +230,13 @@ package feathers.core
 			this._starling = this.createStarling();
 			this.setupScaling();
 			this._starling.addEventListener(starling.events.Event.CONTEXT3D_CREATE, starling_context3DCreateHandler);
+
+			if(!SystemUtil.isDesktop)
+			{
+				//on mobile, Starling should not render while in the background
+				this.addEventListener(flash.events.Event.DEACTIVATE, deactivateHandler);
+				this.addEventListener(flash.events.Event.ACTIVATE, activateHandler);
+			}
 		}
 
 		/**
