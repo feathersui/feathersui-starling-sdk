@@ -9,7 +9,7 @@ Noteworthy changes in official, stable releases of the [Feathers SDK](http://fea
 ## 3.0.2 - June 2016
 
 * `StarlingBootstrap` pauses rendering on mobile when the app deactivates, and starts again on activate.
-* Bug fixes from Feathers UI 3.0.1.
+* Bug fixes from Feathers UI 3.0.2.
 
 ## 3.0.1 - June 2016
 
