@@ -8,12 +8,10 @@
 	<component id="ButtonGroup" class="feathers.controls.ButtonGroup"/>
 	<component id="Callout" class="feathers.controls.Callout"/>
 	<component id="Check" class="feathers.controls.Check"/>
-	<component id="ColorPicker" class="feathers.controls.color.ColorPicker"/>
 	<component id="DateTimeSpinner" class="feathers.controls.DateTimeSpinner"/>
 	<component id="Drawers" class="feathers.controls.Drawers"/>
 	<component id="GroupedList" class="feathers.controls.GroupedList"/>
 	<component id="Header" class="feathers.controls.Header"/>
-	<component id="HexColorInput" class="feathers.controls.color.HexColorInput"/>
 	<component id="ImageLoader" class="feathers.controls.ImageLoader"/>
 	<component id="Label" class="feathers.controls.Label"/>
 	<component id="LayoutGroup" class="feathers.controls.LayoutGroup"/>
