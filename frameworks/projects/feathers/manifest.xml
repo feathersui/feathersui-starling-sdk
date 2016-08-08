@@ -83,6 +83,7 @@
 
 	<!-- miscellaneous -->
 	<component id="ToggleGroup" class="feathers.core.ToggleGroup"/>
+	<component id="TextureCache" class="feathers.utils.textures.TextureCache"/>
 	<component id="TapToSelect" class="feathers.utils.touch.TapToSelect"/>
 	<component id="TapToTrigger" class="feathers.utils.touch.TapToTrigger"/>
 	<component id="LongPress" class="feathers.utils.touch.LongPress"/>
