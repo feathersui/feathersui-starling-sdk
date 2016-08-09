@@ -1,4 +1,4 @@
-# Feathers Tabs
+# Tabs Example for Feathers SDK
 
 Demonstrates how to navigate between tabs using the [Feathers SDK](http://feathersui.com/sdk/) `TabNavigator` component, presented as a mobile app.
 
