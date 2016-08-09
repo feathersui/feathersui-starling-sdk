@@ -1,0 +1,146 @@
+<?xml version="1.0"?>
+<f:Application xmlns:f="library://ns.feathersui.com/mxml"
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	theme="feathers.examples.magic8.themes.Magic8ChatTheme">
+
+	<f:layout>
+		<f:AnchorLayout/>
+	</f:layout>
+
+	<f:PanelScreen title="Magic 8-Ball">
+		<f:layoutData>
+			<f:AnchorLayoutData top="0" right="0" bottom="0" left="0"/>
+		</f:layoutData>
+		<f:layout>
+			<f:AnchorLayout/>
+		</f:layout>
+
+		<f:List id="list" isSelectable="false"
+			initialize="list_initializeHandler(event)">
+			<f:layoutData>
+				<f:AnchorLayoutData top="0" right="0" bottom="0" left="0"
+					bottomAnchorDisplayObject="{controls}"/>
+			</f:layoutData>
+			<f:layout>
+				<f:VerticalLayout hasVariableItemDimensions="true"
+					horizontalAlign="justify" verticalAlign="bottom"/>
+			</f:layout>
+
+			<f:ListCollection/>
+		</f:List>
+
+		<f:LayoutGroup id="controls" styleName="{LayoutGroup.ALTERNATE_STYLE_NAME_TOOLBAR}">
+			<f:layoutData>
+				<f:AnchorLayoutData right="0" bottom="0" left="0"/>
+			</f:layoutData>
+
+			<f:TextInput id="input" styleName="{StyleNames.CHAT_INPUT}"
+				prompt="Ask a yes or no question..."
+				change="input_changeHandler(event)"
+				enter="input_enterHandler(event)">
+				<f:layoutData>
+					<f:HorizontalLayoutData percentWidth="100"/>
+				</f:layoutData>
+			</f:TextInput>
+			<f:Button label="Send" triggered="sendButton_triggeredHandler(event)"/>
+		</f:LayoutGroup>
+	</f:PanelScreen>
+
+	<fx:Script><![CDATA[
+		import feathers.controls.renderers.DefaultListItemRenderer;
+		import feathers.controls.renderers.IListItemRenderer;
+		import feathers.examples.magic8.data.ChatMessage;
+		import feathers.examples.magic8.themes.StyleNames;
+
+		private static const MESSAGES:Vector.<String> = new <String>
+		[
+			"It is certain",
+			"It is decidedly so",
+			"Without a doubt",
+			"Yes, definitely",
+			"You may rely on it",
+			"As I see it, yes",
+			"Most likely",
+			"Outlook good",
+			"Yes",
+			"Signs point to yes",
+			"Reply hazy try again",
+			"Ask again later",
+			"Better not tell you now",
+			"Cannot predict now",
+			"Concentrate and ask again",
+			"Don't count on it",
+			"My reply is no",
+			"My sources say no",
+			"Outlook not so good",
+			"Very doubtful",
+		];
+
+		private static const USER_ITEM:String = "user";
+		private static const EIGHT_BALL_ITEM:String = "8ball";
+
+		private function sendMessage():void
+		{
+			var message:String = this.input.text;
+			if(message.length === 0)
+			{
+				this.input.errorString = "Please ask a question!";
+				return;
+			}
+			this.input.text = "";
+			this.list.dataProvider.addItem(new ChatMessage(ChatMessage.TYPE_USER, message));
+
+			var index:int = Math.round(Math.random() * MESSAGES.length);
+			var response:String = MESSAGES[index];
+			this.list.dataProvider.addItem(new ChatMessage(ChatMessage.TYPE_MAGIC_8BALL, response));
+
+			this.list.validate();
+			this.list.scrollToPosition(0, this.list.maxVerticalScrollPosition, 0.5);
+		}
+
+		private function list_initializeHandler(event:Event):void
+		{
+			this.list.setItemRendererFactoryWithID(USER_ITEM, function():IListItemRenderer
+			{
+				var itemRenderer:DefaultListItemRenderer = new DefaultListItemRenderer();
+				itemRenderer.styleNameList.add(StyleNames.USER_MESSAGE_ITEM_RENDERER);
+				itemRenderer.labelField = "message";
+				return itemRenderer;
+			});
+			this.list.setItemRendererFactoryWithID(EIGHT_BALL_ITEM, function():IListItemRenderer
+			{
+				var itemRenderer:DefaultListItemRenderer = new DefaultListItemRenderer();
+				itemRenderer.styleNameList.add(StyleNames.EIGHT_BALL_MESSAGE_ITEM_RENDERER);
+				itemRenderer.labelField = "message";
+				return itemRenderer;
+			});
+			this.list.factoryIDFunction = function(item:ChatMessage):String
+			{
+				if(item.type === ChatMessage.TYPE_MAGIC_8BALL)
+				{
+					return EIGHT_BALL_ITEM;
+				}
+				return USER_ITEM;
+			};
+		}
+
+		private function input_changeHandler(event:Event):void
+		{
+			if(this.input.text.length > 0)
+			{
+				this.input.errorString = null;
+			}
+		}
+
+		private function input_enterHandler(event:Event):void
+		{
+			this.sendMessage();
+		}
+
+		private function sendButton_triggeredHandler(event:Event):void
+		{
+			this.sendMessage();
+		}
+
+	]]></fx:Script>
+</f:Application>
