@@ -1,0 +1,25 @@
+<?xml version="1.0"?>
+<f:Screen xmlns:f="library://ns.feathersui.com/mxml"
+	xmlns:fx="http://ns.adobe.com/mxml/2009">
+
+	<f:layout>
+		<f:VerticalLayout padding="10"
+			horizontalAlign="center" verticalAlign="middle"/>
+	</f:layout>
+
+	<f:LayoutGroup>
+		<f:layout>
+			<f:VerticalLayout gap="4" horizontalAlign="center"/>
+		</f:layout>
+		
+		<f:ImageLoader styleName="{StyleNames.LARGE_PROFILE_IMAGE}"
+			source="https://randomuser.me/api/portraits/men/67.jpg"/>
+		<f:Label styleName="{Label.ALTERNATE_STYLE_NAME_HEADING}"
+			text="Flynn Reynolds"/>
+		<f:Label text="flynn.reynolds84@example.com"/>
+	</f:LayoutGroup>
+
+	<fx:Script><![CDATA[
+		import feathers.examples.tabs.themes.StyleNames;
+	]]></fx:Script>
+</f:Screen>

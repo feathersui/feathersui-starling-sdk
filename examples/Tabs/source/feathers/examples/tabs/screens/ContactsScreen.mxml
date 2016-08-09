@@ -1,0 +1,103 @@
+<?xml version="1.0"?>
+<f:PanelScreen xmlns:f="library://ns.feathersui.com/mxml"
+	xmlns:fx="http://ns.adobe.com/mxml/2009"
+	title="Contacts">
+
+	<fx:Declarations>
+		<f:TextureCache id="cache" maxUnretainedTextures="10"/>
+	</fx:Declarations>
+
+	<f:layout>
+		<f:AnchorLayout/>
+	</f:layout>
+
+	<f:GroupedList customItemRendererStyleName="{StyleNames.MESSAGE_LIST_ITEM_RENDERER}">
+		<f:layoutData>
+			<f:AnchorLayoutData top="0" right="0" bottom="0" left="0"/>
+		</f:layoutData>
+		<f:itemRendererFactory>
+			<fx:Component>
+				<f:DefaultGroupedListItemRenderer labelField="name"
+					accessoryLabelField="email" iconSourceField="photo">
+					<f:iconLoaderFactory>
+						<fx:Component>
+							<f:ImageLoader xmlns:f="library://ns.feathersui.com/mxml"
+								xmlns:fx="http://ns.adobe.com/mxml/2009" textureCache="{outerDocument.outerDocument.cache}"/>
+						</fx:Component>
+					</f:iconLoaderFactory>
+				</f:DefaultGroupedListItemRenderer>
+			</fx:Component>
+		</f:itemRendererFactory>
+		<f:HierarchicalCollection>
+			<fx:Array>
+				<fx:Object header="A">
+					<fx:children>
+						<fx:Array>
+							<fx:Object name="Andy Johnston" email="itsandy1981@example.com"
+								photo="https://randomuser.me/api/portraits/men/92.jpg"/>
+						</fx:Array>
+					</fx:children>
+				</fx:Object>
+				<fx:Object header="D">
+					<fx:children>
+						<fx:Array>
+							<fx:Object name="Denise Kim" email="kim.denise@example.com"
+								photo="https://randomuser.me/api/portraits/women/83.jpg"/>
+							<fx:Object name="Dylan Curtis" email="curtis1987@example.com"
+								photo="https://randomuser.me/api/portraits/men/87.jpg"/>
+						</fx:Array>
+					</fx:children>
+				</fx:Object>
+				<fx:Object header="P">
+					<fx:children>
+						<fx:Array>
+							<fx:Object name="Pat Brewer" email="pbrewer19@example.com"
+								photo="https://randomuser.me/api/portraits/women/79.jpg"/>
+							<fx:Object name="Pearl Boyd" email="pearl.boyd@example.com"
+								photo="https://randomuser.me/api/portraits/women/69.jpg"/>
+						</fx:Array>
+					</fx:children>
+				</fx:Object>
+				<fx:Object header="R">
+					<fx:children>
+						<fx:Array>
+							<fx:Object name="Robin Taylor" email="robintaylor@example.com"
+								photo="https://randomuser.me/api/portraits/women/89.jpg"/>
+						</fx:Array>
+					</fx:children>
+				</fx:Object>
+				<fx:Object header="S">
+					<fx:children>
+						<fx:Array>
+							<fx:Object name="Savannah Flores" email="saflo79@example.com"
+								photo="https://randomuser.me/api/portraits/women/53.jpg"/>
+						</fx:Array>
+					</fx:children>
+				</fx:Object>
+				<fx:Object header="W">
+					<fx:children>
+						<fx:Array>
+							<fx:Object name="Wayne Adams" email="superwayne@example.com"
+								photo="https://randomuser.me/api/portraits/men/36.jpg"/>
+						</fx:Array>
+					</fx:children>
+				</fx:Object>
+			</fx:Array>
+		</f:HierarchicalCollection>
+	</f:GroupedList>
+	
+	<fx:Script><![CDATA[
+		import feathers.examples.tabs.themes.StyleNames;
+
+		override public function dispose():void
+		{
+			if(this.cache !== null)
+			{
+				this.cache.dispose();
+				this.cache = null;
+			}
+			super.dispose();
+		}
+
+		]]></fx:Script>
+</f:PanelScreen>
