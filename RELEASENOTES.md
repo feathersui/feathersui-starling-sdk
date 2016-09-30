@@ -2,6 +2,12 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](http://feathersui.com/sdk).
 
+## 3.1.0 - In Development
+
+* New Component: TabNavigatorApplication may be used to provide a top-level application with tabs, based on the TabNavigator component.
+* New MXML Example: Tabs
+* New MXML Example: Magic8Chat
+
 ## 3.0.4 - September 2016
 
 * Bug fixes from Feathers UI 3.0.4.
