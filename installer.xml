@@ -108,7 +108,7 @@
 	<target name="get-data">
 		<tstamp />
 		<property name="ts" value="${DSTAMP}${TSTAMP}" />
-		<property name="xml.properties" value="http://feathersui.com/sdk/feathers-sdk-manager/sdk-manager-config-1.0.xml?ts=${ts}" />
+		<property name="xml.properties" value="https://feathersui.com/sdk/feathers-sdk-manager/sdk-manager-config-1.0.xml?ts=${ts}" />
 		<mkdir dir="${download.dir}"/>
 		<get src="${xml.properties}" dest="${download.dir}/sdk-manager-config-1.0.xml" />
 		<xmlproperty file="${download.dir}/sdk-manager-config-1.0.xml" semanticAttributes="true" collapseAttributes="true"/>
