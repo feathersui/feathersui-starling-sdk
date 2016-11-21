@@ -13,7 +13,7 @@
 		</f:layout>
 		
 		<f:ImageLoader styleName="{StyleNames.LARGE_PROFILE_IMAGE}"
-			source="https://randomuser.me/api/portraits/men/67.jpg"/>
+			source="https://feathersui.com/examples/tabs/images/men67.jpg"/>
 		<f:Label styleName="{Label.ALTERNATE_STYLE_NAME_HEADING}"
 			text="Flynn Reynolds"/>
 		<f:Label text="flynn.reynolds84@example.com"/>
