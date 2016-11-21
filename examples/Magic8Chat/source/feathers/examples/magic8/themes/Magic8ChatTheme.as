@@ -47,8 +47,6 @@ package feathers.examples.magic8.themes
 		override protected function initializeStyleProviders():void
 		{
 			super.initializeStyleProviders();
-			this.getStyleProviderForClass(TextInput)
-				.setFunctionForStyleName(StyleNames.CHAT_INPUT, this.setChatInputStyles);
 			this.getStyleProviderForClass(DefaultListItemRenderer)
 				.setFunctionForStyleName(StyleNames.USER_MESSAGE_ITEM_RENDERER, this.setUserMessageItemRendererStyles);
 			this.getStyleProviderForClass(DefaultListItemRenderer)
@@ -83,18 +81,6 @@ package feathers.examples.magic8.themes
 		private function setMessageItemRendererLabelStyles(text:TextBlockTextRenderer):void
 		{
 			text.wordWrap = true;
-		}
-
-		private function setChatInputStyles(input:TextInput):void
-		{
-			this.setTextInputStyles(input);
-			input.customTextEditorStyleName = THEME_STYLE_NAME_CHAT_INPUT_TEXT_EDITOR;
-		}
-
-		private function setChatInputTextEditorStyles(textEditor:StageTextTextEditor):void
-		{
-			textEditor.maintainTouchFocus = true;
-			textEditor.returnKeyLabel = ReturnKeyLabel.GO;
 		}
 	}
 }
