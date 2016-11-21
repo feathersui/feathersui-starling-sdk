@@ -2,6 +2,10 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](http://feathersui.com/sdk).
 
+## 3.1.1 - November 2016
+
+* Bug fixes from Feathers UI 3.1.1.
+
 ## 3.1.0 - October 2016
 
 * New Component: TabNavigatorApplication may be used to provide a top-level application with tabs, based on the TabNavigator component.
