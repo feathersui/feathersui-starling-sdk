@@ -34,13 +34,19 @@
 				<f:AnchorLayoutData right="0" bottom="0" left="0"/>
 			</f:layoutData>
 
-			<f:TextInput id="input" styleName="{StyleNames.CHAT_INPUT}"
+			<f:TextInput id="input"
 				prompt="Ask a yes or no question..."
 				change="input_changeHandler(event)"
 				enter="input_enterHandler(event)">
 				<f:layoutData>
 					<f:HorizontalLayoutData percentWidth="100"/>
 				</f:layoutData>
+				<f:textEditorFactory>
+					<fx:Component>
+						<f:StageTextTextEditor maintainTouchFocus="true"
+							returnKeyLabel="go"/>
+					</fx:Component>
+				</f:textEditorFactory>
 			</f:TextInput>
 			<f:Button label="Send" triggered="sendButton_triggeredHandler(event)"/>
 		</f:LayoutGroup>
