@@ -4,6 +4,7 @@ Noteworthy changes in official, stable releases of the [Feathers SDK](http://fea
 
 ## 3.1.1 - November 2016
 
+* Added support for AIR SDK packaged as DMG file to installer script.
 * Bug fixes from Feathers UI 3.1.1.
 
 ## 3.1.0 - October 2016

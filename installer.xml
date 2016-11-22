@@ -53,6 +53,8 @@
 	<property file="${FLEX_HOME}/installer.properties/en_US.properties"/>
 	<property name="download.dir" value="${FLEX_HOME}/in"/>
 
+	<property name="air.dmg.mount" value="/Volumes/AIR SDK/"/>
+
 	<condition property="platform" value="mac">
 		<os family="mac" />
 	</condition>
@@ -347,23 +349,7 @@
 		</copy>
 	</target>
 	
-	<target name="air-setup-mac" unless="isWindows">
-		<!--The tbz2 contains symlinks which Ant does not preserve
-		<untar compression="bzip2" src="${download.dir}/${air.sdk.url.file}" dest="${download.dir}/airsdk" />-->
-		<mkdir dir="${download.dir}/airsdk" />
-		<move file="${download.dir}/${air.sdk.url.file}" todir="${download.dir}/airsdk" />
-		<exec executable="bunzip2" dir="${download.dir}/airsdk">
-			<arg value="${air.sdk.url.file}" />
-		</exec>
-		<echo file="${basedir}/airtar.properties">air.tar.name=${air.sdk.url.file}</echo>
-		<replace file="${basedir}/airtar.properties" token="tbz2" value="tar" />
-		<property file="${basedir}/airtar.properties" />
-		<exec executable="tar" dir="${download.dir}/airsdk">
-			<arg value="-xvf" />
-			<arg value="${air.tar.name}" />
-		</exec>
-		<echo>${INFO_FINISHED_UNTARING} ${download.dir}/airsdk/${air.tar.name}</echo>
-		<delete file="${basedir}/airtar.properties" />
+	<target name="air-setup-mac" depends="air-decompress-mac,mac-dmg,mac-tbz2" unless="isWindows">
 		<antcall target="mac-copy-file">
 			<param name="srcdir" value="." />
 			<param name="filename" value="AIR SDK license.pdf"/>
@@ -451,6 +437,58 @@
 			<param name="srcdir" value="templates/sdk" />
 			<param name="destdir" value="${FLEX_HOME}/templates" />
 		</antcall>
+	</target>
+	
+	<target name="mac-dmg" if="isDMG">
+		<mkdir dir="${download.dir}/airsdk" />
+		<move file="${download.dir}/${air.sdk.url.file}" todir="${download.dir}/airsdk" />
+		<echo message="Mounting AIR SDK DMG: ${air.sdk.url.file}"/>
+		<exec executable="/usr/bin/hdiutil" os="Mac OS X" failonerror="true">
+			<arg value="attach"/>
+			<arg value="-nobrowse"/>
+			<arg value="${download.dir}/airsdk/${air.sdk.url.file}"/>
+		</exec>
+		<echo message="Copying AIR SDK from mounted volume"/>
+		<exec executable="rsync" dir="${FLEX_HOME}">
+            <arg value="--archive" />
+            <arg value="--ignore-existing" />
+            <arg value="--force" />
+            <arg value="${air.dmg.mount}"/>
+            <arg value="${download.dir}/airsdk" />
+        </exec>
+		<echo message="Unmounting AIR SDK DMG"/>
+		<exec executable="/usr/bin/hdiutil" os="Mac OS X" failonerror="false">
+			<arg value="unmount"/>
+			<arg value="${air.dmg.mount}"/>
+		</exec>
+	</target>
+	
+	<target name="mac-tbz2" if="isTBZ2">
+		<mkdir dir="${download.dir}/airsdk" />
+		<move file="${download.dir}/${air.sdk.url.file}" todir="${download.dir}/airsdk" />
+		<exec executable="bunzip2" dir="${download.dir}/airsdk" failonerror="true">
+			<arg value="${air.sdk.url.file}" />
+		</exec>
+		<echo file="${basedir}/airtar.properties">air.tar.name=${air.sdk.url.file}</echo>
+		<replace file="${basedir}/airtar.properties" token="tbz2" value="tar" />
+		<property file="${basedir}/airtar.properties" />
+		<exec executable="tar" dir="${download.dir}/airsdk" failonerror="true">
+			<arg value="-xvf" />
+			<arg value="${air.tar.name}" />
+		</exec>
+		<echo>${INFO_FINISHED_UNTARING} ${download.dir}/airsdk/${air.tar.name}</echo>
+		<delete file="${basedir}/airtar.properties" />
+	</target>
+	
+	<target name="air-decompress-mac" unless="isWindows">
+		<condition property="isDMG" value="dmg">
+			<matches pattern="dmg" string="${air.sdk.url.file}"/>
+		</condition>
+		<condition property="isTBZ2" value="tbz2">
+			<not>
+				<isset property="isDMG" />
+			</not>
+		</condition>
 	</target>
 	
 	<target name="mac-copy-file" description="copies a file">
