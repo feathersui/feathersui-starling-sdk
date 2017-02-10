@@ -2,6 +2,10 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](http://feathersui.com/sdk).
 
+## 3.2.0 - In Development
+
+* New MXML Example: PullToRefresh
+
 ## 3.1.2 - January 2017
 
 * Bug fixes from Feathers UI 3.1.2.
