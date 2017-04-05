@@ -86,9 +86,11 @@
 	<component id="TextureCache" class="feathers.utils.textures.TextureCache"/>
 	<component id="TapToSelect" class="feathers.utils.touch.TapToSelect"/>
 	<component id="TapToTrigger" class="feathers.utils.touch.TapToTrigger"/>
+	<component id="TouchToState" class="feathers.utils.touch.TouchToState"/>
 	<component id="LongPress" class="feathers.utils.touch.LongPress"/>
 	<component id="KeyToSelect" class="feathers.utils.keyboard.KeyToSelect"/>
 	<component id="KeyToTrigger" class="feathers.utils.keyboard.KeyToTrigger"/>
+	<component id="KeyToState" class="feathers.utils.keyboard.KeyToState"/>
 
 	<!-- collections and data -->
 	<component id="ListCollection" class="feathers.data.ListCollection"/>
@@ -109,4 +111,7 @@
 	<component id="WaterfallLayout" class="feathers.layout.WaterfallLayout"/>
 	<component id="VerticalSpinnerLayout" class="feathers.layout.VerticalSpinnerLayout"/>
 	<component id="HorizontalSpinnerLayout" class="feathers.layout.HorizontalSpinnerLayout"/>
+
+	<!-- styles -->
+	<component id="ImageSkin" class="feathers.skins.ImageSkin"/>
 </componentPackage>

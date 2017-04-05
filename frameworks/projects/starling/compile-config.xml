@@ -26,6 +26,13 @@
 		</external-library-path>
 		
 		<locale/>
+
+		<namespaces>
+			<namespace>
+				<uri>library://ns.feathersui.com/mxml</uri>
+				<manifest>manifest.xml</manifest>
+			</namespace>
+		</namespaces>
 						
 		<source-path>
 			<path-element>Starling-Framework/starling/src</path-element>

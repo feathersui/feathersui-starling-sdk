@@ -2,9 +2,10 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](http://feathersui.com/sdk).
 
-## 3.2.0 - In Development
+## 3.2.0 - April 2017
 
 * New MXML Example: PullToRefresh
+* feathers.skins.ImageSkin and starling.text.TextFormat may be used in MXML.
 
 ## 3.1.2 - January 2017
 
