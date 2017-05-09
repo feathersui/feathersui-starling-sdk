@@ -197,8 +197,10 @@ package feathers.core
 							else if(init.length === 1)
 							{
 								//try to use mixins that are designed for the
-								//Flex compiler
-								init(null);
+								//Flex compiler. it may not work because some
+								//mixins expect the root to implement the
+								//IFlexModuleFactory interface.
+								init(this);
 							}
 						}
 					}
