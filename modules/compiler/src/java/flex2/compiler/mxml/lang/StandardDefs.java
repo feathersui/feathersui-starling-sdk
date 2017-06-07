@@ -445,7 +445,6 @@ public abstract class StandardDefs
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_PRINTING));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_PROFILER));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_SYSTEM));
-        implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_TEXT));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_UI));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_UTILS));
         implicitImports.add(NameFormatter.toDotStar(PACKAGE_FLASH_XML));
