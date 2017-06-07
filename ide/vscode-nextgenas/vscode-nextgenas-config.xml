@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<flex-config>
+	<compiler>
+		<mxml>
+			<imports>
+				<!-- flash player -->
+				<implicit-import>starling.animation.*</implicit-import>
+				<implicit-import>starling.events.*</implicit-import>
+				<implicit-import>starling.filter.*</implicit-import>
+				<implicit-import>starling.text.*</implicit-import>
+				<implicit-import>starling.textures.*</implicit-import>
+				<implicit-import>starling.utils.*</implicit-import>
+				<implicit-import>flash.accessibility.*</implicit-import>
+				<implicit-import>flash.debugger.*</implicit-import>
+				<implicit-import>flash.errors.*</implicit-import>
+				<implicit-import>flash.external.*</implicit-import>
+				<implicit-import>flash.geom.*</implicit-import>
+				<implicit-import>flash.media.*</implicit-import>
+				<implicit-import>flash.net.*</implicit-import>
+				<implicit-import>flash.printing.*</implicit-import>
+				<implicit-import>flash.profiler.*</implicit-import>
+				<implicit-import>flash.system.*</implicit-import>
+				<implicit-import>flash.ui.*</implicit-import>
+				<implicit-import>flash.utils.*</implicit-import>
+				<implicit-import>flash.xml.*</implicit-import>
+				<!-- air -->
+				<implicit-import>flash.data.*</implicit-import>
+				<implicit-import>flash.desktop.*</implicit-import>
+				<implicit-import>flash.filesystem.*</implicit-import>
+				<implicit-import>flash.html.script.*</implicit-import>
+			</imports>
+		</mxml>
+	</compiler>
+</flex-config>

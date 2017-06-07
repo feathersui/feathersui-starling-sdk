@@ -412,6 +412,7 @@ the version of Apache Flex that this SDK was forked from --&gt;
             	<include name="flashbuilder/**"/>
             	<include name="*.sh"/>
             	<include name="*.bat"/>
+                <include name="vscode-nextgenas/**"/>
             </fileset>
         </copy>
         
