@@ -42,6 +42,7 @@
 	<component id="TextInput" class="feathers.controls.TextInput"/>
 	<component id="ToggleButton" class="feathers.controls.ToggleButton"/>
 	<component id="ToggleSwitch" class="feathers.controls.ToggleSwitch"/>
+	<component id="Tree" class="feathers.controls.Tree"/>
 	<component id="WebView" class="feathers.controls.WebView"/>
 
 	<!-- media -->
@@ -60,9 +61,11 @@
 	<component id="DefaultGroupedListItemRenderer" class="feathers.controls.renderers.DefaultGroupedListItemRenderer"/>
 	<component id="DefaultGroupedListHeaderOrFooterRenderer" class="feathers.controls.renderers.DefaultGroupedListHeaderOrFooterRenderer"/>
 	<component id="DefaultListItemRenderer" class="feathers.controls.renderers.DefaultListItemRenderer"/>
+	<component id="DefaultTreeItemRenderer" class="feathers.controls.renderers.DefaultTreeItemRenderer"/>
 	<component id="LayoutGroupListItemRenderer" class="feathers.controls.renderers.LayoutGroupListItemRenderer"/>
 	<component id="LayoutGroupGroupedListItemRenderer" class="feathers.controls.renderers.LayoutGroupGroupedListItemRenderer"/>
 	<component id="LayoutGroupGroupedListHeaderOrFooterRenderer" class="feathers.controls.renderers.LayoutGroupGroupedListHeaderOrFooterRenderer"/>
+	<component id="LayoutGroupTreeItemRenderer" class="feathers.controls.renderers.LayoutGroupTreeItemRenderer"/>
 
 	<!-- pop up content managers -->
 	<component id="BottomDrawerPopUpContentManager" class="feathers.controls.popups.BottomDrawerPopUpContentManager"/>
@@ -93,7 +96,13 @@
 	<component id="KeyToState" class="feathers.utils.keyboard.KeyToState"/>
 
 	<!-- collections and data -->
+	<component id="ArrayCollection" class="feathers.data.ArrayCollection"/>
+	<!--<component id="VectorCollection" class="feathers.data.VectorCollection"/>-->
+	<component id="XMLListCollection" class="feathers.data.XMLListCollection"/>
 	<component id="ListCollection" class="feathers.data.ListCollection"/>
+	<component id="ArrayHierarchicalCollection" class="feathers.data.ArrayHierarchicalCollection"/>
+	<component id="VectorHierarchicalCollection" class="feathers.data.VectorHierarchicalCollection"/>
+	<component id="XMLListHierarchicalCollection" class="feathers.data.XMLListHierarchicalCollection"/>
 	<component id="HierarchicalCollection" class="feathers.data.HierarchicalCollection"/>
 	<component id="LocalAutoCompleteSource" class="feathers.data.LocalAutoCompleteSource"/>
 	<component id="URLAutoCompleteSource" class="feathers.data.URLAutoCompleteSource"/>
