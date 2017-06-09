@@ -3,13 +3,14 @@
 	<compiler>
 		<mxml>
 			<imports>
-				<!-- flash player -->
+				<!-- starling -->
 				<implicit-import>starling.animation.*</implicit-import>
 				<implicit-import>starling.events.*</implicit-import>
 				<implicit-import>starling.filter.*</implicit-import>
 				<implicit-import>starling.text.*</implicit-import>
 				<implicit-import>starling.textures.*</implicit-import>
 				<implicit-import>starling.utils.*</implicit-import>
+				<!-- flash player -->
 				<implicit-import>flash.accessibility.*</implicit-import>
 				<implicit-import>flash.debugger.*</implicit-import>
 				<implicit-import>flash.errors.*</implicit-import>
