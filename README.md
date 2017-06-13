@@ -22,7 +22,7 @@ The Feathers SDK provides custom ActionScript and MXML compilers specifically de
 
 ## Minimum Requirements
 
-* Adobe AIR 24.0 for desktop or mobile apps
+* Adobe AIR 26.0 for desktop or mobile apps
 * Adobe Flash Player 19.0 for web browsers
 
 ## Downloads
