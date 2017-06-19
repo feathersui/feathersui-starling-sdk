@@ -2,6 +2,12 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](http://feathersui.com/sdk).
 
+## 3.3.0 - In Development
+
+* Added configuration file for Visual Studio Code to ide/vscode-nextgenas. This configuration file ensures that the code intelligence understands that different classes are automatically imported in MXML files when using the Feathers SDK.
+* flash.text.* is not a default import in MXML because its classes conflict with starling.text.*.
+* StarlingBootstrap: No longer passes null to init() static method on classes that use [Mixin] metadata. Classes that expect an IFlexModuleFactory will now throw a runtime error, but classes that expect non-null values will now work. Change parameter type to Object instead of IFlexModuleFactory if the class should work with both the Flex SDK and the Feathers SDK.
+
 ## 3.2.0 - April 2017
 
 * New MXML Example: PullToRefresh
