@@ -16,6 +16,7 @@ specific language governing permissions and limitations under the License.
 */
 package feathers.core
 {
+	import feathers.controls.AutoSizeMode;
 	import feathers.controls.LayoutGroup;
 	import feathers.utils.display.stageToStarling;
 
@@ -39,7 +40,7 @@ package feathers.core
 		public function Application()
 		{
 			super();
-			this.autoSizeMode = LayoutGroup.AUTO_SIZE_MODE_STAGE;
+			this.autoSizeMode = AutoSizeMode.STAGE;
 			this.addEventListener(Event.ADDED_TO_STAGE, application_addedToStageHandler);
 		}
 
