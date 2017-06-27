@@ -18,7 +18,7 @@ The Feathers SDK provides custom ActionScript and MXML compilers specifically de
 ## Included Libraries
 
 * Feathers UI 3.3.0
-* Starling Framework 2.1
+* Starling Framework 2.2
 
 ## Minimum Requirements
 
