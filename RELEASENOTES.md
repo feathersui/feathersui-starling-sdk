@@ -2,7 +2,7 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](http://feathersui.com/sdk).
 
-## 3.3.0 - In Development
+## 3.3.0 - July 2017
 
 * Added configuration file for Visual Studio Code to ide/vscode-nextgenas. This configuration file ensures that the code intelligence understands that different classes are automatically imported in MXML files when using the Feathers SDK.
 * Compiler: fixed issue where initializing member variable/constant that is [Deprecated] incorrectly throws extra warning.
