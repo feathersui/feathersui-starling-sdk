@@ -47,5 +47,16 @@
 	</f:List>
 	<fx:Script><![CDATA[
 		import feathers.examples.tabs.themes.StyleNames;
-		]]></fx:Script>
+
+		override public function dispose():void
+		{
+			if(this.cache !== null)
+			{
+				this.cache.dispose();
+				this.cache = null;
+			}
+			super.dispose();
+		}
+		
+	]]></fx:Script>
 </f:PanelScreen>
