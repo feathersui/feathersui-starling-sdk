@@ -18,10 +18,10 @@
 
 -->
 <flex-sdk-description>
-<name>Feathers SDK 3.3.0 FP19.0 AIR19.0 en_US</name>
+<name>Feathers SDK 3.3.1 FP19.0 AIR19.0 en_US</name>
 <!-- for compatibility with Flash Builder, the version element needs to show
 the version of Apache Flex that this SDK was forked from -->
 <version>4.14.0</version>
-<build>20170717</build>
+<build>20170929</build>
 </flex-sdk-description>
         
