@@ -2,6 +2,10 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](http://feathersui.com/sdk).
 
+## 3.1.1 - October 2017
+
+* Bug fixes from Feathers UI 3.3.1.
+
 ## 3.3.0 - July 2017
 
 * Added configuration file for Visual Studio Code to ide/vscode-nextgenas. This configuration file ensures that the code intelligence understands that different classes are automatically imported in MXML files when using the Feathers SDK.
