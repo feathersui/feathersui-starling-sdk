@@ -8,6 +8,8 @@
 	<component id="ButtonGroup" class="feathers.controls.ButtonGroup"/>
 	<component id="Callout" class="feathers.controls.Callout"/>
 	<component id="Check" class="feathers.controls.Check"/>
+	<component id="DataGrid" class="feathers.controls.DataGrid"/>
+	<component id="DataGridColumn" class="feathers.controls.DataGridColumn"/>
 	<component id="DateTimeSpinner" class="feathers.controls.DateTimeSpinner"/>
 	<component id="Drawers" class="feathers.controls.Drawers"/>
 	<component id="GroupedList" class="feathers.controls.GroupedList"/>
@@ -62,10 +64,13 @@
 	<component id="DefaultGroupedListHeaderOrFooterRenderer" class="feathers.controls.renderers.DefaultGroupedListHeaderOrFooterRenderer"/>
 	<component id="DefaultListItemRenderer" class="feathers.controls.renderers.DefaultListItemRenderer"/>
 	<component id="DefaultTreeItemRenderer" class="feathers.controls.renderers.DefaultTreeItemRenderer"/>
+	<component id="DefaultDataGridCellRenderer" class="feathers.controls.renderers.DefaultDataGridCellRenderer"/>
+	<component id="DefaultDataGridHeaderRenderer" class="feathers.controls.renderers.DefaultDataGridHeaderRenderer"/>
 	<component id="LayoutGroupListItemRenderer" class="feathers.controls.renderers.LayoutGroupListItemRenderer"/>
 	<component id="LayoutGroupGroupedListItemRenderer" class="feathers.controls.renderers.LayoutGroupGroupedListItemRenderer"/>
 	<component id="LayoutGroupGroupedListHeaderOrFooterRenderer" class="feathers.controls.renderers.LayoutGroupGroupedListHeaderOrFooterRenderer"/>
 	<component id="LayoutGroupTreeItemRenderer" class="feathers.controls.renderers.LayoutGroupTreeItemRenderer"/>
+	<component id="LayoutGroupDataGridCellRenderer" class="feathers.controls.renderers.LayoutGroupDataGridCellRenderer"/>
 
 	<!-- pop up content managers -->
 	<component id="BottomDrawerPopUpContentManager" class="feathers.controls.popups.BottomDrawerPopUpContentManager"/>
