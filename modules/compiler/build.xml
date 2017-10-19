@@ -38,7 +38,7 @@
     <property name="opt.dir" value="${ext.dir}/optional"/>
 
     <property name="module.dir" value="${basedir}"/>
-	<property name="javac.src" value="1.5"/>
+	<property name="javac.src" value="1.6"/>
     <property name="templates.dir" value="${FLEX_HOME}/asdoc/templates"/>
     <property name="module.src" value="${module.dir}/src/java"/>
     <property name="module.java15.src" value="${module.dir}/src/java15"/>

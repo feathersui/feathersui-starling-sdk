@@ -34,7 +34,7 @@
     <property name="module.dir" value="."/>
     <property name="module.src" value="${module.dir}/src/java"/>
     <property name="module.classes" value="${module.dir}/classes"/>
-    <property name="javac.src" value="1.4"/>
+    <property name="javac.src" value="1.6"/>
     <property name="build.number" value=""/>
 
     <target name="main" depends="clean,dev" description="cleans and runs the full build"/>
