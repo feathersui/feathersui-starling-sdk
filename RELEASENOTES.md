@@ -2,7 +2,11 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](http://feathersui.com/sdk).
 
-## 3.1.1 - October 2017
+## 3.4.0 - In Development
+
+* Updated to Feathers UI 3.4.0.
+
+## 3.3.1 - October 2017
 
 * Bug fixes from Feathers UI 3.3.1.
 
