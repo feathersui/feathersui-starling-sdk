@@ -1,0 +1,14 @@
+{
+	"type": "lib",
+	"compilerOptions": {
+		"source-path": [
+			"source",
+			"../starling/Starling-Framework/starling/src",
+			"../feathers/feathers/source",
+			"../framework/src"
+		],
+		"include-sources": [
+			"source"
+		]
+	}
+}

@@ -162,7 +162,7 @@ public class Parser implements MXMLNamespaces
                 return ((Integer) ConstantMappings.get(localPart)).intValue();
             }
         }
-        else if ((SPARK_NAMESPACE.equals(uri) || MX_NAMESPACE.equals(uri)) &&
+        else if ((FEATHERS_NAMESPACE.equals(uri) || SPARK_NAMESPACE.equals(uri) || MX_NAMESPACE.equals(uri)) &&
              SPECIAL_COMPONENT_TAGS.contains(localName))
         {
             String localPart = (isStart) ? localName : "/" + localName;

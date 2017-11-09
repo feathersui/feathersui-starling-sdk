@@ -31,5 +31,9 @@
 				<implicit-import>flash.html.script.*</implicit-import>
 			</imports>
 		</mxml>
+		<states-class>feathers.states.State</states-class>
+		<states-instance-override-class>feathers.states.AddItems</states-instance-override-class>
+		<states-property-override-class>feathers.states.SetProperty</states-property-override-class>
+		<states-event-override-class>feathers.SetEventHandler</states-event-override-class>
 	</compiler>
 </flex-config>

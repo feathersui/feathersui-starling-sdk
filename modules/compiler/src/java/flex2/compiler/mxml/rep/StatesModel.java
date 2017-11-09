@@ -107,7 +107,7 @@ public final class StatesModel
         if ((!info.getStateNames().isEmpty()) && info.getVersion() >= 4 )
         {
             info.addImportName(NameFormatter.toDot(standardDefs.CLASS_STATE), 0);
-            info.addInterfaceName(NameFormatter.toDot(standardDefs.INTERFACE_ISTATECLIENT2), 0);
+            info.addInterfaceName(NameFormatter.toDot(standardDefs.INTERFACE_IMXMLSTATECONTEXT), 0);
         }
     }
     

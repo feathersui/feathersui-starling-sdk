@@ -103,6 +103,7 @@ public abstract class StandardDefs
     // feathers.*
     public static final String PACKAGE_FEATHERS_BINDING = "feathers.binding";
     public static final String PACKAGE_FEATHERS_CORE = "feathers.core";
+    private static final String PACKAGE_FEATHERS_STATES = "feathers.states".intern();
 
     // starling.*
     public static final String PACKAGE_STARLING_ANIMATION = "starling.animation";
@@ -141,7 +142,6 @@ public abstract class StandardDefs
     public static final String PACKAGE_FLASH_TEXTLAYOUT_COMPOSE = "flashx.textLayout.compose";
     
     // mx.*
-    private static final String PACKAGE_MX_BINDING = "mx.binding".intern();
     private static final String PACKAGE_MX_CONTAINERS = "mx.containers";
     private static final String PACKAGE_MX_CONTROLS = "mx.controls";
     private static final String PACKAGE_MX_CORE = "mx.core".intern();
@@ -155,13 +155,11 @@ public abstract class StandardDefs
     private static final String PACKAGE_MX_RESOURCES = "mx.resources";
     private static final String PACKAGE_MX_RPC = "mx.rpc";    //    TODO to FramewkDefs? RpcDefs?
     private static final String PACKAGE_MX_RPC_XML = "mx.rpc.xml";    //    TODO to FramewkDefs? RpcDefs?
-    private static final String PACKAGE_MX_STATES = "mx.states".intern();
     private static final String PACKAGE_MX_UTILS = "mx.utils".intern();
 
     // spark.*
     private static final String PACKAGE_SPARK_COMPONENTS = "spark.components";
     private static final String PACKAGE_SPARK_CORE = "spark.core";
-    private static final String PACKAGE_SPARK_PRIMITIVES = "spark.primitives";
     private static final String PACKAGE_TEXT_ELEMENTS = "flashx.textLayout.elements";
     private static final String PACKAGE_TEXT_FORMATS = "flashx.textLayout.formats";
 
@@ -216,7 +214,7 @@ public abstract class StandardDefs
     public final String INTERFACE_IOVERRIDE = NameFormatter.toColon(getStatesPackage(), "IOverride");
     public final String INTERFACE_IPROPERTYCHANGENOTIFIER = NameFormatter.toColon(getCorePackage(), "IPropertyChangeNotifier");
     public final String INTERFACE_IRAWCHILDRENCONTAINER = NameFormatter.toColon(getCorePackage(), "IRawChildrenContainer");
-    public final String INTERFACE_ISTATECLIENT2 = NameFormatter.toColon(getCorePackage(), "IStateClient2");
+    public final String INTERFACE_IMXMLSTATECONTEXT = NameFormatter.toColon("feathers.core", "IMXMLStateContext");
     public final String INTERFACE_ISYSTEMMANAGER = NameFormatter.toColon(getManagersPackage(), "ISystemManager");
     public final String INTERFACE_ITRANSIENTDEFERREDINSTANCE = NameFormatter.toColon(getCorePackage(), "ITransientDeferredInstance");
     public final String INTERFACE_IUICOMPONENT = NameFormatter.toColon(getCorePackage(), "IUIComponent");
@@ -248,7 +246,7 @@ public abstract class StandardDefs
     // Class name with colon
     public final String CLASS_ABSTRACTSERVICE = NameFormatter.toColon(getRPCPackage(), "AbstractService");
     public final String CLASS_ACCORDION = NameFormatter.toColon(getContainerPackage(), "Accordion");
-    public final String CLASS_ADDITEMS = NameFormatter.toColon(PACKAGE_MX_STATES, "AddItems");
+    public final String CLASS_ADDITEMS = NameFormatter.toColon(PACKAGE_FEATHERS_STATES, "AddItems");
     public final String CLASS_APPLICATIONDOMAIN = NameFormatter.toColon(PACKAGE_FLASH_SYSTEM, "ApplicationDomain");
     public final String CLASS_BINDINGMANAGER = NameFormatter.toColon(getBindingPackage(), "BindingManager");
     public final String CLASS_CLASSFACTORY = NameFormatter.toColon(getCorePackage(), "ClassFactory");
@@ -995,7 +993,7 @@ public abstract class StandardDefs
 
         public String getStatesPackage()
         {
-            return StandardDefs.PACKAGE_MX_STATES;
+            return StandardDefs.PACKAGE_FEATHERS_STATES;
         }
 
         public String getUtilsPackage()

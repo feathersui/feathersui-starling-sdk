@@ -128,4 +128,7 @@
 
 	<!-- styles -->
 	<component id="ImageSkin" class="feathers.skins.ImageSkin"/>
+
+	<!-- states -->
+	<component id="State" class="feathers.states.State"/>
 </componentPackage>
