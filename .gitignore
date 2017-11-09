@@ -144,3 +144,7 @@ FlexUnitCompilerApplication.mxml
 #Themes
 frameworks/themes/**/images/
 frameworks/themes/**/fonts/
+
+#VSCode
+.vscode/
+asconfig.json
