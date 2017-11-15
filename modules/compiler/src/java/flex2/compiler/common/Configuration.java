@@ -365,7 +365,7 @@ public class Configuration implements LinkerConfiguration, Cloneable
     
     public static ConfigurationInfo getFrameworkInfo()
     {
-        return new ConfigurationInfo( 1, "framework" )
+        return new AdvancedConfigurationInfo()
         {
             public boolean isHidden()
             {
