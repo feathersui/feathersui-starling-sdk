@@ -671,6 +671,10 @@ public class CompilerConfiguration implements As3Configuration,
     {
         return new ConfigurationInfo( 1, "context-path" )
         {
+		    public boolean isHidden()
+		    {
+		    	return true;
+		    }
         };
     }
 
@@ -1495,10 +1499,22 @@ public class CompilerConfiguration implements As3Configuration,
 		return preloader;
 	}
 
-	public void cfgPreloader(ConfigurationValue cv, String value)
+	public void cfgPreloader(ConfigurationValue cv, String value) throws ConfigurationException
 	{
-		preloader = value;
+		//preloader = value;
+        throw new ConfigurationException.UnexpectedElement(cv.getVar(), cv.getSource(), cv.getLine());
 	}
+    
+    public static ConfigurationInfo getPreloaderInfo()
+    {
+        return new ConfigurationInfo( 1, "name" )
+        {
+            public boolean isHidden()
+            {
+                return true;
+            }
+        };
+    }
 
 	//
     // 'compiler.resource-hack' option
@@ -1565,7 +1581,7 @@ public class CompilerConfiguration implements As3Configuration,
 
     public void cfgServices(ConfigurationValue cv, String servicesPath) throws ConfigurationException
     {
-        try
+        /*try
         {
 	        servicesConfigFile = ConfigurationPathResolver.getVirtualFile(servicesPath,
 	                                                                      configResolver, cv);
@@ -1573,13 +1589,18 @@ public class CompilerConfiguration implements As3Configuration,
         catch(Throwable t)
         {
             throw new ConfigurationException.CannotOpen( servicesPath, cv.getVar(), cv.getSource(), cv.getLine() );
-        }
+        }*/
+        throw new ConfigurationException.UnexpectedElement(cv.getVar(), cv.getSource(), cv.getLine());
     }
 
     public static ConfigurationInfo getServicesInfo()
     {
         return new ConfigurationInfo( 1, "filename" )
         {
+            public boolean isHidden()
+            {
+            	return true;
+            }
         };
     }
 

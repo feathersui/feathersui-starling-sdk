@@ -362,6 +362,17 @@ public class Configuration implements LinkerConfiguration, Cloneable
     {
         framework = s;
     }
+    
+    public static ConfigurationInfo getFrameworkInfo()
+    {
+        return new ConfigurationInfo( 1, "framework" )
+        {
+            public boolean isHidden()
+            {
+                return true;
+            }
+        };
+    }
 
 
     //
