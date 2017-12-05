@@ -2,9 +2,9 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](http://feathersui.com/sdk).
 
-## 3.4.0 - In Development
+## 3.4.0 - December 2017
 
-* Updated to Feathers UI 3.4.0.
+* Improved errors and visibility for Apache Flex compiler options that aren't relevant to Feathers, including -services, -preloader, -context-root, and -framework.
 
 ## 3.3.1 - October 2017
 
