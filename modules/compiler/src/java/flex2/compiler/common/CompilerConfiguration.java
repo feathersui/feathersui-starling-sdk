@@ -1502,7 +1502,9 @@ public class CompilerConfiguration implements As3Configuration,
 	public void cfgPreloader(ConfigurationValue cv, String value) throws ConfigurationException
 	{
 		//preloader = value;
-        throw new ConfigurationException.UnexpectedElement(cv.getVar(), cv.getSource(), cv.getLine());
+
+		//we can't throw an exception here because IntelliJ IDEA uses -preloader
+        //throw new ConfigurationException.UnexpectedElement(cv.getVar(), cv.getSource(), cv.getLine());
 	}
     
     public static ConfigurationInfo getPreloaderInfo()
