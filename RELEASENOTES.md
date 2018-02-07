@@ -2,6 +2,11 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](http://feathersui.com/sdk).
 
+## 3.4.1 - February 2018
+
+* Fixed issue where compiling a mobile module in IntelliJ IDEA failed because the -preloader compiler option was not accepted and could not be disabled in the IDE.
+* Bug fixes from Feathers UI 3.4.1.
+
 ## 3.4.0 - December 2017
 
 * Improved errors and visibility for Apache Flex compiler options that aren't relevant to Feathers, including -services, -preloader, -context-root, and -framework.

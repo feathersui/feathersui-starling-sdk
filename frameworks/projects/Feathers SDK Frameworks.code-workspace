@@ -1,0 +1,17 @@
+{
+	"folders": [
+		{
+			"path": "feathers-mxml"
+		},
+		{
+			"path": "feathers"
+		},
+		{
+			"path": "starling"
+		},
+		{
+			"path": "framework"
+		}
+	],
+	"settings": {}
+}
