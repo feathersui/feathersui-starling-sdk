@@ -148,3 +148,4 @@ frameworks/themes/**/fonts/
 #VSCode
 .vscode/
 asconfig.json
+*.code-workspace
