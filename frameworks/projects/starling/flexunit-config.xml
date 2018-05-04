@@ -27,13 +27,10 @@
 		
 		<library-path>
 			<path-element>../../libs/framework.swc</path-element>
+			<path-element>../../libs/starling.swc</path-element>
 		</library-path>
 		
 		<locale/>
-						
-		<source-path>
-			<path-element>Starling-Framework/starling/src</path-element>
-		</source-path>
 		
 		<warn-no-constructor>false</warn-no-constructor>
 	</compiler>

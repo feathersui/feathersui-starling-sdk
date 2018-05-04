@@ -28,6 +28,7 @@
 		<library-path>
 			<path-element>../../libs/framework.swc</path-element>
 			<path-element>../../libs/starling.swc</path-element>
+			<path-element>../../libs/feathers.swc</path-element>
 		</library-path>
 		
 		<keep-as3-metadata>
@@ -44,7 +45,6 @@
 		</namespaces>
 						
 		<source-path>
-			<path-element>feathers/source</path-element>
 			<path-element>feathers/test/source</path-element>
 		</source-path>
 		
