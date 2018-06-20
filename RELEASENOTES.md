@@ -2,7 +2,7 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](http://feathersui.com/sdk).
 
-## 3.5.0 - In Development
+## 3.5.0 - June 2018
 
 * MXML States: LayoutGroup, ScrollContainer, Panel, and other containers now support states syntax in MXML.
 

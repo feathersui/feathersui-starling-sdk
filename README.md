@@ -1,11 +1,11 @@
-# Feathers SDK 3.5.0-beta2
+# Feathers SDK 3.5.0
 
 The Feathers SDK provides custom ActionScript and MXML compilers specifically designed for apps built with [Starling Framework](http://starling-framework.org/) and [Feathers](http://feathersui.com/) UI components. This SDK makes building Starling and Feathers projects easier by simplifying project setup in supported IDEs and by providing more appropriate defaults (such as using "direct" render mode). The MXML compiler has been overhauled to work with Starling events and Feathers components.
 
 ## Quick Links
 
 * [Website](http://feathersui.com/sdk/)
-* [Beta Help](http://feathersui.com/beta/help/sdk/)
+* [Help](http://feathersui.com/help/sdk/)
 * [Discussion Forum](http://forum.starling-framework.org/forum/feathers)
 * [Github Project](https://github.com/BowlerHatLLC/feathers-sdk)
 
@@ -16,7 +16,7 @@ The Feathers SDK provides custom ActionScript and MXML compilers specifically de
 
 ## Included Libraries
 
-* Feathers UI 3.5.0-beta2
+* Feathers UI 3.5.0
 * Starling Framework 2.3
 
 ## Minimum Requirements
