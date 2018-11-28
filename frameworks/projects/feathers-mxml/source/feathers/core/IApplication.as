@@ -117,5 +117,22 @@ package feathers.core
 		 * @private
 		 */
 		function set showStats(value:Boolean):void;
+
+		/**
+		 * The anti-aliasing level. 0 - none, 16 - maximum.
+		 *
+		 * <p>Warning: When using <a href="http://feathersui.com/help/sdk/custom-starling-initialization.html">
+		 * <code>[Frame]</code> metadata</a> to customize the initialization of
+		 * Starling, this property will be ignored. You will need to set the
+		 * antiAliasing property manually in your custom bootstrap class.</p>
+		 *
+		 * @see http://doc.starling-framework.org/current/starling/core/Starling.html#antiAliasing starling.core.Starling.antiAliasing
+		 */
+		function get antiAliasing():int;
+
+		/**
+		 * @private
+		 */
+		function set antiAliasing(value:int):void;
 	}
 }

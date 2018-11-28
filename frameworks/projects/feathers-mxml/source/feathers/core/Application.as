@@ -74,7 +74,7 @@ package feathers.core
 		 */
 		protected var _context3DProfile:String;
 
-		[Inspectable(type="String",enumeration="auto,baselineConstrained,baseline,baselineExtended,standardConstrained,standard,standardExtended")]
+		[Inspectable(type="String",enumeration="auto,baselineConstrained,baseline,baselineExtended,standardConstrained,standard,standardExtended,enhanced")]
 		/**
 		 * @copy feathers.core.IApplication#context3DProfile
 		 */
@@ -174,6 +174,31 @@ package feathers.core
 			{
 				starling.showStats = value;
 			}
+		}
+
+		/**
+		 * @private
+		 */
+		protected var _antiAliasing:int = 0;
+
+		/**
+		 * @copy feathers.core.IApplication#antiAliasing
+		 */
+		public function get antiAliasing():int
+		{
+			return this._antiAliasing;
+		}
+
+		/**
+		 * @private
+		 */
+		public function set antiAliasing(value:int):void
+		{
+			if(this._isInitialized)
+			{
+				throw new IllegalOperationError("antiAliasing can only be set in MXML before an application has initialized.");
+			}
+			this._antiAliasing = value;
 		}
 
 		/**

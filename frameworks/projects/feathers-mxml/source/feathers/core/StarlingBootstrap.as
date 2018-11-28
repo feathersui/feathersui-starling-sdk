@@ -91,18 +91,8 @@ package feathers.core
 			}
 			if(!context3DProfile)
 			{
-				//pick some reasonable defaults
-				if(SystemUtil.isDesktop)
-				{
-					//on desktop, the safest option is baselineConstrained,
-					//due to old GPUs.
-					context3DProfile = Context3DProfile.BASELINE_CONSTRAINED;
-				}
-				else
-				{
-					//on mobile, it's safe to choose baseline
-					context3DProfile = Context3DProfile.BASELINE;
-				}
+				//pick a reasonable default
+				context3DProfile = "auto";
 			}
 			var skipUnchangedFrames:Boolean = true;
 			if(info.hasOwnProperty("skipUnchangedFrames"))
@@ -119,8 +109,14 @@ package feathers.core
 			{
 				showStats = info["showStats"] === "true";
 			}
+			var antiAliasing:int = 0;
+			if(info.hasOwnProperty("antiAliasing"))
+			{
+				antiAliasing = parseInt(info["antiAliasing"], 10);
+			}
 			Starling.multitouchEnabled = true;
 			var starling:Starling = new Starling(null, this.stage, null, null, Context3DRenderMode.AUTO, context3DProfile);
+			starling.antiAliasing = antiAliasing;
 			starling.supportHighResolutions = this.stage.contentsScaleFactor > 1;
 			starling.shareContext = shareContext;
 			starling.skipUnchangedFrames = skipUnchangedFrames;

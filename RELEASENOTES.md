@@ -4,7 +4,8 @@ Noteworthy changes in official, stable releases of the [Feathers SDK](https://fe
 
 ## 4.0.0-beta - December 2018
 
-* Feathers UI 4.0.0
+* IApplication: interface exposes `antiAliasing` property to be set in MXML.
+* StarlingBootstrap: If context3DProfile is not set, now defaults to "auto".
 
 ## 3.5.0 - June 2018
 
