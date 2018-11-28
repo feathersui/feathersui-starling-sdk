@@ -1,6 +1,10 @@
 # Feathers SDK Release Notes
 
-Noteworthy changes in official, stable releases of the [Feathers SDK](http://feathersui.com/sdk).
+Noteworthy changes in official, stable releases of the [Feathers SDK](https://feathersui.com/sdk).
+
+## 4.0.0-beta - December 2018
+
+* Feathers UI 4.0.0
 
 ## 3.5.0 - June 2018
 
