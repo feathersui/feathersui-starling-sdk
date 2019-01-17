@@ -27,7 +27,7 @@ The [Feathers SDK](https://feathersui.com/sdk/) provides custom ActionScript and
 
 ## Minimum Requirements
 
-* Adobe AIR 31.0 for desktop or mobile apps
+* Adobe AIR 32.0 for desktop or mobile apps
 * Adobe Flash Player 19.0 for web browsers
 
 ## Downloads
