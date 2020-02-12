@@ -2,6 +2,8 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](https://feathersui.com/sdk).
 
+## 4.1.0 - February 2020
+
 ## 4.0.0 - January 2019
 
 * IApplication: interface exposes `antiAliasing` property to be set in MXML.
