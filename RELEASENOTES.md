@@ -2,6 +2,10 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](https://feathersui.com/sdk).
 
+## 4.1.1 - May 2020
+
+* Bug fixes from Feathers UI 4.1.1
+
 ## 4.1.0 - February 2020
 
 * Feathers UI 4.1.0
