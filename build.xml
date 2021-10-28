@@ -39,6 +39,7 @@
     <property file="${FLEX_HOME}/local.properties"/>
     <property file="${FLEX_HOME}/build.properties"/>
 
+    <property name="env.PLAYERGLOBAL_HOME" location="${basedir}/frameworks/libs/player"/>
     <property name="debug" value="true"/>
     <property name="strict" value="true"/>
     <property name="javac.src" value="1.7"/>
@@ -126,6 +127,9 @@
 
     <target name="check-playerglobal-home" unless="playerglobal.swc.exists"
         description="Check PLAYERGLOBAL_HOME for both a directory and a swc file">
+
+        <!-- fall back -->
+        <mkdir dir="${basedir}/frameworks/libs/player"/>
 
         <echo message="PLAYERGLOBAL_HOME is ${env.PLAYERGLOBAL_HOME}"/>
         <echo message="playerglobal.version is ${playerglobal.version}"/>

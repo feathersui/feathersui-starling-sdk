@@ -23,7 +23,7 @@
     build_framework.xml is renamed to build.xml when it is packaged.
     It is used to build the frameworks directory from the zip file. 
 -->
-<project name="frameworks" default="main" basedir=".">
+<project xmlns:if="ant:if" xmlns:unless="ant:unless" name="frameworks" default="main" basedir=".">
 
     <property name="FLEX_HOME" location=".."/>
 
@@ -63,6 +63,7 @@
         description="Clean build of all SWCs"/>
 
     <target name="check-compile-env" description="Check for the required environment variables">
+        <property name="env.PLAYERGLOBAL_HOME" location="${basedir}/libs/player"/>
         <ant antfile="${FLEX_HOME}/build.xml" target="check-compile-env" dir="${FLEX_HOME}"/>
     </target>
     
@@ -292,7 +293,16 @@
             </fileset>
         </delete> 
         <!-- Delete empty folders -->
-        <delete dir="${basedir}/libs"/>
+        <condition property="has_playerglobal_internal_path">
+            <equals arg1="${env.PLAYERGLOBAL_HOME}" arg2="${basedir}/libs/player"/>
+        </condition>
+        <delete if:set="has_playerglobal_internal_path">
+            <fileset dir="${basedir}/libs">
+                <include name="*"/>
+                <exclude name="player/${playerglobal.version}/*"/>
+            </fileset>
+        </delete>
+        <delete dir="${basedir}/libs" unless:set="has_playerglobal_internal_path"/>
         <delete dir="${basedir}/locale">
             <exclude name="**/metadata.properties"/>
         </delete>

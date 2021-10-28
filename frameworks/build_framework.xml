@@ -35,6 +35,7 @@
     <property file="${FLEX_HOME}/local.properties"/>
     <property file="${FLEX_HOME}/build.properties"/>
 
+    <property name="env.PLAYERGLOBAL_HOME" location="${basedir}/libs/player"/>
     <property name="build.number" value="0"/>
     <property name="playerglobal.version" value="11.5"/>
     <property name="playerglobal.dir" value="${env.PLAYERGLOBAL_HOME}/${playerglobal.version}"/>
