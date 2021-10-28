@@ -31,7 +31,7 @@
     <property name="module.src" value="${module.dir}/src"/>
     <property name="module.classes" value="${module.dir}/classes"/>
 	<property name="module.jar" value="${lib.dir}/flexTasks.jar" />
-   	<property name="javac.src" value="1.6"/>
+   	<property name="javac.src" value="1.7"/>
 
     <target name="main" depends="clean, dev" />
     <target name="dev" depends="jar" />

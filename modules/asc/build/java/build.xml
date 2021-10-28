@@ -22,7 +22,7 @@
 	<property name="root.dir" value="${basedir}/../.."/>
 	<property name="bin.dir" value="${root.dir}/bin"/>
 	<property name="java.src.dir" value="${root.dir}/src/java"/>
-	<property name="javac.src" value="1.6"/>    
+	<property name="javac.src" value="1.7"/>    
 	<property name="as.src.dir" value="${root.dir}/src/as"/>
 	<property name="cpp.src.dir" value="${root.dir}/src/cpp"/>
 	<property name="build.util" value="${root.dir}/build/util"/>

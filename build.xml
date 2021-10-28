@@ -41,7 +41,7 @@
 
     <property name="debug" value="true"/>
     <property name="strict" value="true"/>
-    <property name="javac.src" value="1.6"/>
+    <property name="javac.src" value="1.7"/>
     
     <property name="kit.prefix" value="feathers-sdk-${release.version.feathers}"/>
     <property name="source.kit" value="${kit.prefix}-src"/>

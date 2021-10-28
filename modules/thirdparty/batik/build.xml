@@ -99,8 +99,8 @@ To display the available targets type:
     <property name="deprecation"        value="on"/>
 
     <!-- Added by Apache Flex -->  
-    <property name="javac.source" value="1.6"/>
-    <property name="javac.target" value="1.6"/>
+    <property name="javac.source" value="1.7"/>
+    <property name="javac.target" value="1.7"/>
 
     <property name="src"                value="sources"/>
     <property name="src-internal-codec" value="sources-internal-codec"/>
