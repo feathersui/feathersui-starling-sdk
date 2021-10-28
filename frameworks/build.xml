@@ -199,6 +199,45 @@
         <condition property="playerglobal.swfversion" value="31">
             <equals arg1="${playerglobal.version}" arg2="20.0" />
         </condition>
+        <condition property="playerglobal.swfversion" value="32">
+            <equals arg1="${playerglobal.version}" arg2="21.0" />
+        </condition>
+        <condition property="playerglobal.swfversion" value="33">
+            <equals arg1="${playerglobal.version}" arg2="22.0" />
+        </condition>
+        <condition property="playerglobal.swfversion" value="34">
+            <equals arg1="${playerglobal.version}" arg2="23.0" />
+        </condition>
+        <condition property="playerglobal.swfversion" value="35">
+            <equals arg1="${playerglobal.version}" arg2="24.0" />
+        </condition>
+        <condition property="playerglobal.swfversion" value="36">
+            <equals arg1="${playerglobal.version}" arg2="25.0" />
+        </condition>
+        <condition property="playerglobal.swfversion" value="37">
+            <equals arg1="${playerglobal.version}" arg2="26.0" />
+        </condition>
+        <condition property="playerglobal.swfversion" value="38">
+            <equals arg1="${playerglobal.version}" arg2="27.0" />
+        </condition>
+        <condition property="playerglobal.swfversion" value="39">
+            <equals arg1="${playerglobal.version}" arg2="28.0" />
+        </condition>
+        <condition property="playerglobal.swfversion" value="40">
+            <equals arg1="${playerglobal.version}" arg2="29.0" />
+        </condition>
+        <condition property="playerglobal.swfversion" value="41">
+            <equals arg1="${playerglobal.version}" arg2="30.0" />
+        </condition>
+        <condition property="playerglobal.swfversion" value="42">
+            <equals arg1="${playerglobal.version}" arg2="31.0" />
+        </condition>
+        <condition property="playerglobal.swfversion" value="43">
+            <equals arg1="${playerglobal.version}" arg2="32.0" />
+        </condition>
+        <condition property="playerglobal.swfversion" value="44">
+            <equals arg1="${playerglobal.version}" arg2="33.1" />
+        </condition>
 	</target>
     
     <target name="other.locales" description ="Builds resource SWCs for all locales">
