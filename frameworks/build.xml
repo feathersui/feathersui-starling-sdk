@@ -67,7 +67,9 @@
         <ant antfile="${FLEX_HOME}/build.xml" target="check-compile-env" dir="${FLEX_HOME}"/>
     </target>
     
-    <target name="prepare" depends="local-fonts-snapshot, thirdparty-downloads"/>
+    <target name="prepare" depends="local-fonts-snapshot, thirdparty-downloads">
+        <mkdir dir="${basedir}/rsls"/>
+    </target>
     
     <!--
         Font snapshot files for the JREFontManager.  
