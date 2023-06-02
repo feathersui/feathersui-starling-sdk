@@ -1,6 +1,6 @@
 [submodule "frameworks/projects/starling/Starling-Framework"]
 	path = frameworks/projects/starling/Starling-Framework
-	url = git@github.com:Gamua/Starling-Framework.git
+	url = https://github.com/Gamua/Starling-Framework.git
 [submodule "frameworks/projects/feathers/feathers"]
 	path = frameworks/projects/feathers/feathers
-	url = git@github.com:joshtynjala/feathers.git
+	url = https://github.com/feathersui/feathersui-starling.git
