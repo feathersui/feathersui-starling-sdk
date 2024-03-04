@@ -2,7 +2,7 @@
 
 Noteworthy changes in official, stable releases of the [Feathers SDK](https://feathersui.com/sdk).
 
-## 4.2.0 - 2021
+## 4.2.0 - No plans to release at this time
 
 * Bug fixes from Feathers UI 4.2.0
 * Starling v2.7

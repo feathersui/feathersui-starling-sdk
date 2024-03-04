@@ -1,18 +1,12 @@
 # Feathers SDK 4.2.0
 
-The [Feathers SDK](https://feathersui.com/sdk/) provides custom ActionScript and MXML compilers specifically designed for apps built with [Starling Framework](https://gamua.com/starling/) and [Feathers UI](https://feathersui.com/) components. This SDK makes building Starling and Feathers projects easier by simplifying project setup in supported IDEs and by providing more appropriate defaults (such as using "direct" render mode). The MXML compiler has been overhauled to work with Starling events and Feathers components.
+The [Feathers SDK](https://feathersui.com/learn/as3-starling/sdk/) provides custom ActionScript and MXML compilers specifically designed for apps built with [Starling Framework](https://gamua.com/starling/) and [Feathers UI (Starling)](https://feathersui.com/learn/as3-starling/) components. This SDK makes building Starling and Feathers projects easier by simplifying project setup in supported IDEs and by providing more appropriate defaults (such as using "direct" render mode). The MXML compiler has been overhauled to work with Starling events and Feathers components.
 
 ## Quick Links
 
-* [Website](https://feathersui.com/sdk/)
 * [Help](https://feathersui.com/learn/as3-starling/sdk/)
 * [Discussion Forum](https://forum.starling-framework.org/t/feathers)
-* [Github Project](https://github.com/BowlerHatLLC/feathers-sdk)
-
-### News and Updates
-
-* [Follow on Twitter](https://twitter.com/feathersui)
-* [Like on Facebook](https://facebook.com/feathersui)
+* [Github Project](https://github.com/feathersui/feathersui-starling-sdk)
 
 ## Included Libraries
 
@@ -26,4 +20,4 @@ The [Feathers SDK](https://feathersui.com/sdk/) provides custom ActionScript and
 
 ## Downloads
 
-To download the latest stable version of Feathers SDK, visit [feathersui.com](https://feathersui.com/).
+To download the latest stable version of Feathers SDK, visit [feathersui.com](https://feathersui.com/learn/as3-starling/sdk/installation-instructions/).
