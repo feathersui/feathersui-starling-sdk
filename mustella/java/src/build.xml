@@ -76,7 +76,7 @@
 
 	<target name="compile-mustella" depends="prepare">
 		<echo message="Compiling mustella source code..."/>		
-		<javac  destdir="${build.dir}" debug="${src.debug}" nowarn="true" source="1.4" srcdir="${src.dir}" includes="mustella/**/*.java,utils/**/*.java">
+		<javac  destdir="${build.dir}" debug="${src.debug}" nowarn="true" source="1.8" srcdir="${src.dir}" includes="mustella/**/*.java,utils/**/*.java">
 			<classpath>
                 <!--<path refid="flex.mustella.lib.classpath"/>-->
                 <path refid="ant.lib.classpath"/>
@@ -90,7 +90,7 @@
 
 	<target name="compile" depends="prepare">
 		<echo message="Compiling source code..."/>
-		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="${src.debug}" nowarn="true" source="1.4">
+		<javac srcdir="${src.dir}" destdir="${build.dir}" debug="${src.debug}" nowarn="true" source="1.8">
 			<classpath>
                 <!--<path refid="flex.mustella.lib.classpath"/>-->
                 <path refid="ant.lib.classpath"/>
