@@ -57,8 +57,14 @@
 
 		<taskdef resource="flexUnitTasks.tasks">
 			<classpath>
-				<fileset dir="${env.FLEXUNIT_HOME}/FlexUnit4AntTasks/target">
-					<include name="flexUnitTasks*.jar"/>
+				<fileset dir="${env.FLEXUNIT_HOME}">
+					<!-- option 1: flexunit binary distribution
+					     from https://flex.apache.org/download-flexunit.html -->
+					<include name="flexunit/flexUnitTasks*.jar"/>
+
+					<!-- option 2: locally built flex-flexunit repo
+					     from https://github.com/apache/flex-flexunit.git -->
+					<include name="FlexUnit4AntTasks/target/flexUnitTasks*.jar"/>
 				</fileset>
 			</classpath>
 		</taskdef>
@@ -77,8 +83,16 @@
 			<arg value="+playerglobal.version=${playerglobal.version}" />
 			<arg value="+env.PLAYERGLOBAL_HOME=${env.PLAYERGLOBAL_HOME}" />
 			<library-path dir="${env.FLEXUNIT_HOME}" append="true">
-				<include name="FlexUnit4/libs/*.swc"/>
+				<!-- option 1: flexunit binary distribution
+				     from https://flex.apache.org/download-flexunit.html -->
+				<include name="flexunit/flexunit*as3*.swc"/>
+				<include name="flexunit/flexunit-cilistener*.swc"/>
+				<include name="turnkey/libs/hamcrest-as3-flex-*.swc"/>
+
+				<!-- option 2: locally built flex-flexunit repo
+				     from https://github.com/apache/flex-flexunit.git -->
 				<include name="FlexUnit4/target/*.swc"/>
+				<include name="FlexUnit4/libs/*.swc"/>
 				<include name="FlexUnit4CIListener/target/*.swc"/>
 			</library-path>
 			<output>${tests.bin}/swf/TestStarling.swf</output>
