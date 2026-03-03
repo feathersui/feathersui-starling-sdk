@@ -31,7 +31,7 @@ package feathers.core
 	 * Base class for a Feathers application with a
 	 * <code>StackScreenNavigator</code> as the root display object.
 	 */
-	public class StackScreenNavigatorApplication extends StackScreenNavigator
+	public class StackScreenNavigatorApplication extends StackScreenNavigator implements IApplication
 	{
 		/**
 		 * Constructor.
