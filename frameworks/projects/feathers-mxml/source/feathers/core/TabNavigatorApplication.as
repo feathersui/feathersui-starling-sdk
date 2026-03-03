@@ -31,7 +31,7 @@ package feathers.core
 	 * Base class for a Feathers application with a
 	 * <code>TabNavigator</code> as the root display object.
 	 */
-	public class TabNavigatorApplication extends TabNavigator
+	public class TabNavigatorApplication extends TabNavigator implements IApplication
 	{
 		/**
 		 * Constructor.
